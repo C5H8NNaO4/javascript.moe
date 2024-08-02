@@ -29,6 +29,7 @@ export const MyName = () => {
         target: ref || undefined,
         offset: ["start start", "end end"]
     });
+    const { scrollYProgress: scrollYPage } = useScroll();
 
     const hRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +44,7 @@ export const MyName = () => {
     const opacity = useTransform(scrollYProgress, [0.75, 1], [1, 0.1]);
     const fS = screen.width <= 452 ? 52 : 72;
     const fontSize = useTransform(scrollYProgress, [0.25, 0.9], ['36px', screen.width <= 452 ? '52px' : '72px'])
-    const shadow = useTransform(scrollYProgress, [0.25, 1], ['0px 0px 0px #FFFFFF', '0px 0px 8px #000000']);
+    const shadow = useTransform(scrollYPage, [0, 0.05, 0.1, 0.15, 0.2], ['0px 0px 0px #FFFFFF', '0px 0px 8px #FFFFFF', '1px 1px 1px #333333',  '0px 0px 0px #FFFFFF','0px 0px 8px #FFFFFF']);
 
     const mRef = useRef<HTMLDivElement>(null);
     const oeRef = useRef<HTMLDivElement>(null);
@@ -66,6 +67,9 @@ export const MyName = () => {
     const fillPipe = useTransform(scrollYProgress, [0.95, 1], ["#FFFFFFFF", "#FFFFFF00"])
     const bb = useTransform(scrollYProgress, [0, 0.95, 1], ["2px solid white", "2px solid white", "0px solid white"])
     const scalePipe = useTransform(scrollYProgress, [0.7, 0.9, 1], ["0%", "100%", "100%"])
+    const wPipe = useTransform(scrollYProgress, [0.5, 1], ["0px", "4px"])
+
+    const color = useTransform(scrollYPage, [0, 0.05, 0.09, 0.2], ["#DDDDDDFF", "#EEEEEEFF","#DDDDDDFF", "#FFFFFF33"]);
 
     useMotionValueEvent(scrollYProgress, 'change', () => {
         if (scrollYProgress.get() <= 1) {
@@ -80,14 +84,14 @@ export const MyName = () => {
         style={{ y, fontSize, lineHeight: fontSize, zIndex: 100, textShadow: shadow, borderBottom: bb }}>
         <Link to="/about" >
             <span ref={mRef}>
-                <motion.span style={{ x: mX, display: 'inline-block', scaleX: scale }}>
+                <motion.span style={{ x: mX, display: 'inline-block', scaleX: scale, color }}>
                     M
-                    <motion.div className='inline-block w-1 rounded-full' style={{ background: fillPipe, scale: scalePipe, x: -1, fontSize: '32px', y: yPpipe, height: heightPipe, boxShadow: shadowPipe }}></motion.div>
+                    <motion.div className='inline-block rounded-full' style={{ width: wPipe, background: fillPipe, scale: scalePipe, x: -1, fontSize: '32px', y: yPpipe, height: heightPipe, boxShadow: shadowPipe }}></motion.div>
                 </motion.span>
             </span>
             <motion.span style={{ opacity }}>oritz R</motion.span>
             <span ref={oeRef}>
-                <motion.span style={{ x: oeX, display: 'inline-block', scaleX: scale }}>
+                <motion.span style={{ x: oeX, display: 'inline-block', scaleX: scale, color }}>
                     oe
                     <motion.div className='absolute h-1 rounded-full' style={{ background: fillPipe, scale: scalePipe, y: yUS, fontSize: '32px', x: xUS, width: widthUS, boxShadow: shadowPipe }}></motion.div>
                 </motion.span>
