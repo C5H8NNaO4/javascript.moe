@@ -7,10 +7,22 @@
 
 <url>
   <loc>https://javascript.moe/</loc>
-  <lastmod>2024-07-25T23:00:00+00:00</lastmod>
+  <lastmod>2024-08-01T00:00:00+00:00</lastmod>
 </url>
 <url>
-  <loc>https://javascript.moe/about</loc>
-  <lastmod>2024-07-25T23:00:00+00:00</lastmod>
+  <loc>https://javascript.moe/en</loc>
+  <lastmod>2024-08-01T00:00:00+00:00</lastmod>
+</url>
+<url>
+  <loc>https://javascript.moe/de</loc>
+  <lastmod>2024-08-01T00:00:00+00:00</lastmod>
+</url>
+<url>
+  <loc>https://javascript.moe/en/about</loc>
+  <lastmod>2024-08-01T00:00:00+00:00</lastmod>
+</url>
+<url>
+  <loc>https://javascript.moe/de/about</loc>
+  <lastmod>2024-08-01T00:00:00+00:00</lastmod>
 </url>
 </urlset>
