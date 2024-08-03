@@ -12,6 +12,7 @@ import { useContext } from "react";
 import { AboutSectionProps } from "@/lib/types";
 
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 export const AboutPage = () => {
     const { t } = useTranslation();
@@ -41,7 +42,7 @@ export const AboutSection = ({ text }: AboutSectionProps) => {
         <BackgroundImage src="/images/wallpaper/5.webp" alt="Seepark in Freiburg" />
         <div className='w-[80ch] max-w-[calc(100vw-32px)] absolute top-0'>
             <Parallax distance={32 * 2} offset={32 * 1} className="flex" range={[0.75, 0]}>
-                <Link to="/" className="flex">
+                <Link to={`/${i18n.language}`} className="flex">
                     <ArrowBack style={{ fill: 'white' }} />
                     <h2>Back</h2>
                 </Link>
