@@ -5,6 +5,7 @@ import { sectionCtx } from '@/components/AnimatedSection';
 import clsx from 'clsx';
 import { getHeight } from '@/lib/util';
 import { Link } from 'react-router-dom';
+import i18n from 'i18next';
 
 export const AnimatedText = () => {
     const { ref } = useContext(sectionCtx);
@@ -44,7 +45,7 @@ export const MyName = () => {
     const opacity = useTransform(scrollYProgress, [0.75, 1], [1, 0.1]);
     const fS = screen.width <= 452 ? 52 : 72;
     const fontSize = useTransform(scrollYProgress, [0.25, 0.9], ['36px', screen.width <= 452 ? '52px' : '72px'])
-    const shadow = useTransform(scrollYPage, [0, 0.05, 0.1, 0.15, 0.2], ['0px 0px 0px #FFFFFF', '0px 0px 8px #FFFFFF', '1px 1px 1px #333333',  '0px 0px 0px #FFFFFF','0px 0px 8px #FFFFFF']);
+    const shadow = useTransform(scrollYPage, [0, 0.05, 0.1, 0.15, 0.2], ['0px 0px 0px #FFFFFF', '0px 0px 8px #FFFFFF', '1px 1px 1px #333333', '0px 0px 0px #FFFFFF', '0px 0px 8px #FFFFFF']);
 
     const mRef = useRef<HTMLDivElement>(null);
     const oeRef = useRef<HTMLDivElement>(null);
@@ -69,7 +70,7 @@ export const MyName = () => {
     const scalePipe = useTransform(scrollYProgress, [0.7, 0.9, 1], ["0%", "100%", "100%"])
     const wPipe = useTransform(scrollYProgress, [0.5, 1], ["0px", "4px"])
 
-    const color = useTransform(scrollYPage, [0, 0.05, 0.09, 0.2], ["#DDDDDDFF", "#EEEEEEFF","#DDDDDDFF", "#FFFFFF33"]);
+    const color = useTransform(scrollYPage, [0, 0.05, 0.09, 0.2], ["#DDDDDDFF", "#EEEEEEFF", "#DDDDDDFF", "#FFFFFF33"]);
 
     useMotionValueEvent(scrollYProgress, 'change', () => {
         if (scrollYProgress.get() <= 1) {
@@ -82,7 +83,7 @@ export const MyName = () => {
     })
     return <motion.h1 id="moe" ref={hRef} className='absolute bottom-0 text-center'
         style={{ y, fontSize, lineHeight: fontSize, zIndex: 100, textShadow: shadow, borderBottom: bb }}>
-        <Link to="/about" >
+        <Link to={`${i18n.language}/about`} >
             <span ref={mRef}>
                 <motion.span style={{ x: mX, display: 'inline-block', scaleX: scale, color }}>
                     M
