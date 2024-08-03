@@ -10,12 +10,14 @@ import ArrowBack from '@/assets/arrowback.svg?react'
 import { Link } from "react-router-dom"
 import { useContext } from "react";
 import { AboutSectionProps } from "@/lib/types";
-import { ABOUT_TEXT } from "@/lib/const";
+
+import { useTranslation } from 'react-i18next';
 
 export const AboutPage = () => {
+    const { t } = useTranslation();
     return <div className="relative">
         <StickySection height='150lvh' >
-            <AboutSection text={ABOUT_TEXT} />
+            <AboutSection text={t('About')} />
         </StickySection >
     </div>
 }
