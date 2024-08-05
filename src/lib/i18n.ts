@@ -7,6 +7,8 @@ import en from "@/assets/translations/en.ts";
 // import fr from 'data/fr.ts';
 import LanguageDetector from "i18next-browser-languagedetector";
 
+export const supportedLngs = ["en", "de"];
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -19,12 +21,12 @@ i18n
       en,
     },
     detection: {
-      order: ["path", "localStorage", "htmlTag", "subdomain"],
+      order: ["path", "navigator"],
       lookupFromPathIndex: 0,
     },
     // lng: 'en', // if you're using a language detector, do not define the lng option
     fallbackLng: "en",
-
+    supportedLngs,
     interpolation: {
       escapeValue: false, // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
     },

@@ -18,10 +18,12 @@ import LambdaLogo from '@/assets/lambda.svg?react';
 import { DualImages } from '@/components/BlendedImage'
 import { Parallax } from '@/components/anim/Parallax'
 import { FlyOut } from '@/components/anim/FlyOut'
+import { EnsureLanguage } from '@/components/EnsureLanguage'
 
 export const LandingPage = () => {
     return (
         <>
+            <EnsureLanguage path='' />
             <StickySection height='175lvh' >
                 <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 <Parallax distance={320 * 0.5} offset={320 * 0.5}>

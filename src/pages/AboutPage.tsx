@@ -13,10 +13,12 @@ import { AboutSectionProps } from "@/lib/types";
 
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import { EnsureLanguage } from "@/components/EnsureLanguage";
 
 export const AboutPage = () => {
     const { t } = useTranslation();
     return <div className="relative">
+        <EnsureLanguage path='/about' />
         <StickySection height='150lvh' >
             <AboutSection text={t('About')} />
         </StickySection >
