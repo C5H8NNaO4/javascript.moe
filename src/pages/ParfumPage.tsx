@@ -66,6 +66,7 @@ export const PerfumeText = ({ text, title, bgSrc, bgAlt, imgAlt, imgSrc }: About
     const background = useTransform(scrollYProgress, [0, 0.75], ['#FFFFFF11', '#00000033'])
     const overflowY = useTransform(scrollYProgress, [0, 0.75], ['hidden', 'auto']);
     const bi = useTransform(scrollYProgress, [0, 0.75], ['1000px', '4px']);
+    const opacity = useTransform(scrollYProgress, [0, 0.75], ['20%', '100%']);
 
     const anchors = ['sylvan dawn', 'wooden heart']
     useEffect(() => {
@@ -107,7 +108,7 @@ export const PerfumeText = ({ text, title, bgSrc, bgAlt, imgAlt, imgSrc }: About
                         className="flex flex-col lg:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left" >
                         {/* <motion.div style={{ display: 'block' }} /> */}
 
-                        <motion.img alt={imgAlt} style={{ x: 0, borderRadius: bi }} className=" top-4 w-full lg:w-1/3 h-fit object-cover pr-4" src={imgSrc} />
+                        <motion.img alt={imgAlt} style={{ x: 0, borderRadius: bi, opacity }} className=" top-4 w-full lg:w-1/3 h-fit object-cover pr-4" src={imgSrc} />
 
                         <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p>
                     </motion.div>
