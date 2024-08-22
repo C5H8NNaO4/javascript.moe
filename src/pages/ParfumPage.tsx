@@ -79,17 +79,12 @@ export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt,
     const anchors = ['sylvan dawn', 'wooden heart']
     // const { t } = useTranslation();
     useEffect(() => {
-        console.log(decodeURIComponent(window.location.hash.slice(1).toLowerCase()))
         const index = anchors.indexOf(decodeURIComponent(window.location.hash.slice(1).toLowerCase()))
         const pos = 0.5 + (index * 2);
-        console.log("INDEX ", index, pos);
+
         if (index > -1) {
-            console.log("Scroll")
-
             setTimeout(() => {
-
                 window.scrollTo({ top: window.innerHeight * pos });
-
             }, 250)
         }
     })
@@ -181,28 +176,45 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
             else setVisible(null);
         }
     }
+
     return <div>
         {ingredients.map((ing) => {
             const { amount, dilution, name, company, exp } = ing;
+            const showTooltip = visible === name && !!part;
+
             return <div onMouseOver={() => setVisible(name)} onMouseLeave={() => setVisible(null)}>
                 <p>
                     <span>
                         {'- '}
                     </span>
                     <span
+                        onTouchEnd={showTooltip ? hide : Show('vol')}
+                        style={{ textDecoration: exp.vol ? 'underline dotted 0.5px' : '' }}
                         onMouseEnter={Show('vol', !!exp.vol && exp.vol !== amount)} onMouseLeave={hide}
                     >{amount} </span>
                     <span
+                        onTouchEnd={showTooltip ? hide : Show('desc')}
+
+                        style={{ textDecoration: exp.desc ? 'underline dotted 0.5px' : '' }}
+
                         onMouseEnter={Show('desc')} onMouseLeave={hide}
                     >{name} </span>
                     {dilution !== null && <span
+                        onTouchEnd={showTooltip ? hide : Show('dil')}
+
+                        style={{ textDecoration: exp.dil ? 'underline dotted 0.5px' : '' }}
+
                         onMouseEnter={Show('dil', !!exp.dil)} onMouseLeave={hide}
                     >{dilution}% </span>}
                     {company && <span
+                        onTouchEnd={showTooltip ? hide : Show('com')}
+
+                        style={{ textDecoration: exp.com ? 'underline dotted 0.5px' : '' }}
+
                         onMouseEnter={Show('com')} onMouseLeave={hide}
                     > by {company} </span>}
                 </p>
-                <Tooltip visible={visible === name && !!part} onMouseEnter={() => {
+                <Tooltip visible={showTooltip} onMouseEnter={() => {
                     clearTimeout(to.current);
                 }}
                     onMouseLeave={hide}
