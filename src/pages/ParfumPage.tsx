@@ -20,7 +20,7 @@ export const PerfumePage = () => {
     return <div className="relative">
         <EnsureLanguage path='/about' />
         <StickySection height='150lvh' >
-            <SylvanDawn
+            <PerfumeText
                 text={t('SylvanDawn')}
                 title="Sylvan Dawn"
                 bgSrc="/images/wallpaper/11.jpg"
@@ -30,7 +30,7 @@ export const PerfumePage = () => {
             />
         </StickySection >
         <StickySection height='150lvh' >
-            <SylvanDawn
+            <PerfumeText
                 title="Wooden Heart"
                 text={t('WoodenHeart')}
                 bgSrc="/images/wallpaper/9.jpg"
@@ -43,7 +43,7 @@ export const PerfumePage = () => {
     </div>
 }
 
-export const SylvanDawn = ({ text, title, bgSrc, bgAlt, imgAlt, imgSrc }: AboutSectionProps) => {
+export const PerfumeText = ({ text, title, bgSrc, bgAlt, imgAlt, imgSrc }: AboutSectionProps) => {
     const { ref: scrollRef } = useContext(sectionCtx);
     const innerRef = useRef(null);
 
@@ -104,12 +104,12 @@ export const SylvanDawn = ({ text, title, bgSrc, bgAlt, imgAlt, imgSrc }: AboutS
                             backdropFilter: rblur,
                             overflowY
                         }}
-                        className="flex flex-wrap gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left" >
+                        className="flex flex-col lg:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left" >
                         {/* <motion.div style={{ display: 'block' }} /> */}
 
-                        <motion.img alt={imgAlt} style={{ x: 0, maxWidth: "20%", borderRadius: bi }} className=" absolute top-4 object-cover pr-4" src={imgSrc} />
+                        <motion.img alt={imgAlt} style={{ x: 0, borderRadius: bi }} className=" top-4 w-full lg:w-1/3 h-fit object-cover pr-4" src={imgSrc} />
 
-                        <motion.p className="text-left ml-4 px-4 pl-[20%] whitespace-pre-line min-w-[50vw]" style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p>
+                        <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p>
                     </motion.div>
                 </button>
             </Parallax>
