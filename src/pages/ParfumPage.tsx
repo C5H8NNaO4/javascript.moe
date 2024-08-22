@@ -23,7 +23,8 @@ export const PerfumePage = () => {
             <SylvanDawn
                 text={t('SylvanDawn')}
                 title="Sylvan Dawn"
-                bgSrc="/images/wallpaper/me-ls.jfif" bgAlt="Moritz bei Elmars Hochzeit"
+                bgSrc="/images/wallpaper/11.jpg"
+                bgAlt="Depiction of my Sylvan Dawn Fragrance"
                 imgSrc="/images/perfumes/SylvanDawn.jpg"
                 imgAlt="Wooden Heart perfume depiction"
             />
@@ -32,10 +33,10 @@ export const PerfumePage = () => {
             <SylvanDawn
                 title="Wooden Heart"
                 text={t('WoodenHeart')}
-                bgSrc="/images/wallpaper/4.webp"
+                bgSrc="/images/wallpaper/9.jpg"
                 bgAlt="Waldweg"
                 imgSrc="/images/perfumes/woodenheart.jpeg"
-                imgAlt="Wooden Heart perfume depiction"
+                imgAlt="Depiction of my Wooden Heart Fragrance"
             />
         </StickySection >
 

@@ -18,7 +18,7 @@ body {
   /* scroll-snap-align: bottom; */
   /* -webkit-overflow-scrolling: touch; */
   overscroll-behavior: none;
-  --text-color: #CCCCCC;
+  --text-color: #FFFFFFEE;
 }
 
 section {
