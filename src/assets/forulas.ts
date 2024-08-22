@@ -18,6 +18,10 @@ export const ISOESuper: Explanation = {
   desc: t("ISOESuper"),
 };
 
+export const Timbersilk: Explanation = {
+  desc: t("Timbersilk"),
+};
+
 export const Evernyl: Explanation = {
   desc: t("Evernyl"),
 };
@@ -132,5 +136,14 @@ export const WoodenHeart: Ingredient[] = [
     dilution: 10,
     company: "Firmenich",
     exp: CleanWood,
+  },
+];
+
+export const WoodenAmberHeart: Ingredient[] = [
+  {
+    amount: "+1dr",
+    name: "Timbersilk",
+    dilution: 10,
+    exp: Timbersilk,
   },
 ];

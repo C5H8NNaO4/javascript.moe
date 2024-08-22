@@ -14,7 +14,7 @@ import { AboutSectionProps } from "@/lib/types";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { EnsureLanguage } from "@/components/EnsureLanguage";
-import { SylvanDawn, WoodenHeart } from "@/assets/forulas";
+import { SylvanDawn, WoodenAmberHeart, WoodenHeart } from "@/assets/forulas";
 import clsx from 'clsx';
 
 export const PerfumePage = () => {
@@ -41,13 +41,17 @@ export const PerfumePage = () => {
                 imgSrc="/images/perfumes/woodenheart.jpeg"
                 imgAlt="Depiction of my Wooden Heart Fragrance"
                 ingredients={WoodenHeart}
+                variations={[{
+                    title: 'Amber variation:',
+                    ingredients: WoodenAmberHeart
+                }]}
             />
         </StickySection >
 
     </div>
 }
 
-export const PerfumeText = ({ ingredients, title, bgSrc, bgAlt, imgAlt, imgSrc }: AboutSectionProps) => {
+export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt, imgAlt, imgSrc }: AboutSectionProps) => {
     const { ref: scrollRef } = useContext(sectionCtx);
     const innerRef = useRef(null);
 
@@ -116,7 +120,16 @@ export const PerfumeText = ({ ingredients, title, bgSrc, bgAlt, imgAlt, imgSrc }
                         <motion.img alt={imgAlt} style={{ x: 0, borderRadius: bi, opacity }} className=" top-4 w-full lg:w-1/3 h-fit object-cover pr-4" src={imgSrc} />
 
                         {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
-                        <Recipe ingredients={ingredients || []} />
+
+                        <div>
+                            <Recipe ingredients={ingredients || []} />
+                            {variations.map((v) => {
+                                return <>
+                                    <p className="mt-2">{v.title}</p>
+                                    <Recipe ingredients={v.ingredients}></Recipe>
+                                </>
+                            })}
+                        </div>
                     </motion.div>
                 </button>
             </Parallax>

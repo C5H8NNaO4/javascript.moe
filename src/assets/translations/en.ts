@@ -29,8 +29,8 @@ Amber Variation:
 
 export const Ingredients = {
   WoodyBase: `This is a special base designed to provide fixation and diffusive support to compositions with woody notes.  The blend consists of both musk and non-musk fixatives, selected to be effective with a wide range of fragrance components where a woody element is desired as well as musks.  Although it is intended as a fragrance making component, this base is attractive alone and some customers have suggested it can be used as a perfume in it's own right.`,
-  MuskBlend: `This is a special base designed to provide fixation and diffusive support to compositions with woody notes.  The blend consists of both musk and non-musk fixatives, selected to be effective with a wide range of fragrance components where a woody element is desired as well as musks.  Although it is intended as a fragrance making component, this base is attractive alone and some customers have suggested it can be used as a perfume in it's own right.`,
-  VertofixCoeur: ``,
+  MuskBlend: `This is a special blend by Pell Wall, designed to provide fixation and diffusive support to a wide range of fragrance compositions.  We have always advised that the circumstances when a single musk used alone is appropriate to support your fragrance are vanishingly rare and musks are best used in combination.  To make that easier to do in practice we are presenting here a pre-made blend of 10 musks that work well together and will give excellent results in many types of fragrance.`,
+  VertofixCoeur: `This is a very versatile and useful material that can be incorporated successfully into most blends: an excellent fixative that also adds ambery diffusion, it can be harsh in high doses but larger amounts can nevertheless work well in incense-type fragrances.`,
   Geosmin: `Geosmin is detectable by humas in parts per trillion. It is produced by soil bacteria and responsible for the petrichor smell when it rains.`,
   VetiverylAcetat: `Odour (decreasing):
   Sweet-woody, fresh, dry. Exalting and very tenacious.
@@ -40,6 +40,7 @@ export const Ingredients = {
   Velvety, woody, dry, ambergris, old-wood, lemony. Extremely diffusive.
   
   It is also incredibly versatile and widely used in fragrances of all kinds and applications. Besides supplying its own odour, it aids diffusion and gives body and a thickening, velvety quality to a fragrance. Used in simple blends it can help almost any material to 'smell more like itself' enhancing the odour quality.`,
+  Timbersilk: `Timbersilk is an isomer of iso-e-super but contains Amber Xtreme at 0.007%`,
   Evernyl: `Odour (decreasing):
   Mossy, oakmoss, woody, phenolic, earthy.
   
