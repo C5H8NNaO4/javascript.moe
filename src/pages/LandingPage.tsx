@@ -42,7 +42,7 @@ export const LandingPage = () => {
                 {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 
                 */}
-                <DualImages images={["/images/wallpaper/1.webp", "/images/wallpaper/me-ls.jfif"]} moveX={2} alts={[
+                <DualImages images={["/images/wallpaper/1.webp", "/images/wallpaper/me-ls.jfif"]} moveX={0} alts={[
                     'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                     'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                 ]} />
@@ -92,14 +92,14 @@ export const LandingPage = () => {
                     <SwiperSlide className='h-full w-full flex justify-center'>
                         <DualImages className="-z-10" range={[0.6, 1]} images={[
                             "/images/wallpaper/10.jpg",
-                            "/images/wallpaper/9.jpg", 
+                            "/images/wallpaper/9.jpg",
                             "/images/wallpaper/8.jpg",
                         ]} moveX={2} alts={[
                             'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                             'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                         ]} />
-                        <AppearingText range={[0.75, 1]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
-                        <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={32} offset={-32}>
+                        <AppearingText range={[0.75, 0.9]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
+                        <Parallax trans={[0.9, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={32} offset={-32}>
                             <PerfumeLink range={[0.75, 1]} />
                         </Parallax>
                         {/* <Parallax trans={[0, 0.25]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={64} offset={-64}>
