@@ -15,7 +15,7 @@ export const SylvanDawn = `- 2ml Woody base by Pellwall
 `;
 
 export const WoodenHeart = `- 2ml Woody Base by Pellwall
-- 1dr Vetivery Acetat
+- 1dr Vetiveryl Acetat
 - 2dr ISO-E-Super
 - 1dr Evernyl 20%
 - 1dr Fir Balsam 10%
@@ -27,11 +27,58 @@ Amber Variation:
 - +1dr ISO-E-Super
 `;
 
+export const Ingredients = {
+  WoodyBase: `This is a special base designed to provide fixation and diffusive support to compositions with woody notes.  The blend consists of both musk and non-musk fixatives, selected to be effective with a wide range of fragrance components where a woody element is desired as well as musks.  Although it is intended as a fragrance making component, this base is attractive alone and some customers have suggested it can be used as a perfume in it's own right.`,
+  MuskBlend: `This is a special base designed to provide fixation and diffusive support to compositions with woody notes.  The blend consists of both musk and non-musk fixatives, selected to be effective with a wide range of fragrance components where a woody element is desired as well as musks.  Although it is intended as a fragrance making component, this base is attractive alone and some customers have suggested it can be used as a perfume in it's own right.`,
+  VertofixCoeur: ``,
+  Geosmin: `Geosmin is detectable by humas in parts per trillion. It is produced by soil bacteria and responsible for the petrichor smell when it rains.`,
+  VetiverylAcetat: `Odour (decreasing):
+  Sweet-woody, fresh, dry. Exalting and very tenacious.
+  
+  A refined derivative of vetiver oil, characterized by a smooth, woody, and earthy scent with subtle green and smoky undertones. It offers a softer and more polished version of vetiver, adding elegance and depth to fragrances with a long-lasting, balanced woody profile.`,
+  ISOESuper: `Odour (decreasing):
+  Velvety, woody, dry, ambergris, old-wood, lemony. Extremely diffusive.
+  
+  It is also incredibly versatile and widely used in fragrances of all kinds and applications. Besides supplying its own odour, it aids diffusion and gives body and a thickening, velvety quality to a fragrance. Used in simple blends it can help almost any material to 'smell more like itself' enhancing the odour quality.`,
+  Evernyl: `Odour (decreasing):
+  Mossy, oakmoss, woody, phenolic, earthy.
+  
+  A synthetic molecule that replicates the scent of oakmoss, offering a dry, woody, and slightly earthy aroma with soft, mossy undertones. It adds depth and complexity, often imparting a nostalgic, forest-like character to blends.`,
+  FirBalm: `Odour (decreasing):
+  Pine needle, green, resinous, lemony.
+  
+  A rich, aromatic resin derived from fir trees, characterized by a warm, resinous scent with deep, sweet, and slightly woody notes. It evokes the essence of a dense, coniferous forest, adding a natural, comforting richness to compositions.`,
+  BetaPinenes: `Odour (decreasing):
+  green, aquatic, woody, dry.
+  
+  A naturally occurring terpene with a fresh, green, woody scent, featuring subtle resinous and earthy undertones, reminiscent of forest air.`,
+  CleanWood: `Odour (decreasing): Woody, dry, fresh, earthy.
+  A proprietary synthetic ingredient designed to capture the essence of woody notes with a modern, clean twist. It has a fresh, dry, and transparent woody scent with subtle earthy and musky undertones. Cleanwood adds a refined, contemporary woodiness to compositions without the heaviness or rough edges often associated with natural woods.`,
+};
+
+export const Companies = {
+  Pellwall: "Pellwall is a UK company for fine perfumery",
+};
+
+export const Explanations = {
+  Strong:
+    "This is a very strong material, you only need traces of it, so dilute it good.",
+  "1dr": "1 drop of the diluted material from a 3ml plastic pipette.",
+  // "Evernyl20%", "Diluting Evernyl to 20% is easier to use than at 10%. However, both is fine. The material is hard to dissolve, so you might find a 10% solution to be easier."
+  "10%":
+    "Dilute normal materials to 10% to make it easier to use and suitable for a 2ml batch. Most materials are way too strong for such a small batch.",
+  "2ml":
+    "2ml fixative base is a good start for small batches and sufficient to work with single drops or 0.01g of materials diluted to 10%. Working in small batches minimizes loss at the beginning.",
+};
+
 const translations = {
   translation: {
     About,
     SylvanDawn,
     WoodenHeart,
+    ...Ingredients,
+    ...Companies,
+    ...Explanations,
   },
 };
 
