@@ -90,7 +90,11 @@ export const LandingPage = () => {
                     </SwiperSlide>
 
                     <SwiperSlide className='h-full w-full flex justify-center'>
-                        <DualImages className="-z-10" range={[0, 0.5]} images={["/images/wallpaper/3.webp", "/images/wallpaper/2.webp"]} moveX={2} alts={[
+                        <DualImages className="-z-10" range={[0.6, 1]} images={[
+                            "/images/wallpaper/10.jpg",
+                            "/images/wallpaper/9.jpg", 
+                            "/images/wallpaper/8.jpg",
+                        ]} moveX={2} alts={[
                             'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                             'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                         ]} />
