@@ -99,7 +99,7 @@ export const LandingPage = () => {
                             'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                         ]} />
                         <AppearingText range={[0.75, 1]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
-                        <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={32} offset={-32}>
+                        <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={window.innerHeight * -0.25} offset={0}>
                             <PerfumeLink range={[0.75, 1]} />
                         </Parallax>
                         {/* <Parallax trans={[0, 0.25]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={64} offset={-64}>
