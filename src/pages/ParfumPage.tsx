@@ -8,7 +8,7 @@ import {
 } from 'framer-motion';
 import ArrowBack from '@/assets/arrowback.svg?react'
 import { Link } from "react-router-dom"
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AboutSectionProps } from "@/lib/types";
 
 import { useTranslation } from 'react-i18next';
@@ -38,6 +38,7 @@ export const PerfumePage = () => {
                 imgAlt="Wooden Heart perfume depiction"
             />
         </StickySection >
+
     </div>
 }
 
@@ -64,6 +65,23 @@ export const SylvanDawn = ({ text, title, bgSrc, bgAlt, imgAlt, imgSrc }: AboutS
     const background = useTransform(scrollYProgress, [0, 0.75], ['#FFFFFF11', '#00000033'])
     const overflowY = useTransform(scrollYProgress, [0, 0.75], ['hidden', 'auto']);
     const bi = useTransform(scrollYProgress, [0, 0.75], ['1000px', '4px']);
+
+    const anchors = ['sylvan dawn', 'wooden heart']
+    useEffect(() => {
+        console.log(decodeURIComponent(window.location.hash.slice(1).toLowerCase()))
+        const index = anchors.indexOf(decodeURIComponent(window.location.hash.slice(1).toLowerCase()))
+        const pos = 0.5 + (index * 2);
+        console.log("INDEX ", index, pos);
+        if (index > -1) {
+            console.log("Scroll")
+
+            setTimeout(() => {
+
+                window.scrollTo({ top: window.innerHeight * pos });
+
+            }, 250)
+        }
+    })
 
     return <>
         <BackgroundImage src={bgSrc} alt={bgAlt} />

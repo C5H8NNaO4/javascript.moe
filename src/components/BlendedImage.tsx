@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef } from "react"
 import { sectionCtx } from "@/components/AnimatedSection";
 import { useParallax } from "@/lib/hooks";
 import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
 function blend(bottomImageData: ImageData, topImageData: ImageData, alpha: number) {
     var bottomData = bottomImageData.data;
@@ -95,24 +96,26 @@ export const BlendedImage = ({ images, invert, desat }: { images: string[], inve
     </>
 }
 
-export const DualImages = ({ images, moveX = 0, alts }: { images: string[], alts: string[], invert?: boolean, desat?: boolean, moveX?: 0 | 1 | 2 }) => {
+export const DualImages = ({ className, range = [0, 1], images, moveX = 0, alts }: { className?: string; range?: number[], images: string[], alts: string[], invert?: boolean, desat?: boolean, moveX?: 0 | 1 | 2 }) => {
     const { ref: scrollRef } = useContext(sectionCtx);
     const { scrollYProgress } = useScroll({
         layoutEffect: false,
         target: scrollRef || undefined,
         offset: ["start start", "end end"]
     });
-    const y = useParallax(scrollYProgress, 50, 0)
-    const x = useTransform(scrollYProgress, [0, 1], ["0% 00%", "50% 0%"]);
-    const x2 = useTransform(scrollYProgress, [0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]);
-    const filter = useTransform(scrollYProgress, [0.9, 1], ["blur(0px)", "blur(12px)"], { ease: easeOut })
-    const scale = useTransform(scrollYProgress, [0.9, 1], ["100%", "115%"])
-    const y2 = useParallax(scrollYProgress, 75, -20);
-    const down = useTransform(scrollYProgress, [0.9, 1], [0, 75]);
-    const y2C = useTransform(() => y2.get() + (down.get() * 2))
-    const reverse = useTransform(scrollYProgress, [0, 1], [1, 0]);
+    const trans = useTransform(scrollYProgress, range, [0, 1])
 
-    return <motion.div className="absolute w-[100vw] h-[120lvh] bg-black" style={{ filter }}>
+    const y = useParallax(trans, 50, 0)
+    const x = useTransform(trans, [0, 1], ["0% 00%", "50% 0%"]);
+    const x2 = useTransform(trans, [0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]);
+    const filter = useTransform(trans, [0.9, 1], ["blur(0px)", "blur(12px)"], { ease: easeOut })
+    const scale = useTransform(trans, [0.9, 1], ["100%", "115%"])
+    const y2 = useParallax(trans, 75, -20);
+    const down = useTransform(trans, [0.9, 1], [0, 75]);
+    const y2C = useTransform(() => y2.get() + (down.get() * 2))
+    const reverse = useTransform(trans, [0, 1], [1, 0]);
+
+    return <motion.div className={clsx(className, "absolute w-[100vw] h-[120lvh] bg-black")} style={{ filter }}>
         <motion.img src={images[0]} alt={alts[0]} className="absolute w-[100vw] h-[120lvh]" style={{
             opacity: reverse,
             objectPosition: (moveX & 1) ? x : undefined,
@@ -120,7 +123,7 @@ export const DualImages = ({ images, moveX = 0, alts }: { images: string[], alts
             y: y
         }} />
         <motion.img src={images[1]} alt={alts[1]} className="absolute w-[100vw]  h-[120lvh]" style={{
-            opacity: scrollYProgress,
+            opacity: trans,
             objectPosition: (moveX & 2) ? x2 : undefined,
             scale,
             y: y2C,

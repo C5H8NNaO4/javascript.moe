@@ -102,18 +102,19 @@ export const MyName = () => {
     </motion.h1 >
 }
 
-export const AppearingText = ({ texts, slices, Component = motion.h1 }: { texts: string[], slices?: number[], Component?: any }) => {
+export const AppearingText = ({ range = [0, 1], className, texts, slices, Component = motion.h1 }: { range?: number[], className?: string, texts: string[], slices?: number[], Component?: any }) => {
     const { ref } = useContext(sectionCtx);
     const { scrollYProgress } = useScroll({
         layoutEffect: false,
         target: ref || undefined,
         offset: ["start start", "end end"]
     });
+    const trans = useTransform(scrollYProgress, range, [0, 1]);
     const dist = 110;
     const off = dist - getHeight(document.body) * 0.25;
-    const y = useParallax(scrollYProgress, dist, off, easeInOut);
-    const t2 = useTransform(scrollYProgress, [0, 1], [1, texts.length + 1])
-    const boxShadow = useTransform(scrollYProgress, [0, 1], ['0px 0px 0px black', '0px 0px 12px black'])
+    const y = useParallax(trans, dist, off, easeInOut);
+    const t2 = useTransform(trans, [0, 1], [1, texts.length + 1])
+    const boxShadow = useTransform(trans, [0, 1], ['0px 0px 0px black', '0px 0px 12px black'])
 
     const [text, setText] = useState(['', '']);
     const [, setRerender] = useState(0);
@@ -148,7 +149,7 @@ export const AppearingText = ({ texts, slices, Component = motion.h1 }: { texts:
             setRerender(0)
         }
     })
-    return <Component className={clsx('absolute text-center', { 'break-all': ((t2.get()) % 1) < (1 / startMultiplier) })} style={{ y, zIndex: 100, textShadow: boxShadow }}>
+    return <Component className={clsx('absolute text-center', className, { 'break-all': ((t2.get()) % 1) < (1 / startMultiplier) })} style={{ y, zIndex: 100, textShadow: boxShadow }}>
         <span>{text[0]}</span>
         <span style={{ color: '#FFFFFF33', textShadow: '0px 0px 7px white' }}>{text[1]}</span>
     </Component >
@@ -159,8 +160,9 @@ export type BulletsProps = {
     className?: string
     offset: number;
     reverse?: boolean;
+    range?: number[];
 }
-export const Bullets = ({ data, className, offset = 0.5, reverse }: BulletsProps) => {
+export const Bullets = ({ range = [0, 1], data, className, offset = 0.5, reverse }: BulletsProps) => {
     const { ref } = useContext(sectionCtx);
 
     const { scrollYProgress } = useScroll({
@@ -169,23 +171,24 @@ export const Bullets = ({ data, className, offset = 0.5, reverse }: BulletsProps
         offset: ["start start", "end end"]
     });
 
-    const boxShadow = useTransform(scrollYProgress, [0, 1], ['0px 0px 0px black', '0px 0px 12px black'])
+    const trans = useTransform(scrollYProgress, range, [0, 1])
+    const boxShadow = useTransform(trans, [0, 1], ['0px 0px 0px black', '0px 0px 12px black'])
 
 
-    const scale = useTransform(scrollYProgress, [offset + 0.05 * 0, offset + 0.05 * 1], ["0%", "100%"])
-    const gap = useTransform(scrollYProgress, [offset + 0.05 * 3, offset + 0.05 * 4], ["32px", "8px"])
-    const textWidth = useTransform(scrollYProgress,
+    const scale = useTransform(trans, [offset + 0.05 * 0, offset + 0.05 * 1], ["0%", "100%"])
+    const gap = useTransform(trans, [offset + 0.05 * 3, offset + 0.05 * 4], ["32px", "8px"])
+    const textWidth = useTransform(trans,
         [offset + 0.05 * 3, offset + 0.05 * 4],
         ["0px", "300px"]);
-    const borderRadius = useTransform(scrollYProgress, [offset + 0.05 * 2, offset + 0.05 * 3], ["32px", "0px"])
-    const scale1 = useTransform(scrollYProgress, [offset + 0.05 * 1, offset + 0.05 * 2], ["0%", "100%"])
-    const scale2 = useTransform(scrollYProgress, [offset + 0.05 * 2, offset + 0.05 * 3], ["0%", "100%"])
-    const scale3 = useTransform(scrollYProgress, [offset + 0.05 * 3, offset + 0.05 * 4], ["0%", "100%"])
-    const bg = useTransform(scrollYProgress, [0.9, 1], ["#00000000", "#00000099"])
+    const borderRadius = useTransform(trans, [offset + 0.05 * 2, offset + 0.05 * 3], ["32px", "0px"])
+    const scale1 = useTransform(trans, [offset + 0.05 * 1, offset + 0.05 * 2], ["0%", "100%"])
+    const scale2 = useTransform(trans, [offset + 0.05 * 2, offset + 0.05 * 3], ["0%", "100%"])
+    const scale3 = useTransform(trans, [offset + 0.05 * 3, offset + 0.05 * 4], ["0%", "100%"])
+    const bg = useTransform(trans, [0.9, 1], ["#00000000", "#00000099"])
     let scalings = [scale, scale1, scale2, scale3];
 
 
-    return <motion.div className={clsx(' flex flex-row flex-wrap text-white flex-grow-0 items-center justify-center', className)} style={{ gap }}>
+    return <motion.div className={clsx('flex flex-row flex-wrap text-white flex-grow-0 items-center justify-center', className)} style={{ gap }}>
         {
             data.map((e, i) => {
                 const ele = reverse ? data.length - 1 - i : i;
