@@ -114,7 +114,7 @@ export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt,
                             backdropFilter: rblur,
                             // overflowY
                         }}
-                        className="relative flex flex-col lg:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left" >
+                        className="relative overflow-auto lg:overflow-visible flex flex-col lg:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left" >
                         {/* <motion.div style={{ display: 'block' }} /> */}
 
                         <motion.img alt={imgAlt} style={{ x: 0, borderRadius: bi, opacity }} className=" top-4 w-full lg:w-1/3 h-fit object-cover pr-4" src={imgSrc} />
