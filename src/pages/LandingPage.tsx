@@ -1,6 +1,5 @@
 import { StickySection } from '@/components/AnimatedSection'
 import { AnimatedImageCircle } from '@/components/AnimatedImageCircle'
-import { BackgroundImage } from '@/components/BackgroundImage'
 import { Container } from '@/components/Container'
 import { AppearingText, Bullets, MyName } from '@/components/AnimatedText'
 import TS from '@/assets/ts.svg?react';
@@ -25,7 +24,13 @@ export const LandingPage = () => {
         <>
             <EnsureLanguage path='' />
             <StickySection height='175lvh' >
-                <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
+                {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
+                
+                */}
+                <DualImages images={["/images/wallpaper/1.webp", "/images/wallpaper/me-ls.jfif"]} moveX={2} alts={[
+                    'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
+                    'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
+                ]} />
                 <Parallax distance={320 * 0.5} offset={320 * 0.5}>
                     <FlyOut range={[0.25, 0.5]}>
                         <Container>

@@ -6,9 +6,27 @@ My work includes delivering complex projects for large clients, utilizing agile 
 If you're looking for a lead or senior frontend developer in Freiburg im Breisgau or for remote work, feel free to contact me.
 `;
 
+export const SylvanDawn = `- 2ml Woody base by Pellwall
+- 1 drop Vetiveryl Acetat
+- 2 drops Musk Blend
+- 1 drop Evernyl 20%
+- 1 drop Vertofix 50%
+- 1 drop Geosmin 0.005%.
+`;
+
+export const WoodenHeart = `- 2ml - Woody Base
+- 1dr Vetivery Acetat
+- 2dr ISO-E-Super
+- 1dr Fir Balsam 10%
+- 1dr beta Pinenes 10%
+- 1dr Cleanwood (Patchouli) 10%
+- 1dr Evernyl 20%
+`;
 const translations = {
   translation: {
     About,
+    SylvanDawn,
+    WoodenHeart,
   },
 };
 

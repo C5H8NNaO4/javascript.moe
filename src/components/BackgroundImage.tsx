@@ -7,7 +7,7 @@ export type BackgroundImageProps = {
     invert?: boolean
     desat?: boolean;
     vanish?: number;
-    alt: string;
+    alt?: string;
 }
 export const BackgroundImage = ({ src, invert, desat, alt }: BackgroundImageProps) => {
     const { ref } = useContext(sectionCtx);
