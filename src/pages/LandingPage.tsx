@@ -98,8 +98,8 @@ export const LandingPage = () => {
                             'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                             'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                         ]} />
-                        <AppearingText range={[0.75, 0.9]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
-                        <Parallax trans={[0.9, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={32} offset={-32}>
+                        <AppearingText range={[0.75, 1]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
+                        <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={32} offset={-32}>
                             <PerfumeLink range={[0.75, 1]} />
                         </Parallax>
                         {/* <Parallax trans={[0, 0.25]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={64} offset={-64}>
