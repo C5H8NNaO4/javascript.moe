@@ -92,13 +92,13 @@ export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt,
     return <>
         <BackgroundImage src={bgSrc} alt={bgAlt} />
         <div className='w-[80ch] max-w-[calc(100vw-32px)] absolute top-0'>
-            <Parallax distance={32 * 2} offset={32 * 1} className="flex" range={[0.75, 0]}>
+            <Parallax distance={32 * 2} offset={32 * 1} className="flex" trans={[0.75, 0]}>
                 <Link to={`/${i18n.language}`} className="flex">
                     <ArrowBack style={{ fill: 'white' }} />
                     <h2>Back</h2>
                 </Link>
             </Parallax>
-            <Parallax distance={dist - 32 * 4} offset={offset + 32 * 2} range={[0.75, 0]} className="">
+            <Parallax distance={dist - 32 * 4} offset={offset + 32 * 2} trans={[0.75, 0]} className="">
                 <button
                 // onClick={scrollToTop}
                 >
@@ -130,7 +130,7 @@ export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt,
             </Parallax>
             <Parallax
                 distance={dist - 32 * 2} offset={offset + 32} className="w-fit absolute top-0 ml-4"
-                range={[0.75, 0]}
+                trans={[0.75, 0]}
             >
                 <button
                     className="w-fit"
