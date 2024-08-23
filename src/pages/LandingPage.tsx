@@ -94,10 +94,14 @@ export const LandingPage = () => {
                             "/images/wallpaper/10.jpg",
                             "/images/wallpaper/9.jpg",
                             "/images/wallpaper/8.jpg",
-                        ]} moveX={2} alts={[
-                            'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
-                            'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
-                        ]} />
+                        ]}
+                            moveX={3}
+                            xMotion={[[0, 1], ["75% 00%", "50% 0%"]]}
+                            x2Motion={[[0.5, 0.9], ["30% 0%", "48% 0%"]]}
+                            alts={[
+                                'Depiction of a Forest scent',
+                                'Depiction of my wooden heart fragrance.',
+                            ]} />
                         <AppearingText range={[0.75, 1]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
                         <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={window.innerHeight * -0.25} offset={0}>
                             <PerfumeLink range={[0.75, 1]} />

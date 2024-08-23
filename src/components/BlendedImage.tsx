@@ -96,7 +96,20 @@ export const BlendedImage = ({ images, invert, desat }: { images: string[], inve
     </>
 }
 
-export const DualImages = ({ className, range = [0, 1], images, moveX = 0, alts }: { className?: string; range?: number[], images: string[], alts: string[], invert?: boolean, desat?: boolean, moveX?: 0 | 1 | 2 }) => {
+export const DualImages = ({
+    className,
+    range = [0, 1],
+    images,
+    moveX = 0,
+    xMotion = [[0, 1], ["0% 00%", "50% 0%"]],
+    x2Motion = [[0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]],
+    alts
+}: {
+    xMotion: [number[], any[]],
+    x2Motion: [number[], any[]],
+    className?: string; range?: number[], images: string[], alts: string[], invert?: boolean, desat?: boolean,
+    moveX?: 0 | 1 | 2 | 3
+}) => {
     const { ref: scrollRef } = useContext(sectionCtx);
     const { scrollYProgress } = useScroll({
         layoutEffect: false,
@@ -106,8 +119,8 @@ export const DualImages = ({ className, range = [0, 1], images, moveX = 0, alts 
     const trans = useTransform(scrollYProgress, range, [0, 1])
 
     const y = useParallax(trans, 50, 0)
-    const x = useTransform(trans, [0, 1], ["0% 00%", "50% 0%"]);
-    const x2 = useTransform(trans, [0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]);
+    const x = useTransform(trans, ...xMotion);
+    const x2 = useTransform(trans, ...x2Motion);
     const filter = useTransform(trans, [0.9, 1], ["blur(0px)", "blur(12px)"], { ease: easeOut })
     const scale = useTransform(trans, [0.9, 1], ["100%", "115%"])
     const y2 = useParallax(trans, 75, -20);
