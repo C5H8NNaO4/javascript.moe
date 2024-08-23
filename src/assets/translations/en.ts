@@ -76,9 +76,10 @@ export const Explanations = {
 };
 
 export const texts = {
-  "text.senior": "Looking for a senior TypeScript dev?",
-  "text.lead": "Looking for a lead developer?",
-  "text.contact": "Contact me",
+  "texts.senior": "Looking for a senior TypeScript dev?",
+  "texts.discover": "Discover my fragrances.",
+  "texts.lead": "Looking for a lead developer?",
+  "texts.contact": "Contact me",
 };
 
 const translations = {
