@@ -243,7 +243,7 @@ export const LandingPage = () => {
                             {
                                 text: 'SO',
                                 logo: () => <StackOverflowLogo style={{ fill: 'white', width: 'unset' }} />,
-                                href: 'https://satackoverflow.com/users/1487756/moritz-roessler'
+                                href: 'https://stackoverflow.com/users/1487756/moritz-roessler'
                             }
                         ]}
                             reverse
