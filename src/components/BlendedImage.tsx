@@ -124,7 +124,7 @@ export const DualImages = ({
     const x = useTransform(trans, ...xMotion);
     const x2 = useTransform(trans, ...x2Motion);
     const filter = useTransform(trans, [0.9, 1], ["blur(0px)", "blur(12px)"], { ease: easeOut })
-    const scale = useTransform(trans, [0.9, 1], ["100%", "115%"])
+    const scale = useTransform(trans, [0.9, 1], ["100%", "108%"])
     const y2 = useParallax(trans, 75, -20);
     const down = useTransform(trans, [0.9, 1], [0, 75]);
     const y2C = useTransform(() => y2.get() + (down.get() * 2))
