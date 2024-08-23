@@ -167,8 +167,8 @@ export const LandingPage = () => {
                             "/images/wallpaper/9.jpg",
                             "/images/wallpaper/8.jpg",
                         ]}
-                            moveX={3}
-                            xMotion={[[0, 1], ["75% 00%", "50% 0%"]]}
+                            moveX={2}
+                            // xMotion={[[0, 1], ["75% 00%", "50% 0%"]]}
                             x2Motion={[[0.5, 0.9], ["30% 0%", "48% 0%"]]}
                             alts={[
                                 'Depiction of a Forest scent',
