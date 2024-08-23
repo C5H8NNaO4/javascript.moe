@@ -103,12 +103,14 @@ export const DualImages = ({
     moveX = 0,
     xMotion = [[0, 1], ["0% 00%", "50% 0%"]],
     x2Motion = [[0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]],
-    alts
+    alts,
+    active
 }: {
     xMotion?: [number[], any[]],
     x2Motion?: [number[], any[]],
     className?: string; range?: number[], images: string[], alts: string[], invert?: boolean, desat?: boolean,
     moveX?: 0 | 1 | 2 | 3
+    active?: boolean
 }) => {
     const { ref: scrollRef } = useContext(sectionCtx);
     const { scrollYProgress } = useScroll({
@@ -132,13 +134,13 @@ export const DualImages = ({
         <motion.img src={images[0]} alt={alts[0]} className="absolute w-[100vw] h-[120lvh]" style={{
             opacity: reverse,
             objectPosition: (moveX & 1) ? x : undefined,
-
+            scale: active ? scale : undefined,
             y: y
         }} />
         <motion.img src={images[1]} alt={alts[1]} className="absolute w-[100vw]  h-[120lvh]" style={{
             opacity: trans,
             objectPosition: (moveX & 2) ? x2 : undefined,
-            scale,
+            scale: active ? scale : undefined,
             y: y2C,
         }} />
     </motion.div>

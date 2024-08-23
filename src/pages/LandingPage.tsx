@@ -18,9 +18,9 @@ import { DualImages } from '@/components/BlendedImage'
 import { Parallax } from '@/components/anim/Parallax'
 import { FlyOut } from '@/components/anim/FlyOut'
 import { EnsureLanguage } from '@/components/EnsureLanguage'
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide, SwiperClass } from 'swiper/react';
 import { useScroll, useTransform, useMotionValueEvent, motion } from 'framer-motion'
-import { useState, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import 'swiper/css';
 import { Link } from 'react-router-dom'
 import i18n from 'i18next'
@@ -30,12 +30,26 @@ import { useTranslation } from 'react-i18next';
 export const LandingPage = () => {
 
     const { scrollYProgress } = useScroll();
-    const [swiper, setSwiper] = useState<any>(null);
-    const index = useTransform(scrollYProgress, [0, 1], [0, 2])
+    const [swiper, setSwiper] = useState<SwiperClass | null>(null);
+    const index = useTransform(scrollYProgress, [0, 1], [1, 2])
     const { t } = useTranslation();
+    const [activeIndex, setActiveIndex] = useState(1);
     useMotionValueEvent(index, 'change', (i) => {
-        swiper?.slideTo(i);
+        if ((swiper?.activeIndex || 0) > 0) {
+            swiper?.slideTo(Math.round(i));
+        }
     })
+
+    useEffect(() => {
+        swiper?.on('activeIndexChange', (j) => {
+            setActiveIndex(j.activeIndex);
+        })
+
+    }, [swiper]);
+
+    useEffect(() => {
+        swiper?.slideTo(activeIndex);
+    }, [activeIndex]);
 
     return (
         <>
@@ -50,7 +64,7 @@ export const LandingPage = () => {
                 ]} moveX={0} alts={[
                     'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                     'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
-                ]} />
+                ]} active />
                 <Parallax distance={320 * 0.5} offset={320 * 0.5}>
                     <FlyOut range={[0.25, 0.5]}>
                         <Container>
@@ -62,16 +76,64 @@ export const LandingPage = () => {
             </StickySection >
 
             <StickySection height='400lvh' fullScreen>
-                <Swiper className='h-[120vh] w-[100vw] sticky top-0 ' onSwiper={setSwiper} >
-
+                <Swiper className='h-[120vh] w-[100vw] sticky top-0 ' onSwiper={setSwiper} initialSlide={1} >
                     <SwiperSlide className='h-full w-full flex justify-center'>
-                        <DualImages range={[0, 0.5]} images={[
+                        <DualImages className="-z-10" range={[0, 1]} images={[
+                            "/images/wallpaper/19.jpg",
+                            "/images/wallpaper/18.jpg",
+                            "/images/wallpaper/8.jpg",
+                        ]}
+                            // moveX={3}
+                            // xMotion={[[0, 1], ["75% 00%", "50% 0%"]]}
+                            // x2Motion={[[0.5, 0.9], ["30% 0%", "48% 0%"]]}
+                            alts={[
+                                'Depiction of a Forest scent',
+                                'Depiction of my wooden heart fragrance.',
+                            ]}
+                            active={activeIndex === 0}
+                        />
+                        <AppearingText range={[0, 1]} className="top-[50vh]" slices={[0, 6, 6]} texts={[
+                            'I love Music',
+                            'I love Languages',
+                            'I love Life'
+                        ]} />
+                        {/* <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={window.innerHeight * -0.25} offset={0}>
+                            <PerfumeLink range={[0.75, 1]} />
+                        </Parallax> */}
+                        {/* <Parallax trans={[0, 0.25]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={64} offset={-64}>
+                            <Bullets range={[0, 0.25]} data={[
+                                { text: 'TypeScript', logo: TS, href: 'https://www.typescriptlang.org/' },
+                                { text: 'React', logo: ReactLogo, href: 'https://react.dev/' }
+                            ]}
+                                offset={0.6}
+                            />
+                            <Parallax trans={[0.25, 0]} distance={64} offset={-64} >
+                                <Bullets range={[0, 0.25]} data={[
+                                    { text: 'SQL', logo: SQLLogo, href: 'https://www.postgresql.org/' },
+                                    { text: 'AWS', logo: AWSLogo, href: 'https://aws.amazon.com/de/console/' },
+                                    { text: 'Node.js', logo: NodeJSLogo, href: 'https://nodejs.org/en' },
+                                    { text: 'Vue.js', logo: VueJSLogo, href: 'https://vuejs.org/' },
+                                    { text: 'Docker', logo: DockerLogo, href: 'https://www.docker.com/' },
+                                    { text: 'Lambda', logo: LambdaLogo, href: 'https://aws.amazon.com/de/lambda/' },
+                                ]}
+                                    className="!flex-row"
+                                    offset={0.75}
+                                ></Bullets>
+                            </Parallax>
+                        </Parallax> */}
+
+                    </SwiperSlide>
+                    <SwiperSlide className='h-full w-full flex justify-center'>
+                        <DualImages key={activeIndex} range={[0, 0.5]} images={[
                             "/images/wallpaper/14.jpg",
                             "/images/wallpaper/15.jpg"
                         ]} moveX={2} alts={[
                             'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                             'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
-                        ]} />
+                        ]}
+
+                            active={activeIndex === 1}
+                        />
                         <AppearingText range={[0, 0.5]} className="top-[50vh]" texts={['Software Engineer', 'Fullstack Dev']} />
                         <Parallax trans={[0, 0.5]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={64} offset={-64}>
                             <Bullets range={[0, 0.5]} data={[
@@ -109,7 +171,10 @@ export const LandingPage = () => {
                             alts={[
                                 'Depiction of a Forest scent',
                                 'Depiction of my wooden heart fragrance.',
-                            ]} />
+                            ]}
+                            active={activeIndex === 2}
+
+                        />
                         <AppearingText range={[0.75, 1]} className="top-[50vh]" texts={['Hobby Perfumer', 'Fine Fragrances']} />
                         <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={window.innerHeight * -0.25} offset={0}>
                             <PerfumeLink range={[0.75, 1]} />
@@ -150,7 +215,9 @@ export const LandingPage = () => {
                         'Waldweg beim Parkhotel, Fasanerie in Neustrelitz',
                         'Rosengarten beim Seepark in Freiburg'
                     ]}
-                    invert desat />
+                    invert desat
+                    active
+                />
                 <AppearingText texts={[
                     t('texts.senior'),
                     t('texts.lead'),
