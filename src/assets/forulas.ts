@@ -132,7 +132,7 @@ export const WoodenHeart: Ingredient[] = [
   },
   {
     amount: "1dr",
-    name: "Cleanwood",
+    name: "Clearwood",
     dilution: 10,
     company: "Firmenich",
     exp: CleanWood,

@@ -24,13 +24,15 @@ import { useState, useContext } from 'react'
 import 'swiper/css';
 import { Link } from 'react-router-dom'
 import i18n from 'i18next'
+import { useTranslation } from 'react-i18next';
+
 
 export const LandingPage = () => {
 
     const { scrollYProgress } = useScroll();
     const [swiper, setSwiper] = useState<any>(null);
     const index = useTransform(scrollYProgress, [0, 1], [0, 2])
-
+    const { t } = useTranslation();
     useMotionValueEvent(index, 'change', (i) => {
         swiper?.slideTo(i);
     })
@@ -143,7 +145,11 @@ export const LandingPage = () => {
                         'Rosengarten beim Seepark in Freiburg'
                     ]}
                     invert desat />
-                <AppearingText texts={['Looking for a senior TypeScript dev?', 'Looking for a lead developer?', 'Contact me']} slices={[0, 14, 0]} />
+                <AppearingText texts={[
+                    t('texts.senior'),
+                    t('texts.lead'),
+                    t('texts.contact')
+                ]} slices={[0, 14, 0]} />
                 <Parallax className='w-full mt-[25lvh] flex flex-col justify-center' distance={100} offset={-100}>
                     <Bullets data={[
                         { text: 'CV', logo: PDF, href: 'https://justmycv.com/en.pdf' },
@@ -186,7 +192,9 @@ export const PerfumeLink = ({ range }: { range: number[] }) => {
         offset: ["start start", "end end"]
     });
     const trans = useTransform(scrollYProgress, range, [0, 1])
+    const { t } = useTranslation();
 
-
-    return <Link to={'/' + i18n.language + '/perfumes'} className='underline text-[#EEEEEE]'><motion.h2 style={{ opacity: trans }}>Discover my perfumes</motion.h2></Link>
+    return <Link to={'/' + i18n.language + '/perfumes'} className='underline text-[#EEEEEE]'><motion.h2 style={{ opacity: trans }}>
+        {t('texts.discover')}
+    </motion.h2></Link>
 }

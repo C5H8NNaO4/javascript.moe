@@ -77,7 +77,8 @@ export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt,
     const opacity = useTransform(scrollYProgress, [0, 0.75], ['20%', '100%']);
 
     const anchors = ['sylvan dawn', 'wooden heart']
-    // const { t } = useTranslation();
+
+    const { t } = useTranslation();
     useEffect(() => {
         const index = anchors.indexOf(decodeURIComponent(window.location.hash.slice(1).toLowerCase()))
         const pos = 0.5 + (index * 2);
@@ -95,7 +96,7 @@ export const PerfumeText = ({ ingredients, variations = [], title, bgSrc, bgAlt,
             <Parallax distance={32 * 2} offset={32 * 1} className="flex" trans={[0.75, 0]}>
                 <Link to={`/${i18n.language}`} className="flex">
                     <ArrowBack style={{ fill: 'white' }} />
-                    <h2>Back</h2>
+                    <h2>{t('Back')}</h2>
                 </Link>
             </Parallax>
             <Parallax distance={dist - 32 * 4} offset={offset + 32 * 2} trans={[0.75, 0]} className="">
@@ -234,7 +235,7 @@ export type TooltipProps = PropsWithChildren<{
 export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
     if (!visible) return null;
     return <div className={clsx(
-        "absolute w-full z-[10000] transition-opacity rounded-md bg-[rgba(0,0,0,0.681)] p-4 text-white",
+        "whitespace-pre-line absolute w-full z-[10000] transition-opacity rounded-md bg-[rgba(0,0,0,0.681)] p-4 text-white",
         {
             'opacity-100': visible,
             'opacity-0': !visible,

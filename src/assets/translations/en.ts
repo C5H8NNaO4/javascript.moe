@@ -53,12 +53,15 @@ export const Ingredients = {
   green, aquatic, woody, dry.
   
   A naturally occurring terpene with a fresh, green, woody scent, featuring subtle resinous and earthy undertones, reminiscent of forest air.`,
-  CleanWood: `Odour (decreasing): Woody, dry, fresh, earthy.
+  CleanWood: `Odour (decreasing): Woody, dry, fresh, earthy.  
+
   A proprietary synthetic ingredient designed to capture the essence of woody notes with a modern, clean twist. It has a fresh, dry, and transparent woody scent with subtle earthy and musky undertones. Cleanwood adds a refined, contemporary woodiness to compositions without the heaviness or rough edges often associated with natural woods.`,
 };
 
 export const Companies = {
-  Pellwall: "Pellwall is a UK company for fine perfumery",
+  Pellwall:
+    "A UK-based company providing high-quality fragrance ingredients and bespoke perfumery services. Known for its extensive range of natural and synthetic materials, Pellwall supports both professional perfumers and hobbyists with a strong focus on education and community in the fragrance industry.",
+  Firmenich: `A global leader in fragrance and flavor, headquartered in Switzerland. Founded in 1895, Firmenich is renowned for its innovative, high-quality ingredients and sustainability efforts. It partners with major brands across industries to create iconic scents, with a legacy of pioneering scent and taste solutions.`,
 };
 
 export const Explanations = {
@@ -70,6 +73,12 @@ export const Explanations = {
     "Dilute normal materials to 10% to make it easier to use and suitable for a 2ml batch. Most materials are way too strong for such a small batch.",
   "2ml":
     "2ml fixative base is a good start for small batches and sufficient to work with single drops or 0.01g of materials diluted to 10%. Working in small batches minimizes loss at the beginning.",
+};
+
+export const texts = {
+  "text.senior": "Looking for a senior TypeScript dev?",
+  "text.lead": "Looking for a lead developer?",
+  "text.contact": "Contact me",
 };
 
 const translations = {
