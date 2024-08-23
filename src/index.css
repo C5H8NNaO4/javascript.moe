@@ -15,7 +15,9 @@
 
 body {
   background-color: white;
+  height: 100vh;
   height: 100lvh;
+  max-height: 100vh;
   max-height: 100lvh;
   position: relative;
   /* scroll-behavior: smooth; */

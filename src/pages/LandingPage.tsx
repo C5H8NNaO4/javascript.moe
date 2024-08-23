@@ -53,10 +53,12 @@ export const LandingPage = () => {
         swiper?.slideTo(activeIndex);
     }, [activeIndex]);
 
+    const iOS_1to12 = /iPad|iPhone|iPod/.test(navigator.platform);
+    const h = (n) => `${n}${iOS_1to12 ? 'vh' : 'lvh'}`;
     return (
         <>
             <EnsureLanguage path='' />
-            <StickySection height='175lvh' >
+            <StickySection height={h(250)} >
                 {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 
                 */}
@@ -77,7 +79,7 @@ export const LandingPage = () => {
                 <MyName />
             </StickySection >
 
-            <StickySection height='400lvh' fullScreen>
+            <StickySection height={h(500)} fullScreen>
                 <Swiper className='h-[120vh] w-[100vw] sticky top-0 ' onSwiper={setSwiper} initialSlide={1} >
                     <SwiperSlide className='h-full w-full flex justify-center'>
                         <DualImages className="-z-10" range={[0, 1]} images={[
@@ -207,7 +209,7 @@ export const LandingPage = () => {
                 </Swiper>
             </StickySection >
 
-            <StickySection height='300lvh'>
+            <StickySection height={h(400)}>
                 <DualImages images={[
                     "/images/wallpaper/16.jpg",
                     "/images/wallpaper/17.jpg",

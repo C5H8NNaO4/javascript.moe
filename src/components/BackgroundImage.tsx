@@ -33,19 +33,20 @@ export const BackgroundImage = ({ src, invert, desat, alt }: BackgroundImageProp
     ]);
 
     return <motion.div
+        className='h-[120vh] h-[120lvh]'
         style={{
             position: 'absolute',
-            height: '120lvh',
             boxShadow: '-3px 0px 30px 3px black',
             y,
         }}
     >
         <motion.img
+            className='h-[120vh] h-[120lvh]'
+
             loading='lazy'
             src={src}
             alt={alt}
             style={{
-                height: '120lvh',
                 aspectRatio: 'initial',
                 objectFit: 'cover',
                 minWidth: '100vw',

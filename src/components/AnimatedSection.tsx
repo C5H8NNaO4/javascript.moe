@@ -16,7 +16,9 @@ export const StickySection = (props: AnimatedSectionProps) => {
         <section className="w-full" ref={ref} style={{ height, minHeight: height }}>
             <div className={clsx(
                 // 'h-[100lvh]',
+                'min-h-[100vh]',
                 'min-h-[100lvh]',
+                'max-h-[100vh]',
                 'max-h-[100lvh]',
                 'w-full max-w-[100vw] ', 'sticky top-0 flex gap-0 justify-center items-center overflow-hidden',
 
