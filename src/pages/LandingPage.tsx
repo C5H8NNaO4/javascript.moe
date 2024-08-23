@@ -54,7 +54,7 @@ export const LandingPage = () => {
     }, [activeIndex]);
 
     const iOS_1to12 = /iPad|iPhone|iPod/.test(navigator.platform);
-    const h = (n) => `${n}${iOS_1to12 ? 'vh' : 'lvh'}`;
+    const h = (n: number) => `${n}${iOS_1to12 ? 'vh' : 'lvh'}`;
     return (
         <>
             <EnsureLanguage path='' />
