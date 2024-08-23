@@ -44,7 +44,10 @@ export const LandingPage = () => {
                 {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 
                 */}
-                <DualImages images={["/images/wallpaper/1.webp", "/images/wallpaper/me-ls.jfif"]} moveX={0} alts={[
+                <DualImages images={[
+                    "/images/wallpaper/1.webp",
+                    "/images/wallpaper/me-ls.jfif"
+                ]} moveX={0} alts={[
                     'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                     'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                 ]} />
@@ -62,7 +65,10 @@ export const LandingPage = () => {
                 <Swiper className='h-[120vh] w-[100vw] sticky top-0 ' onSwiper={setSwiper} >
 
                     <SwiperSlide className='h-full w-full flex justify-center'>
-                        <DualImages range={[0, 0.5]} images={["/images/wallpaper/3.webp", "/images/wallpaper/2.webp"]} moveX={2} alts={[
+                        <DualImages range={[0, 0.5]} images={[
+                            "/images/wallpaper/14.jpg",
+                            "/images/wallpaper/15.jpg"
+                        ]} moveX={2} alts={[
                             'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                             'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                         ]} />
@@ -137,8 +143,8 @@ export const LandingPage = () => {
 
             <StickySection height='300lvh'>
                 <DualImages images={[
-                    "/images/wallpaper/4.webp",
-                    "/images/wallpaper/6.webp",
+                    "/images/wallpaper/16.jpg",
+                    "/images/wallpaper/17.jpg",
                 ]}
                     alts={[
                         'Waldweg beim Parkhotel, Fasanerie in Neustrelitz',
