@@ -163,9 +163,8 @@ export const LandingPage = () => {
 
                     <SwiperSlide className='h-full w-full flex justify-center'>
                         <DualImages className="-z-10" range={[0.6, 1]} images={[
-                            "/images/wallpaper/10.jpg",
-                            "/images/wallpaper/9.jpg",
                             "/images/wallpaper/8.jpg",
+                            "/images/wallpaper/9.jpg",
                         ]}
                             moveX={2}
                             // xMotion={[[0, 1], ["75% 00%", "50% 0%"]]}
