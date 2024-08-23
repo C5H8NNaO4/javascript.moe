@@ -7,6 +7,12 @@
   width: 100%;
 }
 
+* {
+  -webkit-transform: translateZ(0);
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+}
+
 body {
   background-color: white;
   height: 100lvh;
@@ -18,7 +24,7 @@ body {
   /* scroll-snap-align: bottom; */
   /* -webkit-overflow-scrolling: touch; */
   overscroll-behavior: none;
-  --text-color: #FFFFFFEE;
+  --text-color: #ffffffee;
 }
 
 section {
