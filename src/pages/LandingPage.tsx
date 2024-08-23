@@ -28,9 +28,6 @@ import { useTranslation } from 'react-i18next';
 
 
 export const LandingPage = () => {
-    const params = new URLSearchParams(window.location.search);
-    const hidden = !!params.get('hidden');
-
     const { scrollYProgress } = useScroll();
     const [swiper, setSwiper] = useState<SwiperClass | null>(null);
 
