@@ -89,6 +89,7 @@ const translations = {
     ...Ingredients,
     ...Companies,
     ...Explanations,
+    ...texts,
   },
 };
 
