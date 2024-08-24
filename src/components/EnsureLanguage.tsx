@@ -8,7 +8,9 @@ export const EnsureLanguage = ({ path = '' }) => {
     const { language } = useParams();
     useEffect(() => {
         if (!supportedLngs.includes(language || 'en'))
-            navigate('/' + i18n.language + path)
+            navigate('/' + i18n.language + path, {
+                replace: true
+            })
     }, [])
 
     return null;
