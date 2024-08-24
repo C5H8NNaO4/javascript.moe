@@ -41,10 +41,12 @@ export const MyName = () => {
     }
 
     const offset = marginBottom;
-    const y = useParallax(scrollYProgress, distance - offset, distance - offset, easeInOut)
-    const opacity = useTransform(scrollYProgress, [0.75, 1], [1, 0.1]);
+    const trans = useTransform(scrollYProgress, [0, 0.75], [0, 1])
+
+    const y = useParallax(trans, distance - offset, distance - offset, easeInOut)
+    const opacity = useTransform(trans, [0.75, 1], [1, 0.1]);
     const fS = screen.width <= 452 ? 52 : 72;
-    const fontSize = useTransform(scrollYProgress, [0.25, 0.9], ['36px', screen.width <= 452 ? '52px' : '72px'])
+    const fontSize = useTransform(trans, [0.25, 0.9], ['36px', screen.width <= 452 ? '52px' : '72px'])
     const shadow = useTransform(scrollYPage, [0, 0.05, 0.1, 0.15, 0.2], ['0px 0px 0px #FFFFFF', '0px 0px 8px #FFFFFF', '1px 1px 1px #333333', '0px 0px 0px #FFFFFF', '0px 0px 8px #FFFFFF']);
 
     const mRef = useRef<HTMLDivElement>(null);
@@ -53,7 +55,6 @@ export const MyName = () => {
 
 
     const [distCenterM, distCenterOe] = dist;
-    const trans = useTransform(scrollYProgress, [0, 0.9], [0, 1])
     const mX = useTransform(trans, [0.8, 0.9], ['0px', ((distCenterM) + 'px')]);
     const oeX = useTransform(trans, [0.8, 0.9], ['0px', ((distCenterOe) + 'px')]);
     const scale = useTransform(trans, [0.8, 0.9, 0.95, 1], ["100%", "130%", "70%", "100%"])
