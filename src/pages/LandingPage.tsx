@@ -63,8 +63,8 @@ export const LandingPage = () => {
                 
                 */}
                 <DualImages images={[
+                    "/images/wallpaper/me-ls.jfif",
                     "/images/wallpaper/1.jpg",
-                    "/images/wallpaper/me-ls.jfif"
                 ]} moveX={0} alts={[
                     'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                     'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
@@ -72,7 +72,7 @@ export const LandingPage = () => {
                 <Parallax distance={320 * 0.5} offset={320 * 0.5}>
                     <FlyOut range={[0.25, 0.5]}>
                         <Container>
-                            <AnimatedImageCircle images={["/images/profile.webp", "/images/profile2.webp"]} alts={['Profile picture of Moritz', 'Profile picture of Moritz with sunglasses']} />
+                            <AnimatedImageCircle images={["/images/profile.jpg", "/images/profile2.webp"]} alts={['Profile picture of Moritz', 'Profile picture of Moritz with sunglasses']} />
                         </Container>
                     </FlyOut>
                 </Parallax>
