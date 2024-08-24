@@ -58,7 +58,7 @@ export const LandingPage = () => {
     return (
         <>
             <EnsureLanguage path='' />
-            <StickySection height={h(250)} >
+            <StickySection height={h(300)} >
                 {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 
                 */}

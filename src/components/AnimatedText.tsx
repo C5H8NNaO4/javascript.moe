@@ -53,27 +53,28 @@ export const MyName = () => {
 
 
     const [distCenterM, distCenterOe] = dist;
-    const mX = useTransform(scrollYProgress, [0.8, 0.9], ['0px', ((distCenterM) + 'px')]);
-    const oeX = useTransform(scrollYProgress, [0.8, 0.9], ['0px', ((distCenterOe) + 'px')]);
-    const scale = useTransform(scrollYProgress, [0.8, 0.9, 0.95, 1], ["100%", "130%", "70%", "100%"])
+    const trans = useTransform(scrollYProgress, [0, 0.9], [0, 1])
+    const mX = useTransform(trans, [0.8, 0.9], ['0px', ((distCenterM) + 'px')]);
+    const oeX = useTransform(trans, [0.8, 0.9], ['0px', ((distCenterOe) + 'px')]);
+    const scale = useTransform(trans, [0.8, 0.9, 0.95, 1], ["100%", "130%", "70%", "100%"])
     const mRect = mRef.current?.getBoundingClientRect() || null;
     const oeRect = oeRef.current?.getBoundingClientRect() || null;
     const cw = ((mRect?.width || 0) + (oeRect?.width || 0));
-    const heightPipe = useTransform(scrollYProgress, [0.95, 1], ["0px", 0.681 * cw + 'px'])
-    const widthUS = useTransform(scrollYProgress, [0.95, 1], ["0px", cw + 'px'])
-    const yPpipe = useTransform(scrollYProgress, [0.95, 1], [(fS * -0.25) + 'px', (0.25 * cw) + 'px'])
-    const xUS = useTransform(scrollYProgress, [0.95, 1], ['0px', -(mRect?.width || 0) + 'px'])
-    const yUS = useTransform(scrollYProgress, [0.95, 1], [0, -4])
-    const shadowPipe = useTransform(scrollYProgress, [0.97, 1], ["0px 0px 4px 2px #FFFFFF", "0px 0px 1px 0.5px #C0C0C0"])
-    const fillPipe = useTransform(scrollYProgress, [0.95, 1], ["#FFFFFFFF", "#FFFFFF00"])
-    const bb = useTransform(scrollYProgress, [0, 0.95, 1], ["2px solid white", "2px solid white", "0px solid white"])
-    const scalePipe = useTransform(scrollYProgress, [0.7, 0.9, 1], ["0%", "100%", "100%"])
-    const wPipe = useTransform(scrollYProgress, [0.5, 1], ["0px", "4px"])
+    const heightPipe = useTransform(trans, [0.95, 1], ["0px", 0.681 * cw + 'px'])
+    const widthUS = useTransform(trans, [0.95, 1], ["0px", cw + 'px'])
+    const yPpipe = useTransform(trans, [0.95, 1], [(fS * -0.25) + 'px', (0.25 * cw) + 'px'])
+    const xUS = useTransform(trans, [0.95, 1], ['0px', -(mRect?.width || 0) + 'px'])
+    const yUS = useTransform(trans, [0.95, 1], [0, -4])
+    const shadowPipe = useTransform(trans, [0.97, 1], ["0px 0px 4px 2px #FFFFFF", "0px 0px 1px 0.5px #C0C0C0"])
+    const fillPipe = useTransform(trans, [0.95, 1], ["#FFFFFFFF", "#FFFFFF00"])
+    const bb = useTransform(trans, [0, 0.95, 1], ["2px solid white", "2px solid white", "0px solid white"])
+    const scalePipe = useTransform(trans, [0.7, 0.9, 1], ["0%", "100%", "100%"])
+    const wPipe = useTransform(trans, [0.5, 1], ["0px", "4px"])
 
     const color = useTransform(scrollYPage, [0, 0.05, 0.09, 0.2], ["#DDDDDDFF", "#EEEEEEFF", "#DDDDDDFF", "#FFFFFF33"]);
 
-    useMotionValueEvent(scrollYProgress, 'change', () => {
-        if (scrollYProgress.get() <= 1) {
+    useMotionValueEvent(trans, 'change', () => {
+        if (trans.get() <= 1) {
 
             // const hWidth = ((mRect?.width || 0) + (oeRect?.width || 0)) / 2
             const distCenterM = -(mRect?.left || 0) + (window.innerWidth / 2) - (mRect?.width || 0)
