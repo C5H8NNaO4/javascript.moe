@@ -63,8 +63,8 @@ export const LandingPage = () => {
                 
                 */}
                 <DualImages images={[
-                    "/images/wallpaper/me-ls.jfif",
                     "/images/wallpaper/1.jpg",
+                    "/images/wallpaper/me-ls.jfif",
                 ]} moveX={0} alts={[
                     'Weiher beim Park Hotel, Fasanerie in Neustrelitz',
                     'Moritz Roessler am Weiher beim Park Hotel, Fasanerie in Neustrelitz',
