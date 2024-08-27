@@ -151,7 +151,9 @@ export const AppearingText = ({ range = [0, 1], className, texts, slices, Compon
             setRerender(0)
         }
     })
-    return <Component className={clsx('absolute text-center', className, { 'break-all': ((t2.get()) % 1) < (1 / startMultiplier) })} style={{ y, zIndex: 100, textShadow: boxShadow }}>
+    return <Component
+        className={clsx('absolute text-center', className, { 'break-all': ((t2.get()) % 1) < (1 / startMultiplier) })} style={{ y, zIndex: 100, textShadow: boxShadow }}
+    >
         <span>{text[0]}</span>
         <span style={{ color: '#FFFFFF33', textShadow: '0px 0px 7px white' }}>{text[1]}</span>
     </Component >
@@ -230,4 +232,40 @@ export const Bullets = ({ range = [0, 1], data, className, offset = 0.5, reverse
 
 export type BulletsRowsProps = {
     data: { text: string, logo: any, href?: string }[]
+}
+
+export const SlicedText = ({ range = [0, 1], className, texts, slices, Component = motion.h1 }: { range?: number[], className?: string, texts: string[], slices?: number[], Component?: any }) => {
+
+    const { ref } = useContext(sectionCtx);
+    const { scrollYProgress } = useScroll({
+        layoutEffect: false,
+        target: ref || undefined,
+        offset: ["start start", "end end"]
+    });
+    const trans = useTransform(scrollYProgress, range, [0, 1]);
+    const dist = 110;
+    const off = dist - getHeight(document.body) * 0.25;
+    const y = useParallax(trans, dist, off, easeInOut);
+    const t2 = useTransform(trans, [0, 1], [0, texts.length - 1])
+
+    const boxShadow = useTransform(trans, [0, 1], ['0px 0px 0px black', '0px 0px 12px black'])
+
+    const t = texts[Math.round(t2.get())];
+    const [p, setP] = useState(0);
+
+    const p1 = t.slice(0, t.length * p);
+    const p2 = t.slice(p1.length);
+
+    useMotionValueEvent(trans, 'change', () => {
+        setP(t2.get() % 1)
+    })
+
+    return <Component
+        className={clsx('absolute text-center', className, { 'break-all': ((t2.get()) % 1) < (1 / 1) })}
+        style={{ y, zIndex: 100, textShadow: boxShadow }}
+    >
+        <span>{p1}</span>
+        <span style={{ color: '#FFFFFF33', textShadow: '0px 0px 7px white' }}>{p2}</span>
+    </Component>
+
 }
