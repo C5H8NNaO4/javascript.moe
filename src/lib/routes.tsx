@@ -25,7 +25,7 @@ export const RedirectToPerfumesPage = () => {
 };
 
 export const RedirectToIngredientsPage = () => {
-  return <RedirectToLanguage path="/perfumes" />;
+  return <RedirectToLanguage path="/ingredients" />;
 };
 export const routes = (
   <Routes>
