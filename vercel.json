@@ -1,5 +1,14 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "routes": [
+    { "src": "/", "dest": "/" },
+    { "src": "/about", "dest": "/" },
+    { "src": "/en/about", "dest": "/" },
+    { "src": "/de/about", "dest": "/" },
+    { "src": "/de/perfumes", "dest": "/" },
+    { "src": "/en/perfumes", "dest": "/" },
+    { "src": "/de/ingredients", "dest": "/" },
+    { "src": "/en/ingredients", "dest": "/" }
+  ],
   "headers": [
     {
       "source": "/images/profile.webp",
