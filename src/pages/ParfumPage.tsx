@@ -124,8 +124,12 @@ export const IngredientPage = () => {
               <button
                 onClick={() => toggle(o)}
                 className={clsx(
-                  "p-2 rounded-xl bg-[#00000088] w-fit hover:bg-[#FFFFFF99] hover:text-black",
-                  { "bg-[green]": filter[o], "hover:bg-[#88F08899]": filter[o] }
+                  "p-2 rounded-xl bg-[#00000088] w-fit hover:text-black",
+                  {
+                    "bg-[green]": filter[o],
+                    "hover:bg-[#FFFFFF99]": !filter[o],
+                    "hover:bg-[#88F08899]": filter[o],
+                  }
                 )}
               >
                 {o}
