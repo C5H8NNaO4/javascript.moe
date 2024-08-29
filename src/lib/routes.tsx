@@ -26,7 +26,7 @@ export const routes = (
     <Route path="/about" Component={RedirectToAboutPage} />,
     <Route path="/:language" Component={LandingPage}></Route>
     <Route path="/:language/about" Component={AboutPage} />
-    <Route path="/:languages/perfumes" Component={PerfumePage} />,
-    <Route path="/:languages/perfumes/ingredients" Component={IngredientPage} />
+    <Route path="/:language/perfumes" Component={PerfumePage} />,
+    <Route path="/:language/perfumes/ingredients" Component={IngredientPage} />
   </Routes>
 );
