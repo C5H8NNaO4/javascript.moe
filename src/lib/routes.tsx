@@ -20,13 +20,22 @@ export const RedirectToAboutPage = () => {
   return <RedirectToLanguage path="/about" />;
 };
 
+export const RedirectToPerfumesPage = () => {
+  return <RedirectToLanguage path="/perfumes" />;
+};
+
+export const RedirectToIngredientsPage = () => {
+  return <RedirectToLanguage path="/perfumes" />;
+};
 export const routes = (
   <Routes>
-    <Route path="/:language/ingredients" Component={IngredientPage} />
     <Route path="/" Component={RedirectToLanguage} />,
-    <Route path="/:language" Component={LandingPage}></Route>
     <Route path="/about" Component={RedirectToAboutPage} />,
+    <Route path="/perfumes" Component={RedirectToPerfumesPage} />,
+    <Route path="/ingredients" Component={RedirectToIngredientsPage} />,
     <Route path="/:language/about" Component={AboutPage} />
     <Route path="/:language/perfumes" Component={PerfumePage} />,
+    <Route path="/:language/ingredients" Component={IngredientPage} />
+    <Route path="/:language" Component={LandingPage}></Route>
   </Routes>
 );
