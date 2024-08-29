@@ -22,11 +22,11 @@ export const RedirectToAboutPage = () => {
 
 export const routes = (
   <Routes>
+    <Route path="/:language/ingredients" Component={IngredientPage} />
     <Route path="/" Component={RedirectToLanguage} />,
     <Route path="/:language" Component={LandingPage}></Route>
     <Route path="/about" Component={RedirectToAboutPage} />,
     <Route path="/:language/about" Component={AboutPage} />
     <Route path="/:language/perfumes" Component={PerfumePage} />,
-    <Route path="/:language/ingredients" Component={IngredientPage} />
   </Routes>
 );
