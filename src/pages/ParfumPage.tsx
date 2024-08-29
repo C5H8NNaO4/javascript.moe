@@ -84,11 +84,11 @@ export const IngredientPage = () => {
       {ReactDOM.createPortal(
         <link
           rel="canonical"
-          href={`https://javscript.moe/${i18n.language}/perfumes/ingredients`}
+          href={`https://javscript.moe/${i18n.language}/ingredients`}
         />,
         document.head
       )}
-      <EnsureLanguage path="/perfumes/ingredients" />
+      <EnsureLanguage path="/ingredients" />
       <div className="w-full p-2 absolute z-50 top-0 bg-[#00000055]">
         <input
           placeholder="Search..."
@@ -296,7 +296,7 @@ export const Ingredients = ({
     target: scrollRef || undefined,
     offset: ["start start", "end end"],
   });
-//   const y = useParallax(scrollYProgress, 64, -64);
+  //   const y = useParallax(scrollYProgress, 64, -64);
   const rblur = useTransform(
     scrollYProgress,
     [0, 0.75],
