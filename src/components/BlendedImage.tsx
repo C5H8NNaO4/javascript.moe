@@ -120,7 +120,7 @@ export const DualImages = ({
     });
     const trans = useTransform(scrollYProgress, range, [0, 1])
 
-    const y = useParallax(trans, 50, 0)
+    const y = useParallax(trans, 50, 50)
     const x = useTransform(trans, ...xMotion);
     const x2 = useTransform(trans, ...x2Motion);
     const filter = useTransform(trans, [0.9, 1], ["blur(0px)", "blur(12px)"], { ease: easeOut })

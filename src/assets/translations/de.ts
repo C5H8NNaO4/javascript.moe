@@ -71,6 +71,8 @@ export const Explanations = {
 };
 
 export const labels = {
+  AND: 'UND',
+  OR: 'ODER',
   Back: "Zurück",
 };
 
