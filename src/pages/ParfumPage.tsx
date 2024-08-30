@@ -349,7 +349,9 @@ export const Ingredients = ({
             >
               <div className="flex flex-col gap-4 flex-wrap ">
                 <div className="flex flex-row flex-grow whitespace-nowrap gap-4 flex-wrap ">
-                  <h2 className="w-full">{ing.name}</h2>
+                  <h2 className="w-full">
+                    {ing.name} {ing.company ? " by " + ing.company : ""}
+                  </h2>
                   <p>
                     <b>Start with: </b> {ing.amount}
                   </p>

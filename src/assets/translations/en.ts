@@ -80,6 +80,20 @@ export const Ingredients = {
   Lavender: `Odour (decreasing): Fresh, herbal, floral, slightly woody, camphorous.
 
   Lavender Essential Oil is renowned for its calming, fresh, and herbal scent, which carries sweet floral notes with a hint of woodiness and a subtle camphorous undertone. Extracted from the flowering tops of the lavender plant, it is a versatile ingredient in perfumery, often used to add a soothing, aromatic quality to fragrances. Lavender EO is a staple in both traditional and modern blends, bridging fresh top notes with richer base elements.`,
+  Ozofleur: `
+  Odour (decreasing): Fresh, ozonic, watery, slightly floral.
+  
+  Ozofleur is a unique fragrance ingredient that captures the crisp, airy scent of a fresh sea breeze. It has a distinct ozonic and watery aroma with soft, floral undertones. Often used to impart a clean, aquatic freshness to perfumes, Ozofleur is ideal for creating light, airy compositions or enhancing the clarity of other notes in a fragrance. It adds a sense of open space and natural freshness to any blend.`,
+  PADMA: `
+  Odour (decreasing): Herbal, woody, green, slightly spicy.
+  
+  PADMA is a fragrance ingredient with a complex scent profile, combining herbal, woody, and green notes with a subtle hint of spice. It brings a natural, earthy character to compositions, adding depth and a touch of warmth. PADMA is often used to enhance the richness and complexity of green or woody fragrances, providing a grounding effect that balances and supports other elements in the blend. Its versatile aroma makes it a valuable component in creating sophisticated and layered perfumes.`,
+  Dimetol: `Odour (decreasing): Fresh, green, citrusy, slightly floral.
+
+  Dimetol is a fragrance ingredient known for its fresh, green, and citrusy scent with a subtle floral undertone. It imparts a crisp, vibrant quality to perfumes, often used to enhance the brightness and freshness of citrus or green notes. Dimetol's lively aroma makes it an excellent choice for creating invigorating and uplifting fragrances, adding a clean and modern touch to compositions.`,
+  Silvial: `Odour (decreasing): Marine, fresh, woody, slightly green.
+  
+  Silvial offers a refreshing marine scent with an aquatic, clean character. It features fresh, woody undertones with a hint of green, evoking a sense of open water and natural surroundings. This ingredient is often used to add a crisp, oceanic quality to fragrances, enhancing the overall freshness and depth of the composition. Its marine and woody nuances make it suitable for adding a sophisticated, nature-inspired element to your blends.`,
 };
 
 export const Companies = {

@@ -80,6 +80,20 @@ export const Geosmin: Explanation = {
 export const Lavender: Explanation = {
   desc: t("Lavender"),
 };
+export const Dimetol: Explanation = {
+  desc: t("Dimetol"),
+};
+
+export const Silvial: Explanation = {
+  desc: t("Silvial"),
+};
+export const PADMA: Explanation = {
+  desc: t("PADMA"),
+};
+
+export const Ozofleur: Explanation = {
+  desc: t("Ozofleur"),
+};
 
 export const Helional: Explanation = {
   desc: t("Helional"),
@@ -317,21 +331,28 @@ export const AllIngredients: Ingredient[] = [
     amount: "1dr",
     name: "Ozofleur",
     dilution: 1,
-    exp: Lavender,
-    odour: ["fresh", "herbal", "floral", "slightly woody", "camphorous"],
+    exp: Ozofleur,
+    odour: ["fresh", "airy", "ozonic", "aquatic", "slightly floral"],
   },
   {
     amount: "1dr",
     name: "PADMA",
     dilution: 1,
-    exp: Lavender,
-    odour: ["fresh", "herbal", "floral", "slightly woody", "camphorous"],
+    exp: PADMA,
+    odour: ["herbal", "woody", "green", "slightly spicy"],
   },
   {
     amount: "1dr",
     name: "Dimetol",
     dilution: 1,
-    exp: Lavender,
-    odour: ["fresh", "herbal", "floral", "slightly woody", "camphorous"],
+    exp: Dimetol,
+    odour: ["fresh", "green", "citrusy", "slightly floral"],
+  },
+  {
+    amount: "1dr",
+    name: "Silvial",
+    dilution: 1,
+    exp: Silvial,
+    odour: ["marine", "fresh", "woody", "slightly green"],
   },
 ];
