@@ -3,7 +3,6 @@ import { AnimatedImageCircle } from "@/components/AnimatedImageCircle";
 import { Container } from "@/components/Container";
 import {
     AppearingText,
-    SlicedText,
     Bullets,
     MyName,
 } from "@/components/AnimatedText";
