@@ -118,6 +118,7 @@ export const texts = {
   "texts.discover": "Discover my fragrances.",
   "texts.lead": "Looking for a lead developer?",
   "texts.contact": "Contact me",
+  ingredients: "ingredients",
 };
 
 const translations = {

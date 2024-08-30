@@ -115,6 +115,7 @@ export const texts = {
   "texts.discover": "Entdecke meine Düfte.",
   "texts.lead": "Suchst du einen Lead-Entwickler?",
   "texts.contact": "Kontaktiere mich",
+  ingredients: "Zutaten",
 };
 
 const translations = {

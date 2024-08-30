@@ -79,6 +79,38 @@ export const IngredientPage = () => {
   const toggle = (tag: string) => {
     setFilter({ ...filter, [tag]: !filter[tag] });
   };
+
+  const filtered = [...new Set(AllIngredients.flatMap((i) => i.odour || []))]
+    .sort((a, b) => {
+      return a > b ? 1 : -1;
+    })
+    .filter((o) => {
+      if (!filterAnd || !Object.keys(filter).some((o) => filter[o]))
+        return true;
+      return AllIngredients.some(
+        (i) =>
+          i.odour?.includes(o) &&
+          Object.keys(filter).every((o) => i.odour?.includes(o))
+      );
+    })
+    .map((o) => {
+      return (
+        <button
+          onClick={() => toggle(o)}
+          className={clsx(
+            "p-2 rounded-xl bg-[#00000088] w-fit hover:text-black",
+            {
+              "bg-[green]": filter[o],
+              "hover:bg-[#FFFFFF99]": !filter[o],
+              "hover:bg-[#88F08899]": filter[o],
+            }
+          )}
+        >
+          {o}
+        </button>
+      );
+    });
+
   return (
     <div className="relative">
       {ReactDOM.createPortal(
@@ -111,31 +143,14 @@ export const IngredientPage = () => {
       <div className="flex flex-wrap gap-2 pt-[64px] p-2 text-white">
         <button
           className="p-2 rounded-xl bg-[#FFF988DD] w-fit text-black"
-          onClick={() => setConn(!filterAnd)}
+          onClick={() => {
+            setFilter({});
+            setConn(!filterAnd);
+          }}
         >
           {t(filterAnd ? "AND" : "OR")}
         </button>
-        {[...new Set(AllIngredients.flatMap((i) => i.odour || []))]
-          .sort((a, b) => {
-            return a > b ? 1 : -1;
-          })
-          .map((o) => {
-            return (
-              <button
-                onClick={() => toggle(o)}
-                className={clsx(
-                  "p-2 rounded-xl bg-[#00000088] w-fit hover:text-black",
-                  {
-                    "bg-[green]": filter[o],
-                    "hover:bg-[#FFFFFF99]": !filter[o],
-                    "hover:bg-[#88F08899]": filter[o],
-                  }
-                )}
-              >
-                {o}
-              </button>
-            );
-          })}
+        {filtered}
       </div>
       <Ingredients
         ingredients={AllIngredients}
@@ -309,65 +324,71 @@ export const Ingredients = ({
       "brightness(80%) blur(4px) saturate(110%)",
     ]
   );
+  const filtered = ingredients
+    ?.filter((ing) => {
+      if (!Object.keys(filter).some((k) => filter[k])) return true;
+      if (filterAnd) {
+        return Object.keys(filter)
+          .filter((k) => filter[k])
+          .reduce((acc, k) => {
+            return (acc && ing.odour?.includes(k)) as boolean;
+          }, true);
+      }
+      return (ing.odour || []).some((o) => filter[o]);
+    })
+    .filter((ing) => {
+      if (!search) return true;
+
+      let dist = 1000;
+      for (let i = 0; i < ing.name.length; i++) {
+        const d = levenshtein.get(
+          ing.name.toLowerCase().slice(i, search.length + i),
+          (search || "").toLowerCase()
+        );
+        if (d <= dist) dist = d;
+      }
+
+      return dist <= 2;
+    });
+
+  const { t } = useTranslation();
   return (
-    <div className="flex flex-col gap-4 w-[100vw] lg:w-[66vw] mx-auto pt-11">
-      {ingredients
-        ?.filter((ing) => {
-          if (!Object.keys(filter).some((k) => filter[k])) return true;
-          if (filterAnd) {
-            return Object.keys(filter)
-              .filter((k) => filter[k])
-              .reduce((acc, k) => {
-                return (acc && ing.odour?.includes(k)) as boolean;
-              }, true);
-          }
-          return (ing.odour || []).some((o) => filter[o]);
-        })
-        .filter((ing) => {
-          if (!search) return true;
+    <div className="flex flex-col gap-4 w-[100vw] lg:w-[66vw] mx-auto pt-2">
+      <span className="p-2 bg-[#FFFFFF99] rounded-sm">
+        {filtered?.length} {t("ingredients")}
+      </span>
 
-          let dist = 1000;
-          for (let i = 0; i < ing.name.length; i++) {
-            const d = levenshtein.get(
-              ing.name.toLowerCase().slice(i, search.length + i),
-              (search || "").toLowerCase()
-            );
-            if (d <= dist) dist = d;
-          }
-
-          return dist <= 2;
-        })
-        .map((ing) => {
-          return (
-            <motion.div
-              className="p-4 bg-[#00000044]"
-              style={{
-                // y,
-                textShadow: "1px 1px 3px black",
-                backdropFilter: rblur,
-              }}
-            >
-              <div className="flex flex-col gap-4 flex-wrap ">
-                <div className="flex flex-row flex-grow whitespace-nowrap gap-4 flex-wrap ">
-                  <h2 className="w-full">
-                    {ing.name} {ing.company ? " by " + ing.company : ""}
-                  </h2>
-                  <p>
-                    <b>Start with: </b> {ing.amount}
-                  </p>
-                  <p>
-                    <b>Dilution: </b>
-                    {ing.dilution ? ing.dilution + "%" : " Don't dilute"}
-                  </p>
-                </div>
-                <div className="flex-shrink w-fit whitespace-pre-line">
-                  <p>{ing.exp.desc}</p>
-                </div>
+      {filtered?.map((ing) => {
+        return (
+          <motion.div
+            className="p-4 bg-[#00000044]"
+            style={{
+              // y,
+              textShadow: "1px 1px 3px black",
+              backdropFilter: rblur,
+            }}
+          >
+            <div className="flex flex-col gap-4 flex-wrap ">
+              <div className="flex flex-row flex-grow whitespace-nowrap gap-4 flex-wrap ">
+                <h2 className="w-full">
+                  {ing.name} {ing.company ? " by " + ing.company : ""}
+                </h2>
+                <p>
+                  <b>Start with: </b> {ing.amount}
+                </p>
+                <p>
+                  <b>Dilution: </b>
+                  {ing.dilution ? ing.dilution + "%" : " Don't dilute"}
+                </p>
               </div>
-              ;
-            </motion.div>
-          );
-        })}
+              <div className="flex-shrink w-fit whitespace-pre-line">
+                <p>{ing.exp.desc}</p>
+              </div>
+            </div>
+            ;
+          </motion.div>
+        );
+      })}
     </div>
   );
 };
