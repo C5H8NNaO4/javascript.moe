@@ -164,7 +164,7 @@ export const LandingPage = () => {
                             ]}
                             active={activeIndex === 1}
                         />
-                        <SlicedText
+                        <AppearingText
                             range={[0, 0.5]}
                             className="top-[50vh]"
                             texts={["Software Engineer", "Fullstack Dev"]}

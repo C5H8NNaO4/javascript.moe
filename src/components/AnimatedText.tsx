@@ -243,10 +243,12 @@ export const AppearingText = ({
 
     rand
       .sort((a, b) => {
-        return (
-          (Math.random() - 0.5) * (1 - curProgress) +
-          curProgress * (it.indexOf(a) - it.indexOf(b))
-        );
+        const indA = it.indexOf(a);
+        let indB = it.indexOf(b);
+        const place = indA - indB;
+        const isCapital = /[A-Z\s]/.test(a) || /[A-Z\s]/.test(b);
+        if (isCapital) return 0;
+        return (Math.random() - 0.5) * (1 - curProgress) + curProgress * place;
       })
       .join("");
 
