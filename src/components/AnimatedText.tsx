@@ -370,7 +370,7 @@ export const Bullets = ({
               display: "block",
               overflow: "hidden",
               whiteSpace: "nowrap",
-              scale: scalings[ele % 4],
+              scale: scalings[ele % 3],
               boxShadow,
               borderRadius,
               alignItems: "center",
