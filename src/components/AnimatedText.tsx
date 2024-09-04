@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useParallax } from "@/lib/hooks";
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useMemo } from "react";
 import { sectionCtx } from "@/components/AnimatedSection";
 import clsx from "clsx";
 import { getHeight } from "@/lib/util";
@@ -290,13 +290,19 @@ export type BulletsProps = {
   offset: number;
   reverse?: boolean;
   range?: number[];
+  r?: boolean;
+  l?: number;
+  gapTiming: -2 | -1;
 };
 export const Bullets = ({
-  range = [0, 1],
+  range = [0.5, 1],
   data,
   className,
   offset = 0.5,
   reverse,
+  r,
+  l,
+  gapTiming = -1,
 }: BulletsProps) => {
   const { ref } = useContext(sectionCtx);
 
@@ -313,44 +319,43 @@ export const Bullets = ({
     ["0px 0px 0px black", "0px 0px 12px black"]
   );
 
+  const dist = offset - (range[1] - range[0]);
+  const n = Math.max(4, data.length);
+  const step = dist / n;
   const scale = useTransform(
     trans,
-    [offset + 0.05 * 0, offset + 0.05 * 1],
+    [offset + step * 0, offset + step * 1],
     ["0%", "100%"]
   );
   const gap = useTransform(
     trans,
-    [offset + 0.05 * 3, offset + 0.05 * 4],
+    [offset + step * (n + gapTiming), offset + step * (n + gapTiming + 1)],
     ["32px", "8px"]
-  );
-  const textWidth = useTransform(
-    trans,
-    [offset + 0.05 * 3, offset + 0.05 * 4],
-    ["0px", "300px"]
   );
   const borderRadius = useTransform(
     trans,
-    [offset + 0.05 * 2, offset + 0.05 * 3],
+    [offset + step * 1, offset + step * 2],
     ["32px", "0px"]
   );
-  const scale1 = useTransform(
+  const textWidth = useTransform(
     trans,
-    [offset + 0.05 * 1, offset + 0.05 * 2],
-    ["0%", "100%"]
+    [offset + step * (n - 1), offset + step * n],
+    ["0px", "300px"]
   );
-  const scale2 = useTransform(
-    trans,
-    [offset + 0.05 * 2, offset + 0.05 * 3],
-    ["0%", "100%"]
-  );
-  const scale3 = useTransform(
-    trans,
-    [offset + 0.05 * 3, offset + 0.05 * 4],
-    ["0%", "100%"]
-  );
-  const bg = useTransform(trans, [0.9, 1], ["#00000000", "#00000099"]);
-  let scalings = [scale, scale1, scale2, scale3];
 
+  const scales = [...new Array(n)].map((e, i) => {
+    return useTransform(
+      trans,
+      [offset + step * i, offset + step * (1 + i)],
+      ["0%", "100%"]
+    );
+  });
+
+  const bg = useTransform(trans, [0.9, 1], ["#00000000", "#00000099"]);
+  const rand = useMemo(
+    () => scales.slice().sort(() => Math.random() - 0.5),
+    []
+  );
   return (
     <motion.div
       className={clsx(
@@ -370,7 +375,7 @@ export const Bullets = ({
               display: "block",
               overflow: "hidden",
               whiteSpace: "nowrap",
-              scale: scalings[ele % 3],
+              scale: r ? rand[ele % (l || n)] : scales[ele % (l || n)],
               boxShadow,
               borderRadius,
               alignItems: "center",
