@@ -322,11 +322,6 @@ export const Bullets = ({
   const dist = offset - (range[1] - range[0]);
   const n = Math.max(4, data.length);
   const step = dist / n;
-  const scale = useTransform(
-    trans,
-    [offset + step * 0, offset + step * 1],
-    ["0%", "100%"]
-  );
   const gap = useTransform(
     trans,
     [offset + step * (n + gapTiming), offset + step * (n + gapTiming + 1)],
@@ -343,7 +338,7 @@ export const Bullets = ({
     ["0px", "300px"]
   );
 
-  const scales = [...new Array(n)].map((e, i) => {
+  const scales = [...new Array(n)].map((_, i) => {
     return useTransform(
       trans,
       [offset + step * i, offset + step * (1 + i)],
