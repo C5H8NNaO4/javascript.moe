@@ -292,7 +292,7 @@ export type BulletsProps = {
   range?: number[];
   r?: boolean;
   l?: number;
-  gapTiming: -2 | -1;
+  gapTiming?: -2 | -1;
 };
 export const Bullets = ({
   range = [0.5, 1],

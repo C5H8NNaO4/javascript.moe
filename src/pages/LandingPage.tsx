@@ -30,6 +30,7 @@ import "swiper/css";
 import { Link } from "react-router-dom";
 import i18n from "i18next";
 import { useTranslation } from "react-i18next";
+import ReactDOM from "react-dom";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -59,6 +60,25 @@ export const LandingPage = () => {
   const h = (n: number) => `${n}${iOS_1to12 ? "vh" : "lvh"}`;
   return (
     <>
+      {ReactDOM.createPortal(
+        <>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${i18n.language}`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/${i18n.language}`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/${i18n.language}`}
+          />
+        </>,
+        document.head
+      )}
       <EnsureLanguage path="" />
       <StickySection height={h(275)}>
         {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />

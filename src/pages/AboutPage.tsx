@@ -11,7 +11,7 @@ import { AboutSectionProps } from "@/lib/types";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import { EnsureLanguage } from "@/components/EnsureLanguage";
-import ReactDOM from 'react-dom'
+import ReactDOM from "react-dom";
 export const AboutPage = () => {
   const { t } = useTranslation();
   return (
@@ -61,7 +61,22 @@ export const AboutSection = ({ text }: AboutSectionProps) => {
   return (
     <>
       {ReactDOM.createPortal(
-        <link rel="canonical" href={`https://javscript.moe/${i18n.language}/about`} />,
+        <>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${i18n.language}/about`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/${i18n.language}/about`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/${i18n.language}/about`}
+          />
+        </>,
         document.head
       )}
       <BackgroundImage

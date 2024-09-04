@@ -32,10 +32,22 @@ export const PerfumePage = () => {
   return (
     <div className="relative">
       {ReactDOM.createPortal(
-        <link
-          rel="canonical"
-          href={`https://javscript.moe/${i18n.language}/perfumes`}
-        />,
+        <>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${i18n.language}/perfumes`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/${i18n.language}/perfumes`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/${i18n.language}/perfumes`}
+          />
+        </>,
         document.head
       )}
       <EnsureLanguage path="/perfumes" />
@@ -114,10 +126,22 @@ export const IngredientPage = () => {
   return (
     <div className="relative">
       {ReactDOM.createPortal(
-        <link
-          rel="canonical"
-          href={`https://javscript.moe/${i18n.language}/ingredients`}
-        />,
+        <>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${i18n.language}/ingredients`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/${i18n.language}/ingredients`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/${i18n.language}/ingredients`}
+          />
+        </>,
         document.head
       )}
       <EnsureLanguage path="/ingredients" />
