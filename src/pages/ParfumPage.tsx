@@ -4,7 +4,7 @@ import { BackgroundImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ArrowBack from "@/assets/arrowback.svg?react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useContext,
   useEffect,
@@ -29,13 +29,14 @@ import levenshtein from "fast-levenshtein";
 import ReactDOM from "react-dom";
 export const PerfumePage = () => {
   const { t } = useTranslation();
+  const params = useParams();
   return (
     <div className="relative">
       {ReactDOM.createPortal(
         <>
           <link
             rel="canonical"
-            href={`https://javscript.moe/${i18n.language}/perfumes`}
+            href={`https://javscript.moe/${params.language}/perfumes`}
           />
           <link
             rel="alternate"
@@ -85,6 +86,7 @@ export const PerfumePage = () => {
 
 export const IngredientPage = () => {
   const { t } = useTranslation();
+  const params = useParams();
   const [search, setSearch] = useState<string | null>(null);
   const [filter, setFilter] = useState({} as Record<string, boolean>);
   const [filterAnd, setConn] = useState(false);
@@ -129,7 +131,7 @@ export const IngredientPage = () => {
         <>
           <link
             rel="canonical"
-            href={`https://javscript.moe/${i18n.language}/ingredients`}
+            href={`https://javscript.moe/${params.language}/ingredients`}
           />
           <link
             rel="alternate"

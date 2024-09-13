@@ -4,7 +4,7 @@ import { BackgroundImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ArrowBack from "@/assets/arrowback.svg?react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { AboutSectionProps } from "@/lib/types";
 
@@ -57,14 +57,14 @@ export const AboutSection = ({ text }: AboutSectionProps) => {
     [0, 0.75],
     ["hidden", "auto"]
   );
-
+  const params = useParams();
   return (
     <>
       {ReactDOM.createPortal(
         <>
           <link
             rel="canonical"
-            href={`https://javscript.moe/${i18n.language}/about`}
+            href={`https://javscript.moe/${params.language}/about`}
           />
           <link
             rel="alternate"

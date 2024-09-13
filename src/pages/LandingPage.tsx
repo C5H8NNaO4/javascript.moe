@@ -27,7 +27,7 @@ import {
 } from "framer-motion";
 import { useState, useEffect, useContext } from "react";
 import "swiper/css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
@@ -59,13 +59,14 @@ export const LandingPage = () => {
 
   const iOS_1to12 = /iPad|iPhone|iPod/.test(navigator.platform);
   const h = (n: number) => `${n}${iOS_1to12 ? "vh" : "lvh"}`;
+  const params = useParams();
   return (
     <>
       {ReactDOM.createPortal(
         <>
           <link
             rel="canonical"
-            href={`https://javscript.moe/${i18n.language}`}
+            href={`https://javscript.moe/${params.language}`}
           />
           <link
             rel="alternate"
@@ -338,7 +339,7 @@ export const LandingPage = () => {
           ></Bullets>
           <Parallax distance={32} offset={-48}>
             <Bullets
-              range={[0.50, 0.88]}
+              range={[0.5, 0.88]}
               data={[
                 {
                   text: "GitHub",
