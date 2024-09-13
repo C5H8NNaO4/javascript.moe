@@ -312,7 +312,7 @@ export const Bullets = ({
     offset: ["start start", "end end"],
   });
 
-  const trans = useTransform(scrollYProgress, range, [0, 1]);
+  const trans = useTransform(scrollYProgress, range, [0, 1.1]);
   const boxShadow = useTransform(
     trans,
     [0, 1],
@@ -345,8 +345,13 @@ export const Bullets = ({
       ["0%", "100%"]
     );
   });
+  const filter = useTransform(
+    scrollYProgress,
+    [0.5,0.9, 1],
+    ["saturate(1)","saturate(1.3)", "saturate(0.2)"]
+  );
 
-  const bg = useTransform(trans, [0.9, 1], ["#00000000", "#00000099"]);
+  const bg = useTransform(trans, [0.9, 1], ["#00000000", "#00000044"]);
   const rand = useMemo(
     () => scales.slice().sort(() => Math.random() - 0.5),
     []
@@ -377,6 +382,9 @@ export const Bullets = ({
               justifyContent: "center",
               padding: 8,
               backgroundColor: bg,
+
+              backdropFilter: filter,
+
               y: 8,
             }}
           >

@@ -31,6 +31,7 @@ import { Link } from "react-router-dom";
 import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
+import { Overlay } from "@/components/BurnOverlay";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -107,6 +108,7 @@ export const LandingPage = () => {
           </FlyOut>
         </Parallax>
         <MyName />
+        <Overlay />
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
@@ -323,6 +325,7 @@ export const LandingPage = () => {
           offset={-100}
         >
           <Bullets
+            range={[0.5, 0.88]}
             data={[
               { text: "CV", logo: PDF, href: "https://justmycv.com/en.pdf" },
               {
@@ -335,6 +338,7 @@ export const LandingPage = () => {
           ></Bullets>
           <Parallax distance={32} offset={-48}>
             <Bullets
+              range={[0.50, 0.88]}
               data={[
                 {
                   text: "GitHub",
@@ -352,7 +356,7 @@ export const LandingPage = () => {
                 },
               ]}
               reverse
-              offset={0.75}
+              offset={0.73}
 
               // offset={0.55}
             ></Bullets>
