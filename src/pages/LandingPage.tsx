@@ -70,12 +70,12 @@ export const LandingPage = () => {
           <link
             rel="alternate"
             hrefLang="de"
-            href={`https://javscript.moe/${i18n.language}`}
+            href={`https://javscript.moe/de`}
           />
           <link
             rel="alternate"
             hrefLang="en"
-            href={`https://javscript.moe/${i18n.language}`}
+            href={`https://javscript.moe/en`}
           />
         </>,
         document.head

@@ -40,12 +40,12 @@ export const PerfumePage = () => {
           <link
             rel="alternate"
             hrefLang="de"
-            href={`https://javscript.moe/${i18n.language}/perfumes`}
+            href={`https://javscript.moe/de/perfumes`}
           />
           <link
             rel="alternate"
             hrefLang="en"
-            href={`https://javscript.moe/${i18n.language}/perfumes`}
+            href={`https://javscript.moe/en/perfumes`}
           />
         </>,
         document.head
@@ -134,12 +134,12 @@ export const IngredientPage = () => {
           <link
             rel="alternate"
             hrefLang="de"
-            href={`https://javscript.moe/${i18n.language}/ingredients`}
+            href={`https://javscript.moe/de/ingredients`}
           />
           <link
             rel="alternate"
             hrefLang="en"
-            href={`https://javscript.moe/${i18n.language}/ingredients`}
+            href={`https://javscript.moe/en/ingredients`}
           />
         </>,
         document.head

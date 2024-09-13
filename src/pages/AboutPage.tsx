@@ -69,12 +69,12 @@ export const AboutSection = ({ text }: AboutSectionProps) => {
           <link
             rel="alternate"
             hrefLang="de"
-            href={`https://javscript.moe/${i18n.language}/about`}
+            href={`https://javscript.moe/de/about`}
           />
           <link
             rel="alternate"
             hrefLang="en"
-            href={`https://javscript.moe/${i18n.language}/about`}
+            href={`https://javscript.moe/en/about`}
           />
         </>,
         document.head
