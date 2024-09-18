@@ -3,6 +3,7 @@ import { LandingPage } from "@/pages/LandingPage";
 import { Route, Routes } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import ReactDOM from "react-dom";
 import i18n from "i18next";
 import { IngredientPage, PerfumePage } from "@/pages/ParfumPage";
 
@@ -10,10 +11,15 @@ export const RedirectToLanguage = ({ path = "" }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/" + i18n.language + path);
+    navigate("/" + i18n.language + path, { replace: true });
   }, []);
 
-  return null;
+  return ReactDOM.createPortal(
+    <>
+      <meta name="robots" content="noindex"></meta>
+    </>,
+    document.head
+  );
 };
 
 export const RedirectToAboutPage = () => {
