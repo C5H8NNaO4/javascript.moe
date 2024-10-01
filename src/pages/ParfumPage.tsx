@@ -39,6 +39,7 @@ import {
   ResponsiveContainer,
   YAxis,
   Tooltip as RT,
+  Legend,
 } from "recharts";
 
 const toDrops = (amount: string) => {
@@ -229,11 +230,11 @@ function CustomTooltip({
 }) {
   if (active) {
     return (
-      <div className="custom-tooltip bg-[#FFFFFF33] p-4">
+      <div className="custom-tooltip bg-[#00000088] p-4">
         <p className="label">{`${label}`}</p>
         {payload?.map((p) => {
           return (
-            <p className="label">{`${labels[p.name as "er"]}: ${p.value}`}</p>
+            <p className="label">{`${labels[p.name as "RER"]}: ${p.value}`}</p>
           );
         })}
       </div>
@@ -244,14 +245,17 @@ function CustomTooltip({
 }
 
 const labels = {
-  er: "Evaporation:",
-  prm: "Promille:",
+  RER: "Evaporation:",
+  PPT: "Content (ppt)",
+  Impact: "Impact",
 };
 export const Spectogram = ({ data }: { data: any }) => {
   return (
     <div className="mt-8">
       <ResponsiveContainer width={"100%"} height={300}>
         <ComposedChart data={data} margin={{ bottom: 100, left: -24 }}>
+          <Legend align="center" verticalAlign="top" />
+
           <CartesianGrid stroke="#f5f5f5" fill="#FFFFFF88" />
           <XAxis
             dataKey="name"
@@ -263,14 +267,17 @@ export const Spectogram = ({ data }: { data: any }) => {
             dy={8}
             minTickGap={-200}
             color="white"
+            tick={{ fill: "white" }}
+            tickLine={{ stroke: "darkred" }}
             // axisLine={false}
           />
-          <YAxis yAxisId="left" />
-          <YAxis yAxisId="right" orientation="right" />
+          <YAxis yAxisId="left" tick={{ fill: "white" }} />
+          <YAxis yAxisId="right" orientation="right" tick={{ fill: "white" }} />
 
-          <Bar yAxisId="left" dataKey="prm" barSize={10} fill="green" />
-          <Bar yAxisId="left" dataKey="impact" barSize={10} fill="orange" />
+          <Bar name="PPT" yAxisId="left" dataKey="prm" barSize={10} fill="green" />
+          <Bar name="Impact" yAxisId="left" dataKey="impact" barSize={10} fill="orange" />
           <Line
+            name="RER"
             yAxisId={"right"}
             type="monotone"
             dataKey="er"

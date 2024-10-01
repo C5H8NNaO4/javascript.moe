@@ -6,6 +6,7 @@ export type Explanation = {
   dil?: string;
   vol?: string;
   com?: string;
+  subst?: string;
 };
 
 // Define Ingredient type
@@ -17,12 +18,48 @@ export type Ingredient = {
   exp: Explanation;
   odour?: string[];
   harmonic?: string[];
+  effects?: Effect[];
   disharmonic?: string[];
   evaporationRate: number; // Added evaporationRate
   relativeStrength?: number;
   dilutant?: boolean;
 };
 
+export type Accord = {
+  relativeHarmony: number;
+  dopaRelease?: number;
+  seroRelease?: number;
+  ingredients: Ingredient[];
+};
+
+export enum EffectTypes {
+  Boost = "boost",
+  Soak = "soak",
+  Blend = "blend",
+  Fix = "fix",
+  Project = "project",
+  Couple = "couple",
+}
+
+export enum Notes {
+  Top = 4,
+  Heart = 2,
+  Bottom = 1,
+  All = 7,
+}
+
+export type Effect = {
+  type: EffectTypes;
+  relativeStrength: number;
+  affects: Notes;
+};
+
+export const ISOESuperEffect: Effect[] = [
+  { type: EffectTypes.Boost, affects: Notes.All, relativeStrength: 1.2 },
+  { type: EffectTypes.Soak, affects: Notes.All, relativeStrength: 0.7 },
+  { type: EffectTypes.Blend, affects: Notes.All, relativeStrength: 0.2 },
+  { type: EffectTypes.Fix, affects: Notes.All, relativeStrength: 1.5 },
+];
 // Define types for ingredient options
 interface IngredientOptions {
   dilution: number | null; // Allow dilution to be number or null
@@ -32,7 +69,9 @@ interface IngredientOptions {
 
 // Helper function for evaporation rates
 const evaporationRates: Record<string, number> = {
-  EthylVanillin: 1440,
+  Hedione: 480,
+  Sylvamber: 24 * 60,
+  EthylVanillin: 24 * 60,
   WoodyBase: 24 * 60, // Woody base lasts up to 12 hours (720 minutes)
   VetiverylAcetat: 8 * 60, // Vetiveryl Acetate lasts around 8 hours (480 minutes)
   CedarWood: 6 * 60, // Cedarwood lasts around 6 hours (360 minutes)
@@ -65,6 +104,39 @@ const evaporationRates: Record<string, number> = {
 
 // Explanation objects
 const explanations: Record<string, Explanation> = {
+  Hedione: {
+    desc: t(
+      "Hedione is a jasmine-like material with a fresh, delicate citrus-floral scent. It adds radiance and a natural character to floral compositions."
+    ),
+    dil: t("10%"),
+    vol: t("1dr"),
+    com: t("Various Suppliers"),
+    subst: t(
+      "Hedione has moderate substantivity, lasting up to several hours on a blotter. It brings a light, radiant effect in compositions, especially in floral accords."
+    ),
+  },
+  EthylVanillin: {
+    desc: t(
+      "Ethyl Vanillin is a synthetic compound, with a sweet, vanilla-like scent that is more intense than natural vanillin."
+    ),
+    dil: t("10%"),
+    vol: t("1dr"),
+    com: t("Various Suppliers"),
+    subst: t(
+      "Ethyl Vanillin has high substantivity, lasting for several days on a blotter with excellent tenacity."
+    ),
+  },
+  Sylvamber: {
+    desc: t(
+      "Sylvamber is a powerful woody-amber material with dry, woody, and slightly balsamic nuances. It's a key ingredient in amber bases."
+    ),
+    dil: t("10%"),
+    vol: t("1dr"),
+    com: t("Various Suppliers"),
+    subst: t(
+      "Sylvamber has good substantivity, lasting up to several days on a blotter with its woody-amber scent."
+    ),
+  },
   OrangeFlowerAbsolute: {
     desc: t(
       "Orange Flower Absolute is derived from the flowers of the bitter orange tree, known for its rich, floral, and sweet scent."
@@ -176,6 +248,21 @@ const explanations: Record<string, Explanation> = {
   },
 };
 
+export const Hedione = ({
+  dilution = 10,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "Hedione",
+  dilution,
+  amount,
+  exp: explanations.Hedione,
+  odour: ["jasmine", "fresh", "delicate", "citrus"],
+  evaporationRate: evaporationRates.Hedione,
+  relativeStrength: 7,
+  ...rest,
+});
+
 // Ingredient functions
 
 export const OrangeFlowerAbsolute = ({
@@ -225,7 +312,7 @@ export const PinoAcetaldehyde = ({
   },
   odour: ["fresh", "green", "piney", "aldehydic"], // Adjust odour profile as needed
   evaporationRate: evaporationRates.PinoAcetaldehyde,
-  relativeStrength: 10,
+  relativeStrength: 20,
   ...rest,
 });
 
@@ -256,7 +343,7 @@ export const Vetiveryl = ({
   exp: explanations.VetiverylAcetat,
   odour: ["sweet", "woody", "fresh", "dry"],
   evaporationRate: evaporationRates.VetiverylAcetat,
-  relativeStrength: 2,
+  relativeStrength: 0.9,
   ...rest,
 });
 
@@ -304,6 +391,7 @@ export const CedarWood = ({
   dilution,
   amount,
   exp: explanations.CedarWood,
+  relativeStrength: 10,
   odour: ["woody", "dry"],
   evaporationRate: evaporationRates.CedarWood,
   ...rest,
@@ -333,8 +421,9 @@ export const ISOESuper = ({
   amount,
   exp: explanations.ISOESuper,
   odour: ["woody", "amber"],
+  effects: ISOESuperEffect,
   evaporationRate: evaporationRates.ISOESuper,
-  relativeStrength: 0.7,
+  relativeStrength: 0.2,
   ...rest,
 });
 
@@ -347,6 +436,7 @@ export const Timbersilk = ({
   dilution,
   amount,
   exp: explanations.Timbersilk,
+  relativeStrength: 0.7,
   odour: ["silky", "woody"],
   evaporationRate: evaporationRates.Timbersilk,
   ...rest,
@@ -378,6 +468,21 @@ export const Evernyl = ({
   odour: ["woody", "amber"],
   evaporationRate: evaporationRates.Evernyl,
   relativeStrength: 10,
+  ...rest,
+});
+
+export const Veramoss = ({
+  dilution = 10,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "Veramoss",
+  dilution,
+  amount,
+  exp: explanations.Evernyl,
+  odour: ["woody", "amber"],
+  evaporationRate: evaporationRates.Evernyl,
+  relativeStrength: 15,
   ...rest,
 });
 
@@ -434,6 +539,7 @@ export const MuskBlend = ({
   dilution,
   amount,
   exp: explanations.MuskBlend,
+  relativeStrength: 1.75,
   odour: ["musky", "sweet"],
   evaporationRate: evaporationRates.MuskBlend,
   ...rest,
@@ -450,7 +556,7 @@ export const Ambroxan = ({
   exp: explanations.Ambroxan,
   odour: ["amber", "woody"],
   evaporationRate: evaporationRates.Ambroxan,
-  relativeStrength: 10,
+  relativeStrength: 5,
   ...rest,
 });
 
@@ -465,7 +571,22 @@ export const VertofixCoeur = ({
   exp: explanations.VertofixCoeur,
   odour: ["woody", "earthy"],
   evaporationRate: evaporationRates.VertofixCoeur,
-  relativeStrength: 10,
+  relativeStrength: 4,
+  ...rest,
+});
+
+export const Sylvamber = ({
+  dilution = 10,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "Sylvamber",
+  dilution,
+  amount,
+  exp: explanations.Sylvamber,
+  odour: ["woody", "amber", "dry"],
+  evaporationRate: evaporationRates.Sylvamber,
+  relativeStrength: 4,
   ...rest,
 });
 
@@ -595,7 +716,7 @@ export const Terrasol = ({
   exp: explanations.Terrasol,
   odour: ["earthy", "woody", "musky"],
   evaporationRate: evaporationRates.Terrasol,
-  relativeStrength: 10,
+  relativeStrength: 15,
   ...rest,
 });
 
@@ -661,7 +782,7 @@ export const SylvanDawn: Ingredient[] = [
   Ambroxan({ dilution: null }),
 ];
 
-export const OrangeForest: Ingredient[] = [
+export const OrangeForestv01: Ingredient[] = [
   DPG({ dilution: null, amount: "2ml" }),
   Vetiveryl({ dilution: null, amount: "6dr" }),
   ClearWood({ dilution: null, amount: "14dr" }),
@@ -680,10 +801,83 @@ export const OrangeForest: Ingredient[] = [
   VertofixCoeur({ dilution: null, amount: "1dr" }),
 ];
 
-// Example usage of the functions
-const woodyBaseExample = WoodyBase({
-  dilution: 5,
-  amount: "5ml",
-  additionalProp: "example",
+export const HarmonicWoodBase: Ingredient[] = [
+  DPG({ dilution: null, amount: "1ml" }),
+  Vetiveryl({ dilution: null, amount: "30dr" }),
+  ClearWood({ dilution: null, amount: "14dr" }),
+  CedarWood({ dilution: 10, amount: "6dr" }),
+  BetaPinenes({ dilution: 10, amount: "16dr" }),
+  FirBalm({ dilution: null, amount: "1dr" }),
+];
+
+export const EthylVanillin = ({
+  dilution = 10,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "Ethyl Vanillin",
+  dilution,
+  amount,
+  exp: explanations.EthylVanillin,
+  odour: ["sweet", "vanilla", "powdery"],
+  evaporationRate: evaporationRates.EthylVanillin,
+  relativeStrength: 75,
+  ...rest,
 });
-console.log(woodyBaseExample);
+
+export const OrangeForest: Ingredient[] = [
+  DPG({ dilution: null, amount: "1ml" }),
+  Vetiveryl({ dilution: null, amount: "33dr" }),
+  ClearWood({ dilution: null, amount: "24dr" }),
+  CedarWood({ dilution: 10, amount: "7dr" }),
+  BetaPinenes({ dilution: 10, amount: "16dr" }),
+  FirBalm({ dilution: 5, amount: "21dr" }),
+  Veramoss({ dilution: 20, amount: "3dr" }),
+  Timbersilk({ dilution: null, amount: "26dr" }),
+  ISOESuper({ dilution: null, amount: "20dr" }),
+  Ambroxan({ dilution: 10, amount: "25dr" }),
+  VertofixCoeur({ dilution: null, amount: "9dr" }),
+  PinoAcetaldehyde({ dilution: 10, amount: "9dr" }),
+  Sylvamber({ dilution: null, amount: "2dr" }),
+  MuskBlend({ dilution: null, amount: "6dr" }),
+  Terrasol({ dilution: 10, amount: "5dr" }),
+  EthylVanillin({ dilution: 1, amount: "4dr" }),
+  Lavender({ dilution: 10, amount: "4dr" }),
+  LavenderAbsolute({ dilution: 10, amount: "8dr" }),
+  Hedione({ dilution: null, amount: "2dr" }),
+  // NeroliEO({ dilution: 5, amount: "1dr" }),
+  OrangeFlowerAbsolute({ dilution: 10, amount: "8dr" }),
+];
+
+export const WoodAccord: Accord = {
+  relativeHarmony: 0.7,
+  dopaRelease: 0.2,
+  ingredients: [
+    Vetiveryl({ dilution: null, amount: "30dr" }),
+    ClearWood({ dilution: null, amount: "20dr" }),
+    CedarWood({ dilution: 10, amount: "6dr" }),
+    BetaPinenes({ dilution: 10, amount: "16dr" }),
+    FirBalm({ dilution: null, amount: "1dr" }),
+  ],
+};
+
+export const AnimalicAccord: Accord = {
+  relativeHarmony: 0.7,
+  dopaRelease: 0.9,
+  ingredients: [
+    Vetiveryl({ dilution: null, amount: "33dr" }),
+    ClearWood({ dilution: null, amount: "24dr" }),
+    CedarWood({ dilution: 10, amount: "7dr" }),
+    BetaPinenes({ dilution: 10, amount: "16dr" }),
+    FirBalm({ dilution: null, amount: "1dr" }),
+    Veramoss({ dilution: 20, amount: "3dr" }),
+    Timbersilk({ dilution: null, amount: "25dr" }),
+    ISOESuper({ dilution: null, amount: "20dr" }),
+    Ambroxan({ dilution: 10, amount: "23dr" }),
+    VertofixCoeur({ dilution: null, amount: "8dr" }),
+    PinoAcetaldehyde({ dilution: 10, amount: "9dr" }),
+    Sylvamber({ dilution: null, amount: "1dr" }),
+    MuskBlend({ dilution: null, amount: "5dr" }),
+    Terrasol({ dilution: 10, amount: "5dr" }),
+  ],
+};
