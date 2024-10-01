@@ -104,9 +104,9 @@ export const PerfumePage = () => {
         <PerfumeText
           title="Orange Woods"
           text={t("OrangeWoods")}
-          bgSrc="/images/wallpaper/9.jpg"
+          bgSrc="/images/wallpaper/orangewoodsbg.jpg"
           bgAlt="Waldweg"
-          imgSrc="/images/perfumes/woodenheart.jpeg"
+          imgSrc="/images/perfumes/orangewoods.jpeg"
           imgAlt="Depiction of my Wooden Heart Fragrance"
           ingredients={OrangeForest}
         />
@@ -443,7 +443,7 @@ export const PerfumeText = ({
                     const prc = (100 / totalU) * undiluted;
                     const prcI = (100 / totalImp) * undiluted;
                     const impact = prcI * (i.relativeStrength || 1);
-                    
+
                     return {
                       er: i.evaporationRate,
                       prm: ~~(prc * 100) / 10,
