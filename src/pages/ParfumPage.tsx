@@ -1,10 +1,4 @@
-import {
-  drops2Grams,
-  drops2ml,
-  getGCD,
-  getVH,
-  toDrops,
-} from "@/lib/util";
+import { drops2Grams, drops2ml, getGCD, getVH, toDrops } from "@/lib/util";
 import { StickySection, sectionCtx } from "@/components/AnimatedSection";
 import { BackgroundImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
@@ -598,7 +592,8 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
     };
   };
 
-  const [unit, setUnit] = useState(Number(params.get('unit') || 0));
+  const [unit, setUnit] = useState(Number(params.get("unit") || 0));
+
   const denomDrops = getGCD(
     ingredients.map((i) => {
       const drops = toDrops(i.amount);
@@ -612,13 +607,42 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
         return drops;
       })
     ) / 100;
+  const denomMl =
+    getGCD(
+      ingredients.map((i) => {
+        const drops = drops2ml(toDrops(i.amount)) * 100;
+        return drops;
+      })
+    ) / 100;
+  const totalDrops = ingredients
+    .filter((i) => !i.dilutant)
+    .reduce((acc, i) => {
+      const diluted = toDrops(i.amount);
+      const undiluted = diluted / (100 / (i.dilution || 100));
+      return acc + (unit === 0 ? diluted : undiluted);
+    }, 0);
+
+  const total =
+    unit === 0
+      ? totalDrops + "dr"
+      : unit === 1
+      ? (drops2Grams(totalDrops) / denomGrams).toFixed(2) + "g"
+      : unit === 2
+      ? "100%"
+      : unit === 3
+      ? ((drops2ml(totalDrops) / denomMl) * 20).toFixed(2) + "ml"
+      : "";
   return (
     <div>
-      <select onChange={(e) => setUnit(Number(e.target.value))} value={unit}>
-        <option value={0}>Drops</option>
-        <option value={1}>Grams</option>
-        <option value={2}>ML</option>
-      </select>
+      <div className="flex flex-row gap-2">
+        <select onChange={(e) => setUnit(Number(e.target.value))} value={unit}>
+          <option value={0}>Drops</option>
+          <option value={1}>Grams</option>
+          <option value={2}>Percentage</option>
+          <option value={3}>ML</option>
+        </select>
+        <b className="text-white">{total}</b>
+      </div>
       {ingredients.map((ing) => {
         const { amount, dilution, name, company, exp } = ing;
         const showTooltip = visible === name && !!part;
@@ -628,7 +652,20 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
           (drops2Grams(toDrops(amount)) / denomGrams) *
           ((dilution || 100) / 100)
         ).toFixed(3);
-        const ml = drops2ml(toDrops(amount));
+        const ml = (
+          (drops2ml(toDrops(amount)) / denomMl) *
+          ((dilution || 100) / 100) *
+          20
+        ).toFixed(3);
+        const totalU = ingredients
+          .filter((i) => !i.dilutant)
+          .reduce((acc, i) => {
+            const undiluted = toDrops(i.amount) / (100 / (i.dilution || 100));
+            return acc + undiluted;
+          }, 0);
+        const prc = ing.dilutant
+          ? null
+          : ((100 / totalU) * toDrops(amount)).toFixed(2);
         return (
           <div
             onMouseOver={() => setVisible(name)}
@@ -648,7 +685,11 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
                   ? drops + "dr"
                   : unit === 1
                   ? grams + "g"
-                  : ml + "ml"}{" "}
+                  : unit === 3
+                  ? ml + "ml"
+                  : prc
+                  ? prc + "%"
+                  : ""}{" "}
               </span>
               <span
                 onTouchEnd={showTooltip ? hide : Show("desc")}
@@ -660,7 +701,7 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
               >
                 {name}{" "}
               </span>
-              {dilution !== null && unit !== 1 && (
+              {dilution !== null && unit < 1 && (
                 <span
                   onTouchEnd={showTooltip ? hide : Show("dil")}
                   style={{
