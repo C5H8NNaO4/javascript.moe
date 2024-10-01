@@ -106,7 +106,7 @@ export const PerfumePage = () => {
           text={t("OrangeWoods")}
           bgSrc="/images/wallpaper/orangewoodsbg.jpg"
           bgAlt="Waldweg"
-          imgSrc="/images/perfumes/orangewoods.jpeg"
+          imgSrc="/images/perfumes/orangewoods.jpg"
           imgAlt="Depiction of my Wooden Heart Fragrance"
           ingredients={OrangeForest}
         />
