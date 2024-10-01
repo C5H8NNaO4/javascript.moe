@@ -111,6 +111,9 @@ export const Explanations = {
     "Dilute normal materials to 10% to make it easier to use and suitable for a 2ml batch. Most materials are way too strong for such a small batch.",
   "2ml":
     "2ml fixative base is a good start for small batches and sufficient to work with single drops or 0.01g of materials diluted to 10%. Working in small batches minimizes loss at the beginning.",
+  Solvent:
+    "This is a solvent and can be used as carrier without providing any extra function. Use below 10% of overall fragrance or it will leave a wet / oily film on the skin.",
+    "1:1": "This is an ingredient with a moderate strength. It provides a good foundation / base."
 };
 
 export const texts = {

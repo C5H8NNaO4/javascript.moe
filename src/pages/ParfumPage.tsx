@@ -399,7 +399,7 @@ export const PerfumeText = ({
                 <motion.img
                   alt={imgAlt}
                   style={{ x: 0, borderRadius: bi, opacity }}
-                  className=" top-4 w-full sm:w-1/3 h-fit object-cover pr-4"
+                  className=" top-4 w-full xs:w-1/3 h-fit object-cover pr-4"
                   src={imgSrc}
                 />
                 <div className=" w-full">
@@ -610,10 +610,10 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
   const denomMl =
     getGCD(
       ingredients.map((i) => {
-        const drops = drops2ml(toDrops(i.amount)) * 100;
+        const drops = drops2ml(toDrops(i.amount)) * 10;
         return drops;
       })
-    ) / 100;
+    ) / 10;
   const totalDrops = ingredients
     .filter((i) => !i.dilutant)
     .reduce((acc, i) => {
@@ -630,7 +630,7 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
       : unit === 2
       ? "100%"
       : unit === 3
-      ? ((drops2ml(totalDrops) / denomMl) * 20).toFixed(2) + "ml"
+      ? (drops2ml(totalDrops) / denomMl).toFixed(2) + "ml"
       : "";
   return (
     <div>
@@ -654,8 +654,7 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
         ).toFixed(3);
         const ml = (
           (drops2ml(toDrops(amount)) / denomMl) *
-          ((dilution || 100) / 100) *
-          20
+          ((dilution || 100) / 100)
         ).toFixed(3);
         const totalU = ingredients
           .filter((i) => !i.dilutant)
@@ -757,16 +756,18 @@ export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
     offset: ["start start", "end end"],
   });
 
+  const bp = getCurrentBreakpoint();
+  const isMobile = [bp === "2xs", bp === "xs"].some(Boolean);
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    ["calc(0lvh + 32px)", "calc(50lvh + 32px)"]
+    isMobile ? ["calc(0lvh + 32px)", "calc(50lvh + 32px)"] : ["0lvh", "50lvh"]
   );
   return ReactDOM.createPortal(
     <motion.div
       style={{ y }}
       className={clsx(
-        "overflow-y-scroll whitespace-pre-line absolute z-[1000] max-h-[40vh] lg:max-h-[100vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-4 sm:top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
+        "overflow-y-scroll whitespace-pre-line absolute z-[1000] max-h-[40vh] sm:max-h-[100lvh] sm:h-[100lvh] w-[100vw] sm:w-[22vw] top-4 sm:top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
         {
           "pointer-events-none": !visible,
           "opacity-100": visible,

@@ -132,8 +132,8 @@ const explanations: Record<string, Explanation> = {
     desc: t(
       "cis-3-Hexenol is a powerful green, grassy, and fresh material, often associated with the scent of freshly cut grass or crushed leaves."
     ),
-    dil: t("10%"),
-    vol: t("1dr"),
+    dil: t("0.1%"),
+    vol: t("Strong"),
     com: t("Various Suppliers"),
     subst: t(
       "cis-3-Hexenol has low substantivity, typically lasting a few hours on a blotter. It provides a sharp, fresh, green note that fades relatively quickly."
@@ -177,7 +177,7 @@ const explanations: Record<string, Explanation> = {
       "Orange Flower Absolute is derived from the flowers of the bitter orange tree, known for its rich, floral, and sweet scent."
     ),
     dil: t("10%"),
-    vol: t("1dr"),
+    vol: t("10%"),
     com: t("Various Suppliers"),
   },
   Terrasol: {
@@ -185,7 +185,7 @@ const explanations: Record<string, Explanation> = {
       "Terrasol is a synthetic molecule known for its deep, earthy, and musky scent, often used in creating grounding and long-lasting base notes in fragrances."
     ),
     dil: t("10%"),
-    vol: t("1dr"),
+    vol: t("Strong"),
     com: t("Various Suppliers"),
   },
   NeroliEO: {
@@ -213,7 +213,7 @@ const explanations: Record<string, Explanation> = {
   VetiverylAcetat: {
     desc: t("VetiverylAcetat"),
     dil: t("10%"),
-    vol: t("1dr"),
+    vol: t("1:1"),
   },
   CedarWood: {
     desc: t("CedarWood"),
@@ -244,6 +244,7 @@ const explanations: Record<string, Explanation> = {
   },
   MuskBlend: {
     desc: t("MuskBlend"),
+    com: t("Pellwall"),
   },
   Ambroxan: {
     desc: t("Ambroxan"),
@@ -262,7 +263,7 @@ const explanations: Record<string, Explanation> = {
   Geosmin: {
     desc: t("Geosmin"),
     dil: t("Strong"),
-    vol: t('Asd')
+    vol: t("Asd"),
   },
   Lavender: {
     desc: t("Lavender"),
@@ -278,6 +279,7 @@ const explanations: Record<string, Explanation> = {
   },
   Ozofleur: {
     desc: t("Ozofleur"),
+    vol: t("Strong"),
   },
   Helional: {
     desc: t("Helional"),
@@ -456,7 +458,7 @@ export const DPG = ({
   exp: {
     desc: "Dipropylene Glycol is a colorless, odorless liquid that is often used as a solvent in the fragrance industry.",
     dil: dilution === null ? "No Dilution" : `${dilution}%`,
-    vol: "1dr",
+    vol: t("Solvent"),
     com: "Various Suppliers",
   },
   odour: ["neutral", "solvent", "slightly sweet"],
@@ -619,6 +621,7 @@ export const MuskBlend = ({
   ...rest
 }: IngredientOptions): Ingredient => ({
   name: "Musk Blend",
+  company: "Pellwall",
   dilution,
   amount,
   exp: explanations.MuskBlend,
@@ -679,6 +682,7 @@ export const ClearWood = ({
   ...rest
 }: IngredientOptions): Ingredient => ({
   name: "Clear Wood",
+  company: "Firmenich",
   dilution,
   amount,
   exp: explanations.ClearWood,
@@ -932,12 +936,12 @@ export const OrangeForest: Ingredient[] = [
   LavenderAbsolute({ dilution: 10, amount: "15dr" }),
   Hedione({ dilution: null, amount: "3dr" }),
   // NeroliEO({ dilution: 5, amount: "1dr" }),
- 
+
   Amarocit({ dilution: 10, amount: "7dr" }),
   OrangeFlowerBlend({ dilution: 10, amount: "8dr" }),
   OrangeFlowerAbsolute({ dilution: 10, amount: "17dr" }),
-  Ozofleur({dilution: 0.1, amount: '10dr'}),
-  Geosmin({dilution: 0.01, amount: '10dr'})
+  Ozofleur({ dilution: 0.1, amount: "10dr" }),
+  Geosmin({ dilution: 0.01, amount: "10dr" }),
 ];
 
 export const WoodAccord: Accord = {
