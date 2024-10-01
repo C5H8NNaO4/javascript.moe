@@ -19,14 +19,33 @@ import i18n from "i18next";
 import { EnsureLanguage } from "@/components/EnsureLanguage";
 import {
   AllIngredients,
+  Ingredient,
+  OrangeForest,
   SylvanDawn,
   WoodenAmberHeart,
   WoodenHeart,
-} from "@/assets/forulas";
+} from "@/assets/recipes";
 import clsx from "clsx";
 import { DualImages } from "@/components/BlendedImage";
 import levenshtein from "fast-levenshtein";
 import ReactDOM from "react-dom";
+
+import {
+  Line,
+  ComposedChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  ResponsiveContainer,
+  YAxis,
+  Tooltip as RT,
+} from "recharts";
+
+const toDrops = (amount: string) => {
+  if (amount.includes("dr")) return Number(amount.replace("dr", ""));
+  if (amount.includes("ml")) return 20 * Number(amount.replace("ml", ""));
+  return 1;
+};
 export const PerfumePage = () => {
   const { t } = useTranslation();
   const params = useParams();
@@ -78,6 +97,17 @@ export const PerfumePage = () => {
               ingredients: WoodenAmberHeart,
             },
           ]}
+        />
+      </StickySection>
+      <StickySection height="150lvh">
+        <PerfumeText
+          title="Orange Woods"
+          text={t("OrangeWoods")}
+          bgSrc="/images/wallpaper/9.jpg"
+          bgAlt="Waldweg"
+          imgSrc="/images/perfumes/woodenheart.jpeg"
+          imgAlt="Depiction of my Wooden Heart Fragrance"
+          ingredients={OrangeForest}
         />
       </StickySection>
     </div>
@@ -188,6 +218,70 @@ export const IngredientPage = () => {
   );
 };
 
+function CustomTooltip({
+  payload,
+  label,
+  active,
+}: {
+  payload?: any[];
+  label?: string;
+  active?: boolean;
+}) {
+  if (active) {
+    return (
+      <div className="custom-tooltip bg-[#FFFFFF33] p-4">
+        <p className="label">{`${label}`}</p>
+        {payload?.map((p) => {
+          return (
+            <p className="label">{`${labels[p.name as "er"]}: ${p.value}`}</p>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+const labels = {
+  er: "Evaporation:",
+  prm: "Promille:",
+};
+export const Spectogram = ({ data }: { data: any }) => {
+  return (
+    <div className="mt-8">
+      <ResponsiveContainer width={"100%"} height={300}>
+        <ComposedChart data={data} margin={{ bottom: 100, left: -24 }}>
+          <CartesianGrid stroke="#f5f5f5" fill="#FFFFFF88" />
+          <XAxis
+            dataKey="name"
+            textAnchor="start"
+            height={60}
+            angle={45}
+            interval={0}
+            dx={0}
+            dy={8}
+            minTickGap={-200}
+            color="white"
+            // axisLine={false}
+          />
+          <YAxis yAxisId="left" />
+          <YAxis yAxisId="right" orientation="right" />
+
+          <Bar yAxisId="left" dataKey="prm" barSize={10} fill="green" />
+          <Bar yAxisId="left" dataKey="impact" barSize={10} fill="orange" />
+          <Line
+            yAxisId={"right"}
+            type="monotone"
+            dataKey="er"
+            stroke="darkred"
+          />
+          <RT content={(props) => <CustomTooltip {...props} />} />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 export const PerfumeText = ({
   ingredients,
   variations = [],
@@ -279,29 +373,53 @@ export const PerfumeText = ({
                 backdropFilter: rblur,
                 // overflowY
               }}
-              className="relative overflow-auto lg:overflow-visible flex flex-col lg:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left"
+              className="relative overflow-auto lg:overflow-visible flex flex-col sm:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left"
             >
               {/* <motion.div style={{ display: 'block' }} /> */}
 
               <motion.img
                 alt={imgAlt}
                 style={{ x: 0, borderRadius: bi, opacity }}
-                className=" top-4 w-full lg:w-1/3 h-fit object-cover pr-4"
+                className=" top-4 w-full sm:w-1/3 h-fit object-cover pr-4"
                 src={imgSrc}
               />
+              <div className="overflow-y-scroll max-h-[70vh] w-full">
+                {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
 
-              {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
+                <div>
+                  <Recipe ingredients={ingredients || []} />
+                  {variations.map((v) => {
+                    return (
+                      <>
+                        <p className="mt-2">{v.title}</p>
+                        <Recipe ingredients={v.ingredients}></Recipe>
+                      </>
+                    );
+                  })}
+                </div>
+                <Spectogram
+                  data={ingredients
+                    ?.filter((i) => i.dilutant !== true)
+                    ?.sort((a, b) => a.evaporationRate - b.evaporationRate)
+                    .map((i, _, arr) => {
+                      const undiluted =
+                        toDrops(i.amount) / (100 / (i.dilution || 100));
+                      const totalU = arr.reduce((acc, i) => {
+                        const undiluted =
+                          toDrops(i.amount) / (100 / (i.dilution || 100));
+                        return acc + undiluted;
+                      }, 0);
 
-              <div>
-                <Recipe ingredients={ingredients || []} />
-                {variations.map((v) => {
-                  return (
-                    <>
-                      <p className="mt-2">{v.title}</p>
-                      <Recipe ingredients={v.ingredients}></Recipe>
-                    </>
-                  );
-                })}
+                      const prc = (100 / totalU) * undiluted;
+                      const impact = prc * (i.relativeStrength || 1);
+                      return {
+                        er: i.evaporationRate,
+                        prm: ~~(prc * 100) / 10,
+                        impact: ~~(impact * 100) / 10,
+                        name: i.name,
+                      };
+                    })}
+                />
               </div>
             </motion.div>
           </button>
@@ -424,14 +542,6 @@ export type Explanation = {
   dil?: string;
   com?: string;
 };
-export type Ingredient = {
-  amount: string;
-  name: string;
-  dilution: number | null;
-  company?: string;
-  exp: Explanation;
-  odour?: string[];
-};
 
 export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
   const [visible, setVisible] = useState<string | null>(null);
@@ -533,11 +643,20 @@ export type TooltipProps = PropsWithChildren<{
 }>;
 
 export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
-  if (!visible) return null;
-  return (
-    <div
+  // if (!visible) return null;
+  const { ref } = useContext(sectionCtx);
+  const { scrollYProgress } = useScroll({
+    layoutEffect: false,
+    target: ref || undefined,
+    offset: ["start start", "end end"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0vh", "50vh"]);
+  return ReactDOM.createPortal(
+    <motion.div
+      style={{ y }}
       className={clsx(
-        "whitespace-pre-line absolute w-full z-[10000] transition-opacity rounded-md bg-[rgba(0,0,0,0.681)] p-4 text-white",
+        "whitespace-pre-line absolute z-[1000] h-[50vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
         {
           "opacity-100": visible,
           "opacity-0": !visible,
@@ -547,6 +666,7 @@ export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
       {...rest}
     >
       {children}
-    </div>
+    </motion.div>,
+    ref?.current || document.body
   );
 };

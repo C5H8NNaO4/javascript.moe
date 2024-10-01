@@ -1,4 +1,4 @@
-import { Ingredient } from "@/pages/ParfumPage";
+import { Ingredient } from "@/assets/recipes";
 
 export type Variation = {
   title: string;
