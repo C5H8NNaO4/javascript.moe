@@ -327,7 +327,7 @@ export const OrangeFlowerAbsolute = ({
   exp: explanations.OrangeFlowerAbsolute,
   odour: ["floral", "sweet", "citrus"],
   evaporationRate: evaporationRates.OrangeFlowerAbsolute, // Example evaporation rate
-  relativeStrength: 50,
+  relativeStrength: 20,
   ...rest,
 });
 

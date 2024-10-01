@@ -385,13 +385,15 @@ export const PerfumeText = ({
           <button
           // onClick={scrollToTop}
           >
-            <motion.div style={{
-                              background,
-                              backdropFilter: rblur,
-            }} className="flex flex-col  overflow-y-scroll max-h-[calc(100svh-120px)] rounded-md shadow-lg shadow-black  text-left">
+            <motion.div
+              style={{
+                background,
+                backdropFilter: rblur,
+              }}
+              className="flex flex-col  overflow-y-scroll max-h-[calc(100svh-120px)] rounded-md shadow-lg shadow-black  text-left"
+            >
               <motion.div
                 ref={innerRef}
-
                 className="relative flex flex-col sm:flex-row  gap-4 p-4 "
               >
                 {/* <motion.div style={{ display: 'block' }} /> */}
@@ -431,8 +433,17 @@ export const PerfumeText = ({
                       return acc + undiluted;
                     }, 0);
 
+                    const totalImp = arr.reduce((acc, i) => {
+                      const undiluted =
+                        (toDrops(i.amount) / (100 / (i.dilution || 100))) *
+                        (i.relativeStrength || 1);
+                      return acc + undiluted;
+                    }, 0);
+
                     const prc = (100 / totalU) * undiluted;
-                    const impact = prc * (i.relativeStrength || 1);
+                    const prcI = (100 / totalImp) * undiluted;
+                    const impact = prcI * (i.relativeStrength || 1);
+                    
                     return {
                       er: i.evaporationRate,
                       prm: ~~(prc * 100) / 10,
