@@ -252,7 +252,7 @@ const labels = {
 export const Spectogram = ({ data }: { data: any }) => {
   return (
     <div className="mt-8">
-      <ResponsiveContainer width={"100%"} height={300}>
+      <ResponsiveContainer width={"100%"} height={400}>
         <ComposedChart data={data} margin={{ bottom: 100, left: -24 }}>
           <Legend align="center" verticalAlign="top" />
 
@@ -274,8 +274,20 @@ export const Spectogram = ({ data }: { data: any }) => {
           <YAxis yAxisId="left" tick={{ fill: "white" }} />
           <YAxis yAxisId="right" orientation="right" tick={{ fill: "white" }} />
 
-          <Bar name="PPT" yAxisId="left" dataKey="prm" barSize={10} fill="green" />
-          <Bar name="Impact" yAxisId="left" dataKey="impact" barSize={10} fill="orange" />
+          <Bar
+            name="PPT"
+            yAxisId="left"
+            dataKey="prm"
+            barSize={10}
+            fill="green"
+          />
+          <Bar
+            name="Impact"
+            yAxisId="left"
+            dataKey="impact"
+            barSize={10}
+            fill="orange"
+          />
           <Line
             name="RER"
             yAxisId={"right"}
@@ -352,7 +364,7 @@ export const PerfumeText = ({
   return (
     <>
       <BackgroundImage src={bgSrc} alt={bgAlt} />
-      <div className="w-[80ch] max-w-[calc(100vw-32px)] absolute top-0">
+      <div className="w-[84ch] max-w-[calc(100vw-32px)] absolute top-0">
         <Parallax
           distance={32 * 2}
           offset={32 * 1}
@@ -373,61 +385,62 @@ export const PerfumeText = ({
           <button
           // onClick={scrollToTop}
           >
-            <motion.div
-              ref={innerRef}
-              style={{
-                background,
-                backdropFilter: rblur,
-                // overflowY
-              }}
-              className="relative overflow-auto lg:overflow-visible flex flex-col sm:flex-row  gap-4 p-4 rounded-md shadow-lg shadow-black max-h-[calc(100svh-120px)] text-left"
-            >
-              {/* <motion.div style={{ display: 'block' }} /> */}
+            <motion.div style={{
+                              background,
+                              backdropFilter: rblur,
+            }} className="flex flex-col  overflow-y-scroll max-h-[calc(100svh-120px)] rounded-md shadow-lg shadow-black  text-left">
+              <motion.div
+                ref={innerRef}
 
-              <motion.img
-                alt={imgAlt}
-                style={{ x: 0, borderRadius: bi, opacity }}
-                className=" top-4 w-full sm:w-1/3 h-fit object-cover pr-4"
-                src={imgSrc}
-              />
-              <div className="overflow-y-scroll max-h-[70vh] w-full">
-                {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
+                className="relative flex flex-col sm:flex-row  gap-4 p-4 "
+              >
+                {/* <motion.div style={{ display: 'block' }} /> */}
 
-                <div>
-                  <Recipe ingredients={ingredients || []} />
-                  {variations.map((v) => {
-                    return (
-                      <>
-                        <p className="mt-2">{v.title}</p>
-                        <Recipe ingredients={v.ingredients}></Recipe>
-                      </>
-                    );
-                  })}
+                <motion.img
+                  alt={imgAlt}
+                  style={{ x: 0, borderRadius: bi, opacity }}
+                  className=" top-4 w-full sm:w-1/3 h-fit object-cover pr-4"
+                  src={imgSrc}
+                />
+                <div className=" w-full">
+                  {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
+
+                  <div>
+                    <Recipe ingredients={ingredients || []} />
+                    {variations.map((v) => {
+                      return (
+                        <>
+                          <p className="mt-2">{v.title}</p>
+                          <Recipe ingredients={v.ingredients}></Recipe>
+                        </>
+                      );
+                    })}
+                  </div>
                 </div>
-                <Spectogram
-                  data={ingredients
-                    ?.filter((i) => i.dilutant !== true)
-                    ?.sort((a, b) => a.evaporationRate - b.evaporationRate)
-                    .map((i, _, arr) => {
+              </motion.div>
+              <Spectogram
+                data={ingredients
+                  ?.filter((i) => i.dilutant !== true)
+                  ?.sort((a, b) => a.evaporationRate - b.evaporationRate)
+                  .map((i, _, arr) => {
+                    const undiluted =
+                      toDrops(i.amount) / (100 / (i.dilution || 100));
+                    const totalU = arr.reduce((acc, i) => {
                       const undiluted =
                         toDrops(i.amount) / (100 / (i.dilution || 100));
-                      const totalU = arr.reduce((acc, i) => {
-                        const undiluted =
-                          toDrops(i.amount) / (100 / (i.dilution || 100));
-                        return acc + undiluted;
-                      }, 0);
+                      return acc + undiluted;
+                    }, 0);
 
-                      const prc = (100 / totalU) * undiluted;
-                      const impact = prc * (i.relativeStrength || 1);
-                      return {
-                        er: i.evaporationRate,
-                        prm: ~~(prc * 100) / 10,
-                        impact: ~~(impact * 100) / 10,
-                        name: i.name,
-                      };
-                    })}
-                />
-              </div>
+                    const prc = (100 / totalU) * undiluted;
+                    const impact = prc * (i.relativeStrength || 1);
+                    return {
+                      er: i.evaporationRate,
+                      prm: ~~(prc * 100) / 10,
+                      impact: ~~(impact * 100) / 10,
+                      name: i.name,
+                    };
+                  })}
+              />
             </motion.div>
           </button>
         </Parallax>
@@ -663,7 +676,7 @@ export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
     <motion.div
       style={{ y }}
       className={clsx(
-        "whitespace-pre-line absolute z-[1000] h-[50vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
+        "whitespace-pre-line pointer-events-none absolute z-[1000] h-[50vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
         {
           "opacity-100": visible,
           "opacity-0": !visible,

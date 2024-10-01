@@ -69,6 +69,8 @@ interface IngredientOptions {
 
 // Helper function for evaporation rates
 const evaporationRates: Record<string, number> = {
+  Amarocit: 480,
+  Cis3Hexenol: 180,
   Hedione: 480,
   Sylvamber: 24 * 60,
   EthylVanillin: 24 * 60,
@@ -104,6 +106,39 @@ const evaporationRates: Record<string, number> = {
 
 // Explanation objects
 const explanations: Record<string, Explanation> = {
+  OrangeFlowerBlend: {
+    desc: t(
+      "Orange Flower Blend is a carefully crafted substitute for Orange Flower Absolute, offering a rich floral and citrusy profile with hints of sweetness. Designed to mimic the characteristics of Orange Flower Absolute at a more affordable cost."
+    ),
+    dil: t("10%"),
+    vol: t("1dr"),
+    com: t("Various Suppliers"),
+    subst: t(
+      "This blend offers similar substantivity to Orange Flower Absolute, with a lasting floral and sweet citrus presence for several hours, but with a slightly quicker drydown on a blotter."
+    ),
+  },
+  Amarocit: {
+    desc: t(
+      "Amarocit is a bitter woody material with amber facets, often used to enhance the bitter character in woody or ambery accords."
+    ),
+    dil: t("10%"),
+    vol: t("1dr"),
+    com: t("Various Suppliers"),
+    subst: t(
+      "Amarocit has moderate substantivity, with its bitter-woody notes persisting for several hours on a blotter."
+    ),
+  },
+  Cis3Hexenol: {
+    desc: t(
+      "cis-3-Hexenol is a powerful green, grassy, and fresh material, often associated with the scent of freshly cut grass or crushed leaves."
+    ),
+    dil: t("10%"),
+    vol: t("1dr"),
+    com: t("Various Suppliers"),
+    subst: t(
+      "cis-3-Hexenol has low substantivity, typically lasting a few hours on a blotter. It provides a sharp, fresh, green note that fades relatively quickly."
+    ),
+  },
   Hedione: {
     desc: t(
       "Hedione is a jasmine-like material with a fresh, delicate citrus-floral scent. It adds radiance and a natural character to floral compositions."
@@ -227,6 +262,7 @@ const explanations: Record<string, Explanation> = {
   Geosmin: {
     desc: t("Geosmin"),
     dil: t("Strong"),
+    vol: t('Asd')
   },
   Lavender: {
     desc: t("Lavender"),
@@ -292,6 +328,38 @@ export const OrangeFlowerAbsolute = ({
   odour: ["floral", "sweet", "citrus"],
   evaporationRate: evaporationRates.OrangeFlowerAbsolute, // Example evaporation rate
   relativeStrength: 50,
+  ...rest,
+});
+
+// Ingredient functions
+
+export const OrangeFlowerBlend = ({
+  dilution = 10,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "Orange Flower Blend",
+  dilution,
+  amount,
+  exp: explanations.OrangeFlowerAbsolute,
+  odour: ["floral", "sweet", "citrus"],
+  evaporationRate: evaporationRates.OrangeFlowerAbsolute, // Example evaporation rate
+  relativeStrength: 30,
+  ...rest,
+});
+
+export const Amarocit = ({
+  dilution = 10,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "Amarocit",
+  dilution,
+  amount,
+  exp: explanations.Amarocit,
+  odour: ["bitter", "woody", "amber", "citrus", "grape"],
+  evaporationRate: evaporationRates.Amarocit,
+  relativeStrength: 10,
   ...rest,
 });
 
@@ -641,7 +709,8 @@ export const Geosmin = ({
   name: "Geosmin",
   dilution,
   amount,
-  exp: explanations.GEOSMIN,
+  exp: explanations.Geosmin,
+  relativeStrength: 10000,
   odour: ["earthy", "sweet"],
   evaporationRate: evaporationRates.Geosmin,
   ...rest,
@@ -843,26 +912,31 @@ export const EthylVanillin = ({
 export const OrangeForest: Ingredient[] = [
   DPG({ dilution: null, amount: "1ml" }),
   Vetiveryl({ dilution: null, amount: "33dr" }),
-  ClearWood({ dilution: null, amount: "24dr" }),
-  CedarWood({ dilution: 10, amount: "7dr" }),
+  ClearWood({ dilution: null, amount: "26dr" }),
+  CedarWood({ dilution: 10, amount: "8dr" }),
   BetaPinenes({ dilution: 10, amount: "16dr" }),
-  FirBalm({ dilution: 5, amount: "21dr" }),
+  FirBalm({ dilution: 5, amount: "22dr" }),
   Veramoss({ dilution: 20, amount: "3dr" }),
-  Timbersilk({ dilution: null, amount: "26dr" }),
+  Timbersilk({ dilution: null, amount: "30dr" }),
   ISOESuper({ dilution: null, amount: "20dr" }),
-  Ambroxan({ dilution: 10, amount: "25dr" }),
+  Ambroxan({ dilution: 10, amount: "27dr" }),
   VertofixCoeur({ dilution: null, amount: "9dr" }),
   PinoAcetaldehyde({ dilution: 10, amount: "9dr" }),
   Sylvamber({ dilution: null, amount: "2dr" }),
-  MuskBlend({ dilution: null, amount: "6dr" }),
+  MuskBlend({ dilution: null, amount: "9dr" }),
   Terrasol({ dilution: 10, amount: "5dr" }),
   EthylVanillin({ dilution: 1, amount: "4dr" }),
-  Cis3Hexenol({ dilution: 0.1, amount: "1dr" }),
-  Lavender({ dilution: 10, amount: "4dr" }),
-  LavenderAbsolute({ dilution: 10, amount: "8dr" }),
-  Hedione({ dilution: null, amount: "2dr" }),
+  Cis3Hexenol({ dilution: 0.1, amount: "4dr" }),
+  Lavender({ dilution: 10, amount: "8dr" }),
+  LavenderAbsolute({ dilution: 10, amount: "15dr" }),
+  Hedione({ dilution: null, amount: "3dr" }),
   // NeroliEO({ dilution: 5, amount: "1dr" }),
-  OrangeFlowerAbsolute({ dilution: 10, amount: "8dr" }),
+ 
+  Amarocit({ dilution: 10, amount: "7dr" }),
+  OrangeFlowerBlend({ dilution: 10, amount: "8dr" }),
+  OrangeFlowerAbsolute({ dilution: 10, amount: "17dr" }),
+  Ozofleur({dilution: 1, amount: '1dr'}),
+  Geosmin({dilution: 0.1, amount: '1dr'})
 ];
 
 export const WoodAccord: Accord = {
