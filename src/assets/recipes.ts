@@ -295,7 +295,7 @@ export const Cis3Hexenol = ({
   exp: explanations.Cis3Hexenol,
   odour: ["green", "grassy", "leafy", "fresh"],
   evaporationRate: evaporationRates.Cis3Hexenol,
-  relativeStrength: 1000,
+  relativeStrength: 5000,
   ...rest,
 });
 
