@@ -1,10 +1,16 @@
-import { getVH } from "@/lib/util";
+import {
+  drops2Grams,
+  drops2ml,
+  getGCD,
+  getVH,
+  toDrops,
+} from "@/lib/util";
 import { StickySection, sectionCtx } from "@/components/AnimatedSection";
 import { BackgroundImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ArrowBack from "@/assets/arrowback.svg?react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   useContext,
   useEffect,
@@ -43,11 +49,6 @@ import {
 } from "recharts";
 import { getCurrentBreakpoint } from "@/lib/hooks";
 
-const toDrops = (amount: string) => {
-  if (amount.includes("dr")) return Number(amount.replace("dr", ""));
-  if (amount.includes("ml")) return 20 * Number(amount.replace("ml", ""));
-  return 1;
-};
 export const PerfumePage = () => {
   const { t } = useTranslation();
   const params = useParams();
@@ -580,6 +581,7 @@ export type Explanation = {
 export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
   const [visible, setVisible] = useState<string | null>(null);
   const [part, setPart] = useState<keyof Explanation | null>(null);
+  const [params] = useSearchParams();
   const to = useRef(0);
   const hide = () => {
     clearTimeout(to.current);
@@ -596,12 +598,37 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
     };
   };
 
+  const [unit, setUnit] = useState(Number(params.get('unit') || 0));
+  const denomDrops = getGCD(
+    ingredients.map((i) => {
+      const drops = toDrops(i.amount);
+      return drops;
+    })
+  );
+  const denomGrams =
+    getGCD(
+      ingredients.map((i) => {
+        const drops = drops2Grams(toDrops(i.amount)) * 100;
+        return drops;
+      })
+    ) / 100;
   return (
     <div>
+      <select onChange={(e) => setUnit(Number(e.target.value))} value={unit}>
+        <option value={0}>Drops</option>
+        <option value={1}>Grams</option>
+        <option value={2}>ML</option>
+      </select>
       {ingredients.map((ing) => {
         const { amount, dilution, name, company, exp } = ing;
         const showTooltip = visible === name && !!part;
 
+        const drops = toDrops(amount) / denomDrops;
+        const grams = (
+          (drops2Grams(toDrops(amount)) / denomGrams) *
+          ((dilution || 100) / 100)
+        ).toFixed(3);
+        const ml = drops2ml(toDrops(amount));
         return (
           <div
             onMouseOver={() => setVisible(name)}
@@ -617,7 +644,11 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
                 onMouseEnter={Show("vol", !!exp.vol && exp.vol !== amount)}
                 onMouseLeave={hide}
               >
-                {amount}{" "}
+                {unit === 0
+                  ? drops + "dr"
+                  : unit === 1
+                  ? grams + "g"
+                  : ml + "ml"}{" "}
               </span>
               <span
                 onTouchEnd={showTooltip ? hide : Show("desc")}
@@ -629,7 +660,7 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
               >
                 {name}{" "}
               </span>
-              {dilution !== null && (
+              {dilution !== null && unit !== 1 && (
                 <span
                   onTouchEnd={showTooltip ? hide : Show("dil")}
                   style={{

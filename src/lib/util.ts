@@ -12,3 +12,26 @@ export const scrollToTop = () => {
     behavior: "smooth",
   });
 };
+
+export function getGCD(arr: number[]) {
+  var min = Math.min.apply(null, arr);
+  var gcd = 1;
+  for (var i = gcd + 1; i <= min; i++) {
+    if (arr.every((x) => x % i === 0)) gcd = i;
+  }
+  return gcd;
+}
+
+export const toDrops = (amount: string) => {
+  if (amount.includes("dr")) return Number(amount.replace("dr", ""));
+  if (amount.includes("ml")) return 20 * Number(amount.replace("ml", ""));
+  return 1;
+};
+
+export const drops2Grams = (drops: number) => {
+  return drops * 0.01;
+};
+
+export const drops2ml = (drops: number) => {
+  return drops / 20;
+};

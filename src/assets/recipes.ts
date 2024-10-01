@@ -936,8 +936,8 @@ export const OrangeForest: Ingredient[] = [
   Amarocit({ dilution: 10, amount: "7dr" }),
   OrangeFlowerBlend({ dilution: 10, amount: "8dr" }),
   OrangeFlowerAbsolute({ dilution: 10, amount: "17dr" }),
-  Ozofleur({dilution: 1, amount: '1dr'}),
-  Geosmin({dilution: 0.1, amount: '1dr'})
+  Ozofleur({dilution: 0.1, amount: '10dr'}),
+  Geosmin({dilution: 0.01, amount: '10dr'})
 ];
 
 export const WoodAccord: Accord = {
