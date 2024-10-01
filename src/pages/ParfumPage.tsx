@@ -685,14 +685,15 @@ export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    ["0lvh", "50lvh"]
+    ["calc(0vh + 16px)", "calc(50vh + 16px)"]
   );
   return ReactDOM.createPortal(
     <motion.div
       style={{ y }}
       className={clsx(
-        "whitespace-pre-line pointer-events-none absolute z-[1000] h-[50vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-4 sm:top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
+        "overflow-y-scroll whitespace-pre-line absolute z-[1000] max-h-[40vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-4 sm:top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
         {
+          "pointer-events-none": !visible,
           "opacity-100": visible,
           "opacity-0": !visible,
           "h-0": !visible,
