@@ -784,6 +784,7 @@ export const Ozofleur = ({
   dilution,
   amount,
   exp: explanations.Ozofleur,
+  relativeStrength: 1000,
   odour: ["sweet", "fruity"],
   evaporationRate: evaporationRates.Ozofleur,
   ...rest,
