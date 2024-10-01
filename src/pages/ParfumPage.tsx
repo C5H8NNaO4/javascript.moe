@@ -41,6 +41,7 @@ import {
   Tooltip as RT,
   Legend,
 } from "recharts";
+import { getCurrentBreakpoint } from "@/lib/hooks";
 
 const toDrops = (amount: string) => {
   if (amount.includes("dr")) return Number(amount.replace("dr", ""));
@@ -250,22 +251,24 @@ const labels = {
   Impact: "Impact",
 };
 export const Spectogram = ({ data }: { data: any }) => {
+  const bp = getCurrentBreakpoint();
+  const bps = [bp === "3xs", bp === "2xs", bp === "xs"];
+
   return (
     <div className="mt-8">
       <ResponsiveContainer width={"100%"} height={400}>
         <ComposedChart data={data} margin={{ bottom: 100, left: -24 }}>
           <Legend align="center" verticalAlign="top" />
-
           <CartesianGrid stroke="#f5f5f5" fill="#FFFFFF88" />
           <XAxis
             dataKey="name"
             textAnchor="start"
             height={60}
             angle={45}
-            interval={0}
+            interval={bps[0] ? 5 : bps[1] ? 3 : bps[2] ? 1 : 0}
             dx={0}
             dy={8}
-            minTickGap={-200}
+            minTickGap={16}
             color="white"
             tick={{ fill: "white" }}
             tickLine={{ stroke: "darkred" }}
