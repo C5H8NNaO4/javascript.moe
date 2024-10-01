@@ -248,6 +248,21 @@ const explanations: Record<string, Explanation> = {
   },
 };
 
+export const Cis3Hexenol = ({
+  dilution = 1000,
+  amount = "1dr",
+  ...rest
+}: IngredientOptions): Ingredient => ({
+  name: "cis-3-Hexenol",
+  dilution,
+  amount,
+  exp: explanations.Cis3Hexenol,
+  odour: ["green", "grassy", "leafy", "fresh"],
+  evaporationRate: evaporationRates.Cis3Hexenol,
+  relativeStrength: 1000,
+  ...rest,
+});
+
 export const Hedione = ({
   dilution = 10,
   amount = "1dr",
@@ -842,6 +857,7 @@ export const OrangeForest: Ingredient[] = [
   MuskBlend({ dilution: null, amount: "6dr" }),
   Terrasol({ dilution: 10, amount: "5dr" }),
   EthylVanillin({ dilution: 1, amount: "4dr" }),
+  Cis3Hexenol({ dilution: 0.1, amount: "1dr" }),
   Lavender({ dilution: 10, amount: "4dr" }),
   LavenderAbsolute({ dilution: 10, amount: "8dr" }),
   Hedione({ dilution: null, amount: "2dr" }),
