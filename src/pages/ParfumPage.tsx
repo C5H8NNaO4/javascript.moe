@@ -345,14 +345,14 @@ export const PerfumeText = ({
   const bi = useTransform(scrollYProgress, [0, 0.75], ["1000px", "4px"]);
   const opacity = useTransform(scrollYProgress, [0, 0.75], ["20%", "100%"]);
 
-  const anchors = ["sylvan dawn", "wooden heart"];
+  const anchors = ["sylvan dawn", "wooden heart", "orange woods"];
 
   const { t } = useTranslation();
   useEffect(() => {
     const index = anchors.indexOf(
       decodeURIComponent(window.location.hash.slice(1).toLowerCase())
     );
-    const pos = 0.5 + index * 2;
+    const pos = index * 2;
 
     if (index > -1) {
       setTimeout(() => {
