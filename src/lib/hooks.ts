@@ -1,6 +1,6 @@
 import { MotionValue, useTransform } from "framer-motion";
 import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../tailwind.config"; // Fix the path
+import tailwindConfig from "../tailwind.config.ts"; // Fix the path
 import { useEffect, useState } from "react";
 
 export const useParallax = (
@@ -21,8 +21,8 @@ export const useParallax = (
 };
 
 const fullConfig = resolveConfig(tailwindConfig);
-
-export const getBreakpointValue = (value: string): number =>
+export type BP = keyof (typeof fullConfig)["theme"]["screens"];
+export const getBreakpointValue = (value: BP): number =>
   +fullConfig.theme.screens[value].slice(
     0,
     fullConfig.theme.screens[value].indexOf("px")
@@ -31,8 +31,8 @@ export const getBreakpointValue = (value: string): number =>
 export const getCurrentBreakpoint = (): string => {
   let currentBreakpoint: string = "3xs";
   let biggestBreakpointValue = 0;
-  const [width, setWidth] = useState(window.innerWidth);
-  for (const breakpoint of Object.keys(fullConfig.theme.screens)) {
+  const [, setWidth] = useState(window.innerWidth);
+  for (const breakpoint of Object.keys(fullConfig.theme.screens) as BP[]) {
     const breakpointValue = getBreakpointValue(breakpoint);
     if (
       breakpointValue > biggestBreakpointValue &&
