@@ -312,7 +312,7 @@ export const Hedione = ({
   exp: explanations.Hedione,
   odour: ["jasmine", "fresh", "delicate", "citrus"],
   evaporationRate: evaporationRates.Hedione,
-  relativeStrength: 4,
+  relativeStrength: 5,
   ...rest,
 });
 
@@ -361,7 +361,7 @@ export const Amarocit = ({
   exp: explanations.Amarocit,
   odour: ["bitter", "woody", "amber", "citrus", "grape"],
   evaporationRate: evaporationRates.Amarocit,
-  relativeStrength: 20,
+  relativeStrength: 21,
   ...rest,
 });
 
@@ -403,7 +403,7 @@ export const PinoAcetaldehyde = ({
 
 export const WoodyBase = ({
   dilution = null,
-  amount = "2ml",
+  amount = "1dr",
   ...rest
 }: IngredientOptions): Ingredient => ({
   name: "Woody Base",
@@ -413,7 +413,7 @@ export const WoodyBase = ({
   exp: explanations.WoodyBase,
   odour: ["woody", "cedar"],
   evaporationRate: evaporationRates.WoodyBase,
-  relativeStrength: 1 / 2,
+  relativeStrength: 1,
   ...rest,
 });
 
@@ -476,7 +476,7 @@ export const CedarWood = ({
   dilution,
   amount,
   exp: explanations.CedarWood,
-  relativeStrength: 20,
+  relativeStrength: 25,
   odour: ["woody", "dry"],
   evaporationRate: evaporationRates.CedarWood,
   ...rest,
@@ -586,7 +586,7 @@ export const Myrrh = ({
 });
 
 export const FirBalm = ({
-  dilution = 10,
+  dilution = 5,
   amount = "1dr",
   ...rest
 }: IngredientOptions): Ingredient => ({
@@ -842,7 +842,7 @@ export const AllIngredients: Ingredient[] = [
   Vetiveryl({ dilution: null }),
   ClearWood({ dilution: 10 }),
   Patchouli({ dilution: 10 }),
-  FirBalm({ dilution: 10 }),
+  FirBalm({ dilution: 5 }),
   BetaPinenes({ dilution: 10 }),
   CedarWood({ dilution: 10 }),
   Sandalwood({ dilution: 10 }),
@@ -859,6 +859,7 @@ export const AllIngredients: Ingredient[] = [
   PADMA({ dilution: 1 }),
   Dimetol({ dilution: 1 }),
   Silvial({ dilution: 1 }),
+  Hedione({ dilution: null }),
 ];
 
 export const SylvanDawn: Ingredient[] = [
@@ -930,7 +931,7 @@ export const OrangeForest: Ingredient[] = [
   Sylvamber({ dilution: null, amount: "3dr" }),
   MuskBlend({ dilution: null, amount: "9dr" }),
   Terrasol({ dilution: 10, amount: "6dr" }),
-  Hedione({ dilution: null, amount: "3dr" }),
+  Hedione({ dilution: null, amount: "4dr" }),
   EthylVanillin({ dilution: 1, amount: "6dr" }),
   Cis3Hexenol({ dilution: 1, amount: "4dr" }),
   Lavender({ dilution: 10, amount: "8dr" }),
@@ -938,8 +939,8 @@ export const OrangeForest: Ingredient[] = [
   // NeroliEO({ dilution: 5, amount: "1dr" }),
 
   Amarocit({ dilution: 10, amount: "8dr" }),
-  OrangeFlowerBlend({ dilution: 10, amount: "8dr" }),
-  OrangeFlowerAbsolute({ dilution: 10, amount: "17dr" }),
+  OrangeFlowerBlend({ dilution: 10, amount: "10dr" }),
+  OrangeFlowerAbsolute({ dilution: 10, amount: "18dr" }),
   Ozofleur({ dilution: 1, amount: "2dr" }),
   Geosmin({ dilution: 0.01, amount: "10dr" }),
 ];

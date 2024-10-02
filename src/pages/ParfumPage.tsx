@@ -305,16 +305,18 @@ export const Spectogram = ({ data }: { data: any }) => {
             barSize={10}
             fill="green"
           >
-            {!isMobile && <LabelList
-              dataKey="ppt"
-              position="bottom"
-              angle={270}
-              offset={-32}
-              dx={-4.5}
-              fontSize={"11px"}
-              fill="white"
-              formatter={(v: string) => v + "‰"}
-            />}
+            {!isMobile && (
+              <LabelList
+                dataKey="ppt"
+                position="bottom"
+                angle={270}
+                offset={-32}
+                dx={-4.5}
+                fontSize={"11px"}
+                fill="white"
+                formatter={(v: string) => v + "‰"}
+              />
+            )}
           </Bar>
           <Bar
             name="Relative Impact"
@@ -613,6 +615,14 @@ export const Ingredients = ({
                 <p>
                   <b>Dilution: </b>
                   {ing.dilution ? ing.dilution + "%" : " Don't dilute"}
+                </p>
+                <p>
+                  <b>Strength: </b>
+                  {ing.relativeStrength ? "x" + ing.relativeStrength : "x1"}
+                </p>
+                <p>
+                  <b>RER: </b>
+                  {ing.evaporationRate ? ing.evaporationRate + "min" : "-"}
                 </p>
               </div>
               <div className="flex-shrink w-fit whitespace-pre-line">
