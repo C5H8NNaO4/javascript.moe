@@ -13,9 +13,6 @@
   -webkit-backface-visibility: hidden;
 }
 
-* {
-  will-change: transform;
-}
 body {
   background-color: white;
   height: 100vh;
