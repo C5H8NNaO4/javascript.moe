@@ -413,8 +413,8 @@ export const PerfumeText = ({
           </Link>
         </Parallax>
         <Parallax
-          distance={dist - 32 * 4}
-          offset={offset + 32 * 2}
+          distance={dist + 32 * 2}
+          offset={offset - 32 * 4}
           trans={[0.75, 0]}
           className=""
         >
