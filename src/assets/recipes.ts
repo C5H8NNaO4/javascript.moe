@@ -232,6 +232,7 @@ const explanations: Record<string, Explanation> = {
   },
   Evernyl: {
     desc: t("Evernyl"),
+    dil: t("EvernylDissolve")
   },
   Myrrh: {
     desc: t("Myrrh"),
@@ -934,7 +935,7 @@ export const OrangeForest: Ingredient[] = [
   Hedione({ dilution: null, amount: "4dr" }),
   EthylVanillin({ dilution: 1, amount: "6dr" }),
   Cis3Hexenol({ dilution: 1, amount: "4dr" }),
-  Lavender({ dilution: 10, amount: "8dr" }),
+  Lavender({ dilution: 5, amount: "9dr" }),
   LavenderAbsolute({ dilution: 10, amount: "17dr" }),
   // NeroliEO({ dilution: 5, amount: "1dr" }),
 
@@ -942,7 +943,7 @@ export const OrangeForest: Ingredient[] = [
   OrangeFlowerBlend({ dilution: 10, amount: "10dr" }),
   OrangeFlowerAbsolute({ dilution: 10, amount: "18dr" }),
   Ozofleur({ dilution: 1, amount: "2dr" }),
-  Geosmin({ dilution: 0.01, amount: "10dr" }),
+  Geosmin({ dilution: 0.1, amount: "1dr" }),
 ];
 
 export const WoodAccord: Accord = {

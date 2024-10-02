@@ -246,14 +246,21 @@ const labels = {
   PPT: "Content (ppt)",
   "Relative Impact": "Impact",
 };
-export const Spectogram = ({ data }: { data: any }) => {
+export const Spectogram = ({ data, sort }: { data: any; sort: number }) => {
   const bp = getCurrentBreakpoint();
   const bps = [bp === "3xs", bp === "2xs", bp === "xs"];
   const isMobile = bps.some(Boolean);
   return (
     <div className="mt-8">
       <ResponsiveContainer width={"100%"} height={400}>
-        <ComposedChart data={data} margin={{ bottom: 100, left: -24 }}>
+        <ComposedChart
+          data={data}
+          margin={{
+            bottom: 100,
+            left: 0,
+            right: 32,
+          }}
+        >
           <Legend align="center" verticalAlign="top" />
           <CartesianGrid stroke="#f5f5f5" fill="#FFFFFF88" />
           <XAxis
@@ -271,9 +278,10 @@ export const Spectogram = ({ data }: { data: any }) => {
             // axisLine={false}
           />
           <YAxis
+            hide={sort > 1}
             yAxisId="left"
             tick={{ fill: "white" }}
-            tickLine={{ stroke: "white" }}
+            tickLine={{ stroke: "green" }}
             axisLine={{
               fill: "green",
               stroke: "green",
@@ -281,10 +289,10 @@ export const Spectogram = ({ data }: { data: any }) => {
             }}
           />
           <YAxis
-            hide
+            hide={sort !== 2}
             yAxisId="left-2"
             tick={{ fill: "white" }}
-            tickLine={{ stroke: "white" }}
+            tickLine={{ stroke: "orange" }}
             axisLine={{
               fill: "orange",
               stroke: "orange",
@@ -294,7 +302,6 @@ export const Spectogram = ({ data }: { data: any }) => {
           <YAxis
             hide
             yAxisId="right"
-            orientation="right"
             tick={{ fill: "white" }}
             tickLine={{ stroke: "white" }}
             axisLine={{ fill: "darkred", stroke: "darkred" }}
@@ -441,7 +448,7 @@ export const PerfumeText = ({
                 <motion.img
                   alt={imgAlt}
                   style={{ x: 0, borderRadius: bi, opacity }}
-                  className=" top-4 w-full sm:w-1/3 h-fit object-cover pr-4"
+                  className=" top-4 w-full sm:w-1/3 sticky  h-fit object-cover pr-4"
                   src={imgSrc}
                 />
                 <div className=" w-full">
@@ -472,6 +479,7 @@ export const PerfumeText = ({
                 </select>
               </div>
               <Spectogram
+                sort={sort}
                 data={ingredients
                   ?.filter((i) => i.dilutant !== true)
                   ?.sort((a, b) => {
