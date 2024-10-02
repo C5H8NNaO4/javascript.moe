@@ -912,7 +912,7 @@ export const EthylVanillin = ({
   exp: explanations.EthylVanillin,
   odour: ["sweet", "vanilla", "powdery"],
   evaporationRate: evaporationRates.EthylVanillin,
-  relativeStrength: 75,
+  relativeStrength: 10,
   ...rest,
 });
 
