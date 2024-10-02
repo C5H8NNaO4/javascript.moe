@@ -40,6 +40,7 @@ import {
   YAxis,
   Tooltip as RT,
   Legend,
+  LabelList,
 } from "recharts";
 import { getCurrentBreakpoint } from "@/lib/hooks";
 
@@ -227,7 +228,7 @@ function CustomTooltip({
   if (active) {
     return (
       <div className="custom-tooltip bg-[#00000088] p-4">
-        <p className="label">{`${label}`}</p>
+        <b className=" text-white text-[24px] underline">{`${label}`}</b>
         {payload?.map((p) => {
           return (
             <p className="label">{`${labels[p.name as "RER"]}: ${p.value}`}</p>
@@ -243,7 +244,7 @@ function CustomTooltip({
 const labels = {
   RER: "Evaporation:",
   PPT: "Content (ppt)",
-  Impact: "Impact",
+  "Relative Impact": "Impact",
 };
 export const Spectogram = ({ data }: { data: any }) => {
   const bp = getCurrentBreakpoint();
@@ -269,19 +270,55 @@ export const Spectogram = ({ data }: { data: any }) => {
             tickLine={{ stroke: "darkred" }}
             // axisLine={false}
           />
-          <YAxis yAxisId="left" tick={{ fill: "white" }} />
-          <YAxis yAxisId="right" orientation="right" tick={{ fill: "white" }} />
+          <YAxis
+            yAxisId="left"
+            tick={{ fill: "white" }}
+            tickLine={{ stroke: "white" }}
+            axisLine={{
+              fill: "green",
+              stroke: "green",
+              filter: "drop-shadow(1px 1px 2px rgb(0 0 0 / 0.4))",
+            }}
+          />
+          <YAxis
+            yAxisId="left-2"
+            tick={{ fill: "white" }}
+            tickLine={{ stroke: "white" }}
+            axisLine={{
+              fill: "orange",
+              stroke: "orange",
+              filter: "drop-shadow(1px 1px 2px rgb(0 0 0 / 0.4))",
+            }}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            tick={{ fill: "white" }}
+            tickLine={{ stroke: "white" }}
+            axisLine={{ fill: "darkred", stroke: "darkred" }}
+          />
 
           <Bar
             name="PPT"
             yAxisId="left"
-            dataKey="prm"
+            dataKey="ppt"
             barSize={10}
             fill="green"
-          />
+          >
+            <LabelList
+              dataKey="ppt"
+              position="bottom"
+              angle={270}
+              offset={-32}
+              dx={-4.5}
+              fontSize={"11px"}
+              fill="white"
+              formatter={(v: string) => v + "‰"}
+            />
+          </Bar>
           <Bar
-            name="Impact"
-            yAxisId="left"
+            name="Relative Impact"
+            yAxisId="left-2"
             dataKey="impact"
             barSize={10}
             fill="orange"
@@ -291,7 +328,7 @@ export const Spectogram = ({ data }: { data: any }) => {
             yAxisId={"right"}
             type="monotone"
             dataKey="er"
-            stroke="darkred"
+            stroke="#8b0000AA"
           />
           <RT content={(props) => <CustomTooltip {...props} />} />
         </ComposedChart>
@@ -345,6 +382,7 @@ export const PerfumeText = ({
 
   const anchors = ["sylvan dawn", "wooden heart", "orange woods"];
 
+  const [sort, setSort] = useState(1);
   const { t } = useTranslation();
   useEffect(() => {
     const index = anchors.indexOf(
@@ -418,10 +456,33 @@ export const PerfumeText = ({
                   </div>
                 </div>
               </motion.div>
+              <div className="flex gap-1">
+                <label>Sort:</label>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(Number(e.target.value))}
+                >
+                  <option value={0}>RER</option>
+                  <option value={1}>Amount</option>
+                  <option value={2}>Impact</option>
+                </select>
+              </div>
               <Spectogram
                 data={ingredients
                   ?.filter((i) => i.dilutant !== true)
-                  ?.sort((a, b) => a.evaporationRate - b.evaporationRate)
+                  ?.sort((a, b) => {
+                    const aU = toDrops(a.amount) * ((a.dilution || 100) / 100);
+                    const bU = toDrops(b.amount) * ((b.dilution || 100) / 100);
+                    if (sort === 0)
+                      return a.evaporationRate - b.evaporationRate;
+                    if (sort === 1) return bU - aU;
+                    if (sort === 2)
+                      return (
+                        bU * (b.relativeStrength || 1) -
+                        aU * (a.relativeStrength || 1)
+                      );
+                    return a.evaporationRate - b.evaporationRate;
+                  })
                   .map((i, _, arr) => {
                     const undiluted =
                       toDrops(i.amount) / (100 / (i.dilution || 100));
@@ -444,7 +505,7 @@ export const PerfumeText = ({
 
                     return {
                       er: i.evaporationRate,
-                      prm: ~~(prc * 100) / 10,
+                      ppt: ~~(prc * 10000) / 1000,
                       impact: ~~(impact * 100) / 10,
                       name: i.name,
                     };
