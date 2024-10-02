@@ -281,6 +281,7 @@ export const Spectogram = ({ data }: { data: any }) => {
             }}
           />
           <YAxis
+            hide
             yAxisId="left-2"
             tick={{ fill: "white" }}
             tickLine={{ stroke: "white" }}
@@ -291,6 +292,7 @@ export const Spectogram = ({ data }: { data: any }) => {
             }}
           />
           <YAxis
+            hide
             yAxisId="right"
             orientation="right"
             tick={{ fill: "white" }}
