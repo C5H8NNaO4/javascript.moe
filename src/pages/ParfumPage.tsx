@@ -452,7 +452,7 @@ export const PerfumeText = ({
                 <motion.img
                   alt={imgAlt}
                   style={{ x: 0, borderRadius: bi, opacity }}
-                  className=" top-[56px] w-full sm:w-1/3 sticky  h-fit object-cover pr-4"
+                  className=" top-[56px] sm:top-4 w-full sm:w-1/3 sticky  h-fit object-cover pr-4"
                   src={imgSrc}
                 />
                 <div className=" w-full">
