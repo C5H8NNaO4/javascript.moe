@@ -249,7 +249,7 @@ const labels = {
 export const Spectogram = ({ data }: { data: any }) => {
   const bp = getCurrentBreakpoint();
   const bps = [bp === "3xs", bp === "2xs", bp === "xs"];
-
+  const isMobile = bps.some(Boolean);
   return (
     <div className="mt-8">
       <ResponsiveContainer width={"100%"} height={400}>
@@ -305,7 +305,7 @@ export const Spectogram = ({ data }: { data: any }) => {
             barSize={10}
             fill="green"
           >
-            <LabelList
+            {!isMobile && <LabelList
               dataKey="ppt"
               position="bottom"
               angle={270}
@@ -314,7 +314,7 @@ export const Spectogram = ({ data }: { data: any }) => {
               fontSize={"11px"}
               fill="white"
               formatter={(v: string) => v + "‰"}
-            />
+            />}
           </Bar>
           <Bar
             name="Relative Impact"
@@ -456,7 +456,7 @@ export const PerfumeText = ({
                   </div>
                 </div>
               </motion.div>
-              <div className="flex gap-1">
+              <div className="flex gap-1 ml-4">
                 <label>Sort:</label>
                 <select
                   value={sort}

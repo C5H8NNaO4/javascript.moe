@@ -657,7 +657,7 @@ export const VertofixCoeur = ({
   exp: explanations.VertofixCoeur,
   odour: ["woody", "earthy"],
   evaporationRate: evaporationRates.VertofixCoeur,
-  relativeStrength: 4,
+  relativeStrength: 3,
   ...rest,
 });
 
