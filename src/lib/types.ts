@@ -8,7 +8,15 @@ export type Variation = {
 export type AboutSectionProps = Partial<{
   text: string;
   title: string;
-  bgSrc: string;
+  bgSrc:
+    | string
+    | {
+        "3xs"?: string;
+        "2xs"?: string;
+        xs?: string;
+        sm?: string;
+        def?: string;
+      };
   bgAlt: string;
   imgSrc: string;
   imgAlt: string;

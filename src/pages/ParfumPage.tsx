@@ -42,7 +42,7 @@ import {
   Legend,
   LabelList,
 } from "recharts";
-import { getCurrentBreakpoint } from "@/lib/hooks";
+import { useCurrentBreakpoint } from "@/lib/hooks";
 
 export const PerfumePage = () => {
   const { t } = useTranslation();
@@ -101,7 +101,12 @@ export const PerfumePage = () => {
         <PerfumeText
           title="Orange Woods"
           text={t("OrangeWoods")}
-          bgSrc="/images/wallpaper/orangewoodsbg.jpg"
+          bgSrc={{
+            def: "/images/wallpaper/orangewoodsbg.jpg",
+            xs: "/images/wallpaper/orangewoodsbg9x16.jpg",
+            "2xs": "/images/wallpaper/orangewoodsbg9x16.jpg",
+            "3xs": "/images/wallpaper/orangewoodsbg9x16.jpg",
+          }}
           bgAlt="Depiction of my Orange Woods Fragrance in Landscape"
           imgSrc="/images/perfumes/orangewoods.jpg"
           imgAlt="Depiction of my Orange Woods Fragrance"
@@ -247,7 +252,7 @@ const labels = {
   "Relative Impact": "Impact",
 };
 export const Spectogram = ({ data, sort }: { data: any; sort: number }) => {
-  const bp = getCurrentBreakpoint();
+  const bp = useCurrentBreakpoint();
   const bps = [bp === "3xs", bp === "2xs", bp === "xs"];
   const isMobile = bps.some(Boolean);
   return (
@@ -365,6 +370,7 @@ export const PerfumeText = ({
     offset: ["start start", "end end"],
   });
 
+  const bp = useCurrentBreakpoint();
   // const { scrollYProgress: scrollInner } = useScroll({
   //     layoutEffect: false,
   //     container: innerRef || undefined,
@@ -410,9 +416,20 @@ export const PerfumeText = ({
     }
   });
 
+  const lkp: Record<string, any> =
+    typeof bgSrc === "string"
+      ? {
+          [bp]: bgSrc,
+        }
+      : {
+          [bp]: bgSrc?.def,
+          ...bgSrc,
+        };
+  const bgImg = lkp[bp] || lkp[Object.keys(lkp).slice(-1)[0]];
   return (
     <>
-      <BackgroundImage src={bgSrc} alt={bgAlt} />
+      {JSON.stringify(bgImg)}
+      <BackgroundImage src={bgImg} alt={bgAlt} />
       <div className="w-[84ch] max-w-[calc(100vw-32px)] absolute top-0">
         <Parallax
           distance={32 * 2}
@@ -844,7 +861,7 @@ export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
     offset: ["start start", "end end"],
   });
 
-  const bp = getCurrentBreakpoint();
+  const bp = useCurrentBreakpoint();
   const isMobile = [bp === "2xs", bp === "xs"].some(Boolean);
   const y = useTransform(
     scrollYProgress,

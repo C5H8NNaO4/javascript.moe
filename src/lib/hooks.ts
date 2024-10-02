@@ -28,7 +28,7 @@ export const getBreakpointValue = (value: BP): number =>
     fullConfig.theme.screens[value].indexOf("px")
   );
 
-export const getCurrentBreakpoint = (): string => {
+export const useCurrentBreakpoint = (): string => {
   let currentBreakpoint: string = "3xs";
   let biggestBreakpointValue = 0;
   const [, setWidth] = useState(window.innerWidth);
