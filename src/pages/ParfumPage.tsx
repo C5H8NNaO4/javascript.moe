@@ -256,7 +256,7 @@ export const Spectogram = ({ data, sort }: { data: any; sort: number }) => {
         <ComposedChart
           data={data}
           margin={{
-            bottom: 100,
+            bottom: 120,
             left: 0,
             right: 32,
           }}
@@ -371,6 +371,8 @@ export const PerfumeText = ({
   //     offset: ["start start", "end end"]
   // });
 
+  const vh = getVH(100);
+  const smallHeight = vh < 420;
   const dist = getVH(50);
   const offset = -dist;
   // const blur = useTransform(scrollYProgress, [0, 0.75], ['blur(4px)', 'blur(0px)'])
@@ -424,7 +426,9 @@ export const PerfumeText = ({
           </Link>
         </Parallax>
         <Parallax
-          distance={dist + 32 * 2}
+          distance={
+            (smallHeight ? vh : dist) + (smallHeight ? -32 * 2 : 32 * 2)
+          }
           offset={offset - 32 * 4}
           trans={[0.75, 0]}
           className=""
@@ -437,7 +441,7 @@ export const PerfumeText = ({
                 background,
                 backdropFilter: rblur,
               }}
-              className="flex flex-col  overflow-y-scroll max-h-[calc(100svh-120px)] rounded-md shadow-lg shadow-black  text-left"
+              className="flex flex-col  overflow-y-scroll max-h-[calc(100vh-120px)] min-h-[420px] rounded-md shadow-lg shadow-black  text-left"
             >
               <motion.div
                 ref={innerRef}
@@ -448,13 +452,16 @@ export const PerfumeText = ({
                 <motion.img
                   alt={imgAlt}
                   style={{ x: 0, borderRadius: bi, opacity }}
-                  className=" top-4 w-full sm:w-1/3 sticky  h-fit object-cover pr-4"
+                  className=" top-[56px] w-full sm:w-1/3 sticky  h-fit object-cover pr-4"
                   src={imgSrc}
                 />
                 <div className=" w-full">
                   {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
 
-                  <div>
+                  <div
+                    className="bg-[#00000044] backdrop-blur-sm text-"
+                    style={{ textShadow: "1px 1px 3px black" }}
+                  >
                     <Recipe ingredients={ingredients || []} />
                     {variations.map((v) => {
                       return (
@@ -528,7 +535,7 @@ export const PerfumeText = ({
         </Parallax>
         <Parallax
           distance={dist - 32 * 2}
-          offset={offset + 32}
+          offset={offset + 64 - 20}
           className="w-fit absolute top-0 ml-4"
           trans={[0.75, 0]}
         >
