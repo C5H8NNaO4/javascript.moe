@@ -312,7 +312,7 @@ export const Hedione = ({
   exp: explanations.Hedione,
   odour: ["jasmine", "fresh", "delicate", "citrus"],
   evaporationRate: evaporationRates.Hedione,
-  relativeStrength: 7,
+  relativeStrength: 4,
   ...rest,
 });
 
@@ -361,7 +361,7 @@ export const Amarocit = ({
   exp: explanations.Amarocit,
   odour: ["bitter", "woody", "amber", "citrus", "grape"],
   evaporationRate: evaporationRates.Amarocit,
-  relativeStrength: 10,
+  relativeStrength: 20,
   ...rest,
 });
 
@@ -397,7 +397,7 @@ export const PinoAcetaldehyde = ({
   },
   odour: ["fresh", "green", "piney", "aldehydic"], // Adjust odour profile as needed
   evaporationRate: evaporationRates.PinoAcetaldehyde,
-  relativeStrength: 20,
+  relativeStrength: 10,
   ...rest,
 });
 
@@ -476,7 +476,7 @@ export const CedarWood = ({
   dilution,
   amount,
   exp: explanations.CedarWood,
-  relativeStrength: 10,
+  relativeStrength: 20,
   odour: ["woody", "dry"],
   evaporationRate: evaporationRates.CedarWood,
   ...rest,
@@ -642,7 +642,7 @@ export const Ambroxan = ({
   exp: explanations.Ambroxan,
   odour: ["amber", "woody"],
   evaporationRate: evaporationRates.Ambroxan,
-  relativeStrength: 5,
+  relativeStrength: 10,
   ...rest,
 });
 
@@ -788,7 +788,7 @@ export const Ozofleur = ({
   dilution,
   amount,
   exp: explanations.Ozofleur,
-  relativeStrength: 1000,
+  relativeStrength: 250,
   odour: ["sweet", "fruity"],
   evaporationRate: evaporationRates.Ozofleur,
   ...rest,
@@ -805,7 +805,7 @@ export const Terrasol = ({
   exp: explanations.Terrasol,
   odour: ["earthy", "woody", "musky"],
   evaporationRate: evaporationRates.Terrasol,
-  relativeStrength: 15,
+  relativeStrength: 20,
   ...rest,
 });
 
@@ -916,31 +916,31 @@ export const EthylVanillin = ({
 
 export const OrangeForest: Ingredient[] = [
   DPG({ dilution: null, amount: "1ml" }),
-  Vetiveryl({ dilution: null, amount: "35dr" }),
+  Vetiveryl({ dilution: null, amount: "36dr" }),
   ClearWood({ dilution: null, amount: "27dr" }),
-  CedarWood({ dilution: 10, amount: "9dr" }),
-  BetaPinenes({ dilution: 10, amount: "17dr" }),
-  FirBalm({ dilution: 5, amount: "23dr" }),
+  CedarWood({ dilution: 10, amount: "10dr" }),
+  BetaPinenes({ dilution: 10, amount: "19dr" }),
+  FirBalm({ dilution: 5, amount: "33dr" }),
   Veramoss({ dilution: 20, amount: "3dr" }),
-  Timbersilk({ dilution: null, amount: "32dr" }),
+  Timbersilk({ dilution: null, amount: "35dr" }),
   ISOESuper({ dilution: null, amount: "20dr" }),
-  Ambroxan({ dilution: 10, amount: "30dr" }),
+  Ambroxan({ dilution: 10, amount: "31dr" }),
   VertofixCoeur({ dilution: null, amount: "10dr" }),
   PinoAcetaldehyde({ dilution: 10, amount: "11dr" }),
-  Sylvamber({ dilution: null, amount: "2dr" }),
+  Sylvamber({ dilution: null, amount: "3dr" }),
   MuskBlend({ dilution: null, amount: "9dr" }),
   Terrasol({ dilution: 10, amount: "6dr" }),
   Hedione({ dilution: null, amount: "3dr" }),
-  EthylVanillin({ dilution: 1, amount: "5dr" }),
+  EthylVanillin({ dilution: 1, amount: "6dr" }),
   Cis3Hexenol({ dilution: 1, amount: "4dr" }),
   Lavender({ dilution: 10, amount: "8dr" }),
-  LavenderAbsolute({ dilution: 10, amount: "16dr" }),
+  LavenderAbsolute({ dilution: 10, amount: "17dr" }),
   // NeroliEO({ dilution: 5, amount: "1dr" }),
 
-  Amarocit({ dilution: 10, amount: "7dr" }),
+  Amarocit({ dilution: 10, amount: "8dr" }),
   OrangeFlowerBlend({ dilution: 10, amount: "8dr" }),
   OrangeFlowerAbsolute({ dilution: 10, amount: "17dr" }),
-  Ozofleur({ dilution: 0.1, amount: "10dr" }),
+  Ozofleur({ dilution: 1, amount: "2dr" }),
   Geosmin({ dilution: 0.01, amount: "10dr" }),
 ];
 
