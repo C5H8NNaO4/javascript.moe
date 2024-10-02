@@ -69,7 +69,7 @@ export const PerfumePage = () => {
         document.head
       )}
       <EnsureLanguage path="/perfumes" />
-      <StickySection height="150lvh">
+      <StickySection height="150vh">
         <PerfumeText
           text={t("SylvanDawn")}
           title="Sylvan Dawn"
@@ -80,7 +80,7 @@ export const PerfumePage = () => {
           ingredients={SylvanDawn}
         />
       </StickySection>
-      <StickySection height="150lvh">
+      <StickySection height="150vh">
         <PerfumeText
           title="Wooden Heart"
           text={t("WoodenHeart")}
@@ -97,7 +97,7 @@ export const PerfumePage = () => {
           ]}
         />
       </StickySection>
-      <StickySection height="150lvh">
+      <StickySection height="150vh">
         <PerfumeText
           title="Orange Woods"
           text={t("OrangeWoods")}
@@ -832,13 +832,13 @@ export const Tooltip = ({ children, visible, ...rest }: TooltipProps) => {
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    isMobile ? ["calc(0lvh + 32px)", "calc(50lvh + 32px)"] : ["0lvh", "50lvh"]
+    isMobile ? ["calc(0vh + 32px)", "calc(50vh + 32px)"] : ["0vh", "50vh"]
   );
   return ReactDOM.createPortal(
     <motion.div
       style={{ y }}
       className={clsx(
-        "overflow-y-scroll whitespace-pre-line absolute z-[1000] max-h-[40vh] sm:max-h-[100lvh] sm:h-[100lvh] w-[100vw] sm:w-[22vw] top-4 sm:top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
+        "overflow-y-scroll whitespace-pre-line absolute z-[1000] max-h-[40vh] sm:max-h-[100vh] sm:h-[100vh] w-[100vw] sm:w-[22vw] top-4 sm:top-0 right-0 transition-opacity  bg-[black] p-4 text-white",
         {
           "pointer-events-none": !visible,
           "opacity-100": visible,
