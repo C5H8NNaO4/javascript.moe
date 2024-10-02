@@ -840,7 +840,7 @@ export const AllIngredients: Ingredient[] = [
   WoodyBase({ dilution: null }),
   ISOESuper({ dilution: null }),
   Vetiveryl({ dilution: null }),
-  ClearWood({ dilution: 10 }),
+  ClearWood({ dilution: null }),
   Patchouli({ dilution: 10 }),
   FirBalm({ dilution: 5 }),
   BetaPinenes({ dilution: 10 }),
