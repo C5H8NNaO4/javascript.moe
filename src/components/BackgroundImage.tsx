@@ -58,8 +58,9 @@ export const FadingImage = ({
           opacity: easeIn(1 - fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
-          borderRadius: (fade < 2 ? 0 : 100 - fade * 2) + "px",
-          transition: "border-radius 500ms",
+
+          borderRadius: fade < 2 ? 0 : "256px",
+          transition: "border-radius  500ms ease-out ",
         }}
         className=""
       />
@@ -70,8 +71,10 @@ export const FadingImage = ({
           opacity: easeOut(fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
-          borderRadius: (fade < 2 ? 0 : 100 - fade * 2) + "px",
-          transition: "border-radius 500ms",
+          x: fade > 25 ? 0 : ~~(Math.random() * 4),
+          y: fade > 25 ? 0 : ~~(Math.random() * 4),
+          borderRadius: fade < 2 ? 0 : "64px",
+          transition: "border-radius  250ms ease-out",
         }}
         className="absolute top-0"
       />
