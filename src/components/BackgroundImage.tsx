@@ -32,7 +32,7 @@ export const FadingImage = ({
   const [fade, setFade] = useState(1);
 
   useEffect(() => {
-    const so = setTimeout(() => setFade(2), 5000);
+    const so = setTimeout(() => setFade(2), 10000);
     return () => {
       clearTimeout(so);
     };
@@ -118,7 +118,7 @@ export const BackgroundImage = ({
   const [fade, setFade] = useState(1);
 
   useEffect(() => {
-    const so = setTimeout(() => setFade(2), 12500);
+    const so = setTimeout(() => setFade(2), 30000);
     return () => {
       clearTimeout(so);
     };
