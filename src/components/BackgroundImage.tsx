@@ -70,9 +70,9 @@ export const FadingImage = ({
           aspectRatio: "initial",
           objectFit: "cover",
           borderRadius: fade < 2 ? 0 : "256px",
-          filter: fade > 2 ? "saturate(90%)" : "saturate(100%)",
+          filter: fade > 2 ? "blur(4px) saturate(90%)" : "saturate(100%)",
 
-          transition: "border-radius  500ms ease-out ",
+          transition: "border-radius 500ms ease-out",
         }}
         className=""
       />
@@ -85,9 +85,10 @@ export const FadingImage = ({
           objectFit: "cover",
           x: fade > 24 ? 0 : ~~(Math.random() * 4),
           y: fade > 24 ? 0 : ~~(Math.random() * 4),
+          rotate: fade > 24 ? 0 : ~~(Math.random() * 8),
           borderRadius: fade < 2 ? 0 : "64px",
-          filter: "saturate(150%)",
-          transition: "border-radius 250ms ease-out",
+          filter: fade < 50 ? "blur(1px)" : "blur(0px) saturate(150%) ",
+          transition: "border-radius 250ms ease-out, filter 250ms ease-out",
         }}
         className="absolute top-0"
       />
