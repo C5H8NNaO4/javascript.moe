@@ -475,11 +475,11 @@ export const PerfumeText = ({
               >
                 {/* <motion.div style={{ display: 'block' }} /> */}
 
-                <div className="flex flex-col w-full justify-start">
+                <div className="flex flex-col w-full justify-start sticky 3xs:top-4 xsls:landscape:top-[56px]">
                   <motion.img
                     alt={imgAlt}
                     style={{ x: 0, borderRadius: bi, opacity }}
-                    className="3xs:top-4 xsls:landscape:top-[56px] w-full  sticky  object-cover"
+                    className=" w-full  object-cover"
                     src={imgSrc}
                   />
                 </div>
