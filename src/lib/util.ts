@@ -35,3 +35,13 @@ export const drops2Grams = (drops: number) => {
 export const drops2ml = (drops: number) => {
   return drops / 20;
 };
+
+export const round = (number: number) => {
+  const min = 2;
+  const max = 3;
+  return number
+    .toFixed(
+      Math.min(max, Math.max(min, 1 - Math.round(Math.log(number) / Math.LN10)))
+    )
+    .replace(/\.00$/, "");
+};

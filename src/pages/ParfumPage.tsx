@@ -1,4 +1,13 @@
-import { drops2Grams, drops2ml, getGCD, getVH, toDrops } from "@/lib/util";
+import {
+  drops2Grams,
+  drops2ml,
+  getGCD,
+  getVH,
+  round,
+  toDrops,
+} from "@/lib/util";
+import ArrowRight from "@/assets/arrowright.svg?react";
+import Cross from "@/assets/cross.svg?react";
 import { StickySection, sectionCtx } from "@/components/AnimatedSection";
 import { BackgroundImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
@@ -469,14 +478,14 @@ export const PerfumeText = ({
                 <motion.img
                   alt={imgAlt}
                   style={{ x: 0, borderRadius: bi, opacity }}
-                  className=" top-[56px] sm:top-4 w-full sm:w-1/3 sticky  h-fit object-cover pr-4"
+                  className="landscape:top-[56px] sm:top-4 w-full sm:w-1/3 sticky  h-fit object-cover"
                   src={imgSrc}
                 />
                 <div className=" w-full">
                   {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
 
                   <div
-                    className="bg-[#00000044] backdrop-blur-sm text-"
+                    className="bg-[#00000044] backdrop-blur-sm p-1"
                     style={{ textShadow: "1px 1px 3px black" }}
                   >
                     <Recipe ingredients={ingredients || []} />
@@ -737,6 +746,17 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
       : unit === 3
       ? (drops2ml(totalDrops) / denomMl).toFixed(2) + "ml"
       : "";
+
+  const [target, setTarget] = useState<number | null>(null);
+  const value =
+    unit === 0
+      ? totalDrops
+      : unit === 1
+      ? drops2Grams(totalDrops) / denomGrams
+      : unit === 3
+      ? drops2ml(totalDrops)
+      : 100;
+  const factor = (target || value) / value;
   return (
     <div>
       <div className="flex flex-row gap-2">
@@ -747,20 +767,30 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
           <option value={3}>ML</option>
         </select>
         <b className="text-white">{total}</b>
+        <ArrowRight style={{ color: "#FFF" }} />
+        <input
+          className="w-[6ch] pr-[24px]"
+          type="text"
+          value={target || ""}
+          onChange={(e) => setTarget(Number(e.target.value))}
+        ></input>
+        <button
+          onClick={() => setTarget(null)}
+          className="text-black -translate-x-2 bg-white items-center flex text-center"
+        >
+          <Cross />
+        </button>
       </div>
       {ingredients.map((ing) => {
         const { amount, dilution, name, company, exp } = ing;
         const showTooltip = visible === name && !!part;
 
         const drops = toDrops(amount) / denomDrops;
-        const grams = (
+        const grams =
           (drops2Grams(toDrops(amount)) / denomGrams) *
-          ((dilution || 100) / 100)
-        ).toFixed(3);
-        const ml = (
-          (drops2ml(toDrops(amount)) / denomMl) *
-          ((dilution || 100) / 100)
-        ).toFixed(3);
+          ((dilution || 100) / 100);
+        const ml =
+          (drops2ml(toDrops(amount)) / denomMl) * ((dilution || 100) / 100);
         const totalU = ingredients
           .filter((i) => !i.dilutant)
           .reduce((acc, i) => {
@@ -786,11 +816,11 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
                 onMouseLeave={hide}
               >
                 {unit === 0
-                  ? drops + "dr"
+                  ? round(factor * drops) + "dr"
                   : unit === 1
-                  ? grams + "g"
+                  ? round(factor * grams) + "g"
                   : unit === 3
-                  ? ml + "ml"
+                  ? round(factor * ml) + "ml"
                   : prc
                   ? prc + "%"
                   : ""}{" "}
