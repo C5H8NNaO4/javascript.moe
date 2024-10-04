@@ -58,7 +58,7 @@ export const FadingImage = ({
           opacity: easeIn(1 - fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
-          borderRadius: (fade === 0 ? 0 : 100 - fade * 2) + "px",
+          borderRadius: (fade < 2 ? 0 : 100 - fade * 2) + "px",
           transition: "border-radius 500ms",
         }}
         className=""
@@ -70,7 +70,7 @@ export const FadingImage = ({
           opacity: easeOut(fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
-          borderRadius: (fade === 0 ? 0 : 100 - fade * 2) + "px",
+          borderRadius: (fade < 2 ? 0 : 100 - fade * 2) + "px",
           transition: "border-radius 500ms",
         }}
         className="absolute top-0"
@@ -115,7 +115,10 @@ export const BackgroundImage = ({
   const [fade, setFade] = useState(1);
 
   useEffect(() => {
-    setTimeout(() => setFade(2), 12500);
+    const so = setTimeout(() => setFade(2), 12500);
+    return () => {
+      clearTimeout(so);
+    };
   }, [index]);
 
   useEffect(() => {
