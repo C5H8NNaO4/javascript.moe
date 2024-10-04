@@ -8,7 +8,12 @@ export default {
     screens: {
       "3xs": "0px",
       "2xs": "260px",
-      xs: "320px",
+      xs: {
+        raw: "(max-width: 320px)",
+      },
+      xsls: {
+        raw: "(max-height: 412px)",
+      },
       sm: "640px",
       md: "768px",
       lg: "1024px",
