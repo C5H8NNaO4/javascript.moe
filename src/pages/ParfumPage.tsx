@@ -475,21 +475,25 @@ export const PerfumeText = ({
               >
                 {/* <motion.div style={{ display: 'block' }} /> */}
 
-                <motion.img
-                  alt={imgAlt}
-                  style={{ x: 0, borderRadius: bi, opacity }}
-                  className="3xs:top-4 xsls:landscape:top-[56px] w-full sm:w-1/3 sticky  h-fit object-cover"
-                  src={imgSrc}
-                />
+                <div className="flex flex-col w-full justify-start">
+                  <motion.img
+                    alt={imgAlt}
+                    style={{ x: 0, borderRadius: bi, opacity }}
+                    className="3xs:top-4 xsls:landscape:top-[56px] w-full  sticky  object-cover"
+                    src={imgSrc}
+                  />
+                </div>
                 <div className=" w-full">
                   {/* <motion.p className="text-left px-4  whitespace-pre-line " style={{ filter: blur, textShadow: '1px 1px 1px black' }}>{text}</motion.p> */}
 
                   <div
                     className="bg-[#00000044] p-1"
-                    style={{ textShadow: "1px 1px 3px black", 
-                    boxShadow: '0px 0px 5px 1px black',
-                    backdropFilter: 'blur(12px) brightness(80%) saturate(200%)'
-                  }}
+                    style={{
+                      textShadow: "1px 1px 3px black",
+                      boxShadow: "0px 0px 5px 1px black",
+                      backdropFilter:
+                        "blur(12px) brightness(80%) saturate(200%)",
+                    }}
                   >
                     <Recipe ingredients={ingredients || []} />
                     {variations.map((v) => {
