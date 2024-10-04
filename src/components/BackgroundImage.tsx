@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useParallax } from "@/lib/hooks";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { sectionCtx } from "@/components/AnimatedSection";
 export type BackgroundImageProps = {
   src?: string | string[];
@@ -30,12 +30,17 @@ export const FadingImage = ({
 
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(1);
+  const so = useRef(0);
+  const transition = () => {
+    clearTimeout(so.current);
+    setFade(2);
+  };
 
   useEffect(() => {
-    const so = setTimeout(() => setFade(2), 3000);
+    so.current = setTimeout(() => setFade(2), 10000);
 
     return () => {
-      clearTimeout(so);
+      clearTimeout(so.current);
     };
   }, [index]);
 
@@ -51,7 +56,12 @@ export const FadingImage = ({
     }
   }, [fade]);
   return (
-    <motion.div {...rest} className="overflow-hidden" style={{}}>
+    <motion.div
+      {...rest}
+      className="overflow-hidden"
+      style={{}}
+      onClick={transition}
+    >
       <motion.img
         alt={alt}
         src={srcs[index]}
