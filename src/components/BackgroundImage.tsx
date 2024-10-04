@@ -29,10 +29,16 @@ export const FadingImage = ({
   const srcs = Array.isArray(src) ? src : [src];
 
   const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(0);
+  const [fade, setFade] = useState(2);
 
   useEffect(() => {
-    setTimeout(() => setFade((fade + 1) % 100), 50);
+    setTimeout(() => setFade(2), 5000);
+  }, [index]);
+
+  useEffect(() => {
+    if (fade > 1) {
+      setTimeout(() => setFade((fade + 1) % 100), 20);
+    }
   }, [fade]);
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export const FadingImage = ({
     }
   }, [fade]);
   return (
-    <div {...rest} className="">
+    <motion.div {...rest} className="overflow-hidden" style={{}}>
       <motion.img
         alt={alt}
         src={srcs[index]}
@@ -49,6 +55,8 @@ export const FadingImage = ({
           opacity: easeIn(1 - fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
+          borderRadius: (fade === 0 ? 0 : 100 - fade * 2) + "px",
+          transition: "border-radius 500ms",
         }}
         className=""
       />
@@ -59,10 +67,12 @@ export const FadingImage = ({
           opacity: easeOut(fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
+          borderRadius: (fade === 0 ? 0 : 100 - fade * 2) + "px",
+          transition: "border-radius 500ms",
         }}
         className="absolute top-0"
       />
-    </div>
+    </motion.div>
   );
 };
 export const BackgroundImage = ({
