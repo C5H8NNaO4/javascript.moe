@@ -30,11 +30,15 @@ export const FadingImage = ({
 
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(1);
-
+  const [dvlp, setDvlp] = useState(false);
   useEffect(() => {
-    const so = setTimeout(() => setFade(2), 10000);
+    const so = setTimeout(() => setFade(2), 3000);
+    const so2 = setTimeout(() => setDvlp(true), 1000);
+    const so3 = setTimeout(() => setDvlp(false), 2000);
     return () => {
       clearTimeout(so);
+      clearTimeout(so2);
+      clearTimeout(so3);
     };
   }, [index]);
 
@@ -58,8 +62,9 @@ export const FadingImage = ({
           opacity: easeIn(1 - fade / 100),
           aspectRatio: "initial",
           objectFit: "cover",
-
           borderRadius: fade < 2 ? 0 : "256px",
+          filter: fade > 2 ? "saturate(90%)" : "saturate(100%)",
+
           transition: "border-radius  500ms ease-out ",
         }}
         className=""
@@ -74,7 +79,8 @@ export const FadingImage = ({
           x: fade > 24 ? 0 : ~~(Math.random() * 4),
           y: fade > 24 ? 0 : ~~(Math.random() * 4),
           borderRadius: fade < 2 ? 0 : "64px",
-          transition: "border-radius  250ms ease-out",
+          filter: "saturate(150%)",
+          transition: "border-radius 250ms ease-out",
         }}
         className="absolute top-0"
       />
