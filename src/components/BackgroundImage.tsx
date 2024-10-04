@@ -85,7 +85,7 @@ export const FadingImage = ({
           objectFit: "cover",
           x: fade > 24 ? 0 : ~~(Math.random() * 4),
           y: fade > 24 ? 0 : ~~(Math.random() * 4),
-          rotate: fade > 24 ? 0 : ~~(Math.random() * 8),
+          rotate: fade > 24 ? 0 : ~~(Math.random() * 2),
           borderRadius: fade < 2 ? 0 : "64px",
           filter: fade < 50 ? "blur(1px)" : "blur(0px) saturate(150%) ",
           transition: "border-radius 250ms ease-out, filter 250ms ease-out",
