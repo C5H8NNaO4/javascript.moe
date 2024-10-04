@@ -29,10 +29,13 @@ export const FadingImage = ({
   const srcs = Array.isArray(src) ? src : [src];
 
   const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(2);
+  const [fade, setFade] = useState(1);
 
   useEffect(() => {
-    setTimeout(() => setFade(2), 5000);
+    const so = setTimeout(() => setFade(2), 5000);
+    return () => {
+      clearTimeout(so);
+    };
   }, [index]);
 
   useEffect(() => {
