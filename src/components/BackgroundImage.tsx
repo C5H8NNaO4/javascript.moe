@@ -30,15 +30,12 @@ export const FadingImage = ({
 
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(1);
-  const [dvlp, setDvlp] = useState(false);
+
   useEffect(() => {
     const so = setTimeout(() => setFade(2), 3000);
-    const so2 = setTimeout(() => setDvlp(true), 1000);
-    const so3 = setTimeout(() => setDvlp(false), 2000);
+
     return () => {
       clearTimeout(so);
-      clearTimeout(so2);
-      clearTimeout(so3);
     };
   }, [index]);
 
