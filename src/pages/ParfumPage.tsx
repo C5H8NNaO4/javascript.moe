@@ -9,7 +9,7 @@ import {
 import ArrowRight from "@/assets/arrowright.svg?react";
 import Cross from "@/assets/cross.svg?react";
 import { StickySection, sectionCtx } from "@/components/AnimatedSection";
-import { BackgroundImage } from "@/components/BackgroundImage";
+import { BackgroundImage, FadingImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ArrowBack from "@/assets/arrowback.svg?react";
@@ -111,13 +111,40 @@ export const PerfumePage = () => {
           title="Orange Woods"
           text={t("OrangeWoods")}
           bgSrc={{
-            def: "/images/wallpaper/orangewoodsbg.jpg",
-            xs: "/images/wallpaper/orangewoodsbg9x16.jpg",
-            "2xs": "/images/wallpaper/orangewoodsbg9x16.jpg",
-            "3xs": "/images/wallpaper/orangewoodsbg9x16.jpg",
+            sm: [
+              "/images/wallpaper/orangewoodsbg.jpg",
+              "/images/wallpaper/orangewoodsbg-1.jpg",
+              "/images/wallpaper/orangewoodsbg-2.jpg",
+              "/images/wallpaper/orangewoodsbg-3.jpg",
+              "/images/wallpaper/orangewoodsbg-4.jpg",
+              "/images/wallpaper/orangewoodsbg-5.jpg",
+              "/images/wallpaper/orangewoodsbg-6.jpg",
+              "/images/wallpaper/orangewoodsbg-7.jpg",
+            ],
+            // xs: "/images/wallpaper/orangewoodsbg9x16.jpg",
+            // "2xs": "/images/wallpaper/orangewoodsbg9x16.jpg",
+            "3xs": [
+              "/images/wallpaper/orangewoodsbg9x16.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-1.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-2.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-3.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-4.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-5.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-6.jpg",
+              "/images/wallpaper/orangewoodsbg9x16-7.jpg",
+            ],
           }}
           bgAlt="Depiction of my Orange Woods Fragrance in Landscape"
-          imgSrc="/images/perfumes/orangewoods.jpg"
+          imgSrc={[
+            "/images/perfumes/orangewoods.jpg",
+            "/images/perfumes/orangewoods-1.jpg",
+            "/images/perfumes/orangewoods-2.jpg",
+            "/images/perfumes/orangewoods-3.jpg",
+            "/images/perfumes/orangewoods-4.jpg",
+            "/images/perfumes/orangewoods-5.jpg",
+            "/images/perfumes/orangewoods-6.jpg",
+            "/images/perfumes/orangewoods-7.jpg",
+          ]}
           imgAlt="Depiction of my Orange Woods Fragrance"
           ingredients={OrangeForest}
         />
@@ -425,19 +452,26 @@ export const PerfumeText = ({
     }
   });
 
+  const bps = ["3xs", "2xs", "xs", "sm", "md", "lg", "xl"];
+  const cInd = bps.indexOf(bp);
   const lkp: Record<string, any> =
     typeof bgSrc === "string"
       ? {
           [bp]: bgSrc,
         }
       : {
-          [bp]: bgSrc?.def,
           ...bgSrc,
         };
-  const bgImg = lkp[bp] || lkp[Object.keys(lkp).slice(-1)[0]];
+
+  let largest = bps[0];
+  for (var i = 0; i <= cInd; i++) {
+    if (lkp[bps[i]]) {
+      largest = bps[i];
+    }
+  }
+  const bgImg = lkp[bp] || lkp[largest];
   return (
     <>
-      {JSON.stringify(bgImg)}
       <BackgroundImage src={bgImg} alt={bgAlt} />
       <div className="w-[84ch] max-w-[calc(100vw-32px)] absolute top-0">
         <Parallax
@@ -476,11 +510,11 @@ export const PerfumeText = ({
                 {/* <motion.div style={{ display: 'block' }} /> */}
 
                 <div className=" top-4">
-                  <motion.img
+                  <FadingImage
+                    src={imgSrc || []}
+                    className=" sticky top-4  object-cover xsls:landscape:mt-8"
                     alt={imgAlt}
                     style={{ x: 0, borderRadius: bi, opacity }}
-                    className=" sticky top-4  object-cover xsls:landscape:mt-8"
-                    src={imgSrc}
                   />
                 </div>
                 <div className=" w-full">
