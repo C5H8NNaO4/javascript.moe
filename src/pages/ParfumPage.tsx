@@ -475,11 +475,11 @@ export const PerfumeText = ({
               >
                 {/* <motion.div style={{ display: 'block' }} /> */}
 
-                <div className="flex flex-col w-full justify-start sticky 3xs:top-4 xsls:landscape:top-[56px]">
+                <div className=" top-4">
                   <motion.img
                     alt={imgAlt}
                     style={{ x: 0, borderRadius: bi, opacity }}
-                    className=" w-full  object-cover"
+                    className=" sticky top-4  object-cover xsls:landscape:mt-8"
                     src={imgSrc}
                   />
                 </div>
@@ -567,8 +567,8 @@ export const PerfumeText = ({
           </button>
         </Parallax>
         <Parallax
-          distance={dist - 32 * 2}
-          offset={offset + 64 - 20}
+          distance={dist - 32 - 16}
+          offset={offset + 32}
           className="w-fit absolute top-0 ml-4"
           trans={[0.75, 0]}
         >
