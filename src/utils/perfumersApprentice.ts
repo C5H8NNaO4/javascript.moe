@@ -5,8 +5,12 @@ export const normalize = (itm: Item, i: number) => {
   return {
     ...itm,
     id: 11000 + (i + 1),
+    dilution: /\d+%/.exec(itm?.title)?.[0] || "100%",
     quantity: 1,
-    title: itm?.title?.replace(/\(.+?\)/, "").replace(/\s\*\*/g, "").trim(),
+    title: itm?.title
+      ?.replace(/\(.+?\)/, "")
+      .replace(/\s\*\*/g, "")
+      .trim(),
     tags: clsx({ flammable: /\(\s\*\*\)/.test(itm?.title) }).split(" "),
     onStock: true,
   };
