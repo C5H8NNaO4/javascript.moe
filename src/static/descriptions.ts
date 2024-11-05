@@ -1852,5 +1852,6 @@ export const OdorColors = {
   opulent: "#A67B5B",
   vibrant: '#FF4C4C',         // A bright and bold red
   dynamic: '#007BFF',
-  modern: '#A8D300' 
+  modern: '#A8D300',
+  "almond-like": '#EFDECD',
 } as Record<string, string>
