@@ -8,6 +8,7 @@ import {
 import { useParallax } from "@/lib/hooks";
 import { useContext, useEffect, useRef, useState } from "react";
 import { sectionCtx } from "@/components/AnimatedSection";
+import clsx from "clsx";
 export type BackgroundImageProps = {
   src?: string | string[];
   invert?: boolean;
@@ -19,6 +20,7 @@ export type BackgroundImageProps = {
 export const FadingImage = ({
   src,
   alt,
+  className,
   ...rest
 }: {
   src: string | string[];
@@ -58,7 +60,7 @@ export const FadingImage = ({
   return (
     <motion.div
       {...rest}
-      className="overflow-hidden"
+      className={clsx("overflow-hidden", className)}
       style={{}}
       onClick={transition}
     >

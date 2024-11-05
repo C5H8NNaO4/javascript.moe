@@ -14,9 +14,9 @@ export const scrollToTop = () => {
 };
 
 export function getGCD(arr: number[]) {
-  var min = Math.min.apply(null, arr);
-  var gcd = 1;
-  for (var i = gcd + 1; i <= min; i++) {
+  const min = Math.min.apply(null, arr);
+  let gcd = 1;
+  for (let i = gcd + 1; i <= min; i++) {
     if (arr.every((x) => x % i === 0)) gcd = i;
   }
   return gcd;
@@ -44,4 +44,9 @@ export const round = (number: number) => {
       Math.min(max, Math.max(min, 1 - Math.round(Math.log(number) / Math.LN10)))
     )
     .replace(/\.00$/, "");
+};
+
+export const toggle = (arr: string[], key: string) => {
+  if (!arr.includes(key)) return [...arr, key];
+  return arr.filter((k) => k !== key);
 };

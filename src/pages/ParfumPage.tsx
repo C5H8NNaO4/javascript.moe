@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   drops2Grams,
   drops2ml,
@@ -51,8 +52,21 @@ import {
   Legend,
   LabelList,
 } from "recharts";
-import { useCurrentBreakpoint } from "@/lib/hooks";
 
+import { InventoryList } from "../components/Inventory";
+import { inventory } from "@/static/inventory";
+import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
+import { useCurrentBreakpoint } from "@/hooks/useBreakpoint";
+
+const Images: Record<string, string[]> = {
+  "Vetiveryl Acetat": [
+    "/images/ingredients/vetiveryl-acetat-1.jpg",
+    "/images/ingredients/vetiveryl-acetat-2.jpg",
+    "/images/ingredients/vetiveryl-acetat-3.jpg",
+    "/images/ingredients/vetiveryl-acetat-4.jpg",
+    "/images/ingredients/vetiveryl-acetat-5.jpg",
+  ],
+};
 export const PerfumePage = () => {
   const { t } = useTranslation();
   const params = useParams();
@@ -253,6 +267,31 @@ export const IngredientPage = () => {
         filter={filter}
         filterAnd={filterAnd}
       />
+    </div>
+  );
+};
+
+export const InventoryPage = () => {
+  return (
+    <div className="h-full w-full relative flex justify-center">
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+        <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
+      </div>
+      <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/80 text-white">
+        <div className="backdrop-blur-sm h-full w-full flex flex-col">
+          <InventoryList
+            inventories={{
+              remote: {
+                All: perfumersApprenticeInventory,
+                Moe: inventory || [],
+              },
+              local: {
+                Local: [],
+              },
+            }}
+          ></InventoryList>
+        </div>
+      </div>
     </div>
   );
 };
@@ -464,7 +503,7 @@ export const PerfumeText = ({
         };
 
   let largest = bps[0];
-  for (var i = 0; i <= cInd; i++) {
+  for (let i = 0; i <= cInd; i++) {
     if (lkp[bps[i]]) {
       largest = bps[i];
     }
@@ -505,11 +544,11 @@ export const PerfumeText = ({
             >
               <motion.div
                 ref={innerRef}
-                className="relative flex flex-col sm:flex-row  gap-4 p-4 "
+                className="relative flex flex-col sm:flex-row  gap-4 p-1 lg:p-4 "
               >
                 {/* <motion.div style={{ display: 'block' }} /> */}
 
-                <div className=" top-4">
+                <div className="top-4">
                   <FadingImage
                     src={imgSrc || []}
                     className=" sticky top-4  object-cover xsls:landscape:mt-8"
@@ -710,7 +749,15 @@ export const Ingredients = ({
                 </p>
               </div>
               <div className="flex-shrink w-fit whitespace-pre-line">
-                <p>{ing.exp.desc}</p>
+                <div className="flex flex-row  gap-2 flex-wrap sm:flex-nowrap">
+                  {Images[ing.name] && (
+                    <FadingImage
+                      src={Images[ing.name]}
+                      alt={`Depiction for ${ing.name}`}
+                    />
+                  )}
+                  <p style={{ padding: "0px" }}>{ing.exp.desc}</p>
+                </div>
               </div>
             </div>
             ;

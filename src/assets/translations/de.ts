@@ -10,7 +10,7 @@ export const SylvanDawn = `- 2ml Woody base by Pellwall
 - 1 Tropfen Geosmin 0,005%.
 `;
 
-export const WoodenHeart = `- 2ml Woody Base by Pellwall
+export const WoodenHeart = `- 2ml Woody Base (Pellwall)
 - 1 Tropfen Vetiveryl Acetat
 - 2 Tropfen ISO-E-Super
 - 1 Tropfen Evernyl 20%

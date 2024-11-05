@@ -88,7 +88,7 @@ const evaporationRates: Record<string, number> = {
   MuskBlend: 72 * 60, // Musks can last for up to 72 hours (4320 minutes)
   Ambroxan: 48 * 60, // Ambroxan is highly persistent, lasting around 48 hours (2880 minutes)
   VertofixCoeur: 24 * 60, // Vertofix Coeur lasts around 24 hours (1440 minutes)
-  ClearWood: 12 * 60, // Clearwood lasts up to 12 hours (720 minutes)
+  ClearWood: 12 * 60, // Clearwood® lasts up to 12 hours (720 minutes)
   Patchouli: 24 * 60, // Patchouli lasts up to 24 hours (1440 minutes)
   Geosmin: 8 * 60, // Geosmin lasts around 8 hours (480 minutes)
   Lavender: 4 * 60, // Lavender lasts around 4 hours (240 minutes)
@@ -407,7 +407,7 @@ export const WoodyBase = ({
   amount = "1dr",
   ...rest
 }: IngredientOptions): Ingredient => ({
-  name: "Woody Base",
+  name: "Woody Base (Pellwall)",
   dilution,
   amount,
   company: "Pellwall",
