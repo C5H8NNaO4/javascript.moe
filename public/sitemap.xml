@@ -16,7 +16,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/de</loc>
@@ -28,7 +28,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/en/about</loc>
@@ -40,7 +40,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/about" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/de/about</loc>
@@ -52,7 +52,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/about" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/de/perfumes</loc>
@@ -64,7 +64,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/perfumes" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/en/perfumes</loc>
@@ -76,7 +76,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/perfumes" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/de/ingredients</loc>
@@ -88,7 +88,7 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/ingredients" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://javascript.moe/en/ingredients</loc>
@@ -100,6 +100,30 @@
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/ingredients" />
-    <lastmod>2024-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://javascript.moe/de/inventory</loc>
+    <xhtml:link
+      rel="alternate"
+      hreflang="de"
+      href="https://javascript.moe/de/inventory" />
+    <xhtml:link
+      rel="alternate"
+      hreflang="en"
+      href="https://javascript.moe/en/inventory" />
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://javascript.moe/en/inventory</loc>
+    <xhtml:link
+      rel="alternate"
+      hreflang="de"
+      href="https://javascript.moe/de/inventory" />
+    <xhtml:link
+      rel="alternate"
+      hreflang="en"
+      href="https://javascript.moe/en/inventory" />
+    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
   </url>
 </urlset>
