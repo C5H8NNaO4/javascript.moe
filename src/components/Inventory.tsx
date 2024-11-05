@@ -381,7 +381,43 @@ export const InventoryList = ({
       return { ...entry, pricePerMl };
     });
   const grouped = groupByTitle(filtered) as Item[];
+  const sorted = grouped.slice().sort((a: Item, b: Item) => {
+    if (sort === "+AZ") return a.title?.localeCompare(b?.title) || 0;
+    if (sort === "-AZ") return b.title?.localeCompare(a?.title) || 0;
+    if (sort === "+price")
+      return (
+        Math.max(...(a.items?.map(getRawPricePerMl) || [])) -
+        Math.max(...(b.items?.map(getRawPricePerMl) || []))
+      );
+    if (sort === "-price")
+      return (
+        Math.max(...(b.items?.map(getRawPricePerMl) || [])) -
+        Math.max(...(a.items?.map(getRawPricePerMl) || []))
+      );
+    if (sort === "+amount")
+      return (
+        getGrams(a.items?.at(-1)?.amount) - getGrams(b.items?.at(-1)?.amount)
+      );
+    if (sort === "-amount")
+      return (
+        getGrams(b.items?.at(-1)?.amount) - getGrams(a.items?.at(-1)?.amount)
+      );
 
+    if (sort === "+odor")
+      return (
+        perfumeIngredientsOdours[a?.title]?.[0]?.localeCompare(
+          perfumeIngredientsOdours[b?.title]?.[0] || "ZZZ"
+        ) || 0
+      );
+    if (sort === "-odor")
+      return (
+        perfumeIngredientsOdours[b?.title]?.[0]?.localeCompare(
+          perfumeIngredientsOdours[a?.title]?.[0] || "ZZZ"
+        ) || 0
+      );
+
+    return 0;
+  });
   const uniqueIngredientsOnStock = [
     ...new Set(
       list
@@ -691,81 +727,36 @@ export const InventoryList = ({
 
             <ScrollContainer className="">
               <List key={filtered.length} className="px-2 flex flex-col gap-1">
-                {grouped
-                  .slice()
-                  .sort((a: Item, b: Item) => {
-                    if (sort === "+AZ")
-                      return a.title?.localeCompare(b?.title) || 0;
-                    if (sort === "-AZ")
-                      return b.title?.localeCompare(a?.title) || 0;
-                    if (sort === "+price")
-                      return (
-                        Math.max(...(a.items?.map(getRawPricePerMl) || [])) -
-                        Math.max(...(b.items?.map(getRawPricePerMl) || []))
-                      );
-                    if (sort === "-price")
-                      return (
-                        Math.max(...(b.items?.map(getRawPricePerMl) || [])) -
-                        Math.max(...(a.items?.map(getRawPricePerMl) || []))
-                      );
-                    if (sort === "+amount")
-                      return (
-                        getGrams(a.items?.at(-1)?.amount) -
-                        getGrams(b.items?.at(-1)?.amount)
-                      );
-                    if (sort === "-amount")
-                      return (
-                        getGrams(b.items?.at(-1)?.amount) -
-                        getGrams(a.items?.at(-1)?.amount)
-                      );
-
-                    if (sort === "+odor")
-                      return (
-                        perfumeIngredientsOdours[a?.title]?.[0]?.localeCompare(
-                          perfumeIngredientsOdours[b?.title]?.[0] || "ZZZ"
-                        ) || 0
-                      );
-                    if (sort === "-odor")
-                      return (
-                        perfumeIngredientsOdours[b?.title]?.[0]?.localeCompare(
-                          perfumeIngredientsOdours[a?.title]?.[0] || "ZZZ"
-                        ) || 0
-                      );
-
-                    return 0;
-                  })
-                  .map((entry) => {
-                    return (
-                      <ListItem
-                        className={clsx({
-                          "bg-white/30": selected?.title === entry?.title,
-                        })}
-                        key={entry.title}
-                        onClick={(e: React.MouseEvent<HTMLLIElement>) => {
-                          if ((e.target as HTMLInputElement).type === "INPUT")
-                            return;
-                          setSelected(
-                            selected?.id === entry?.id ? null : entry
-                          );
+                {sorted.map((entry) => {
+                  return (
+                    <ListItem
+                      className={clsx({
+                        "bg-white/30": selected?.title === entry?.title,
+                      })}
+                      key={entry.title}
+                      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+                        if ((e.target as HTMLInputElement).type === "INPUT")
+                          return;
+                        setSelected(selected?.id === entry?.id ? null : entry);
+                      }}
+                    >
+                      <IngredientItem
+                        {...entry}
+                        selected={selected}
+                        upd={upd}
+                        setSelected={setSelected}
+                        list={invLocal}
+                        remoteList={invRemote}
+                        setNotification={setNotification}
+                        toggleFilter={(key) => {
+                          // setShowTags(true);
+                          setFilter(toggle(filter, key));
                         }}
-                      >
-                        <IngredientItem
-                          {...entry}
-                          selected={selected}
-                          upd={upd}
-                          setSelected={setSelected}
-                          list={invLocal}
-                          remoteList={invRemote}
-                          setNotification={setNotification}
-                          toggleFilter={(key) => {
-                            // setShowTags(true);
-                            setFilter(toggle(filter, key));
-                          }}
-                          filter={filter}
-                        ></IngredientItem>
-                      </ListItem>
-                    );
-                  })}
+                        filter={filter}
+                      ></IngredientItem>
+                    </ListItem>
+                  );
+                })}
               </List>
             </ScrollContainer>
             {!filtered?.length && (
@@ -790,11 +781,37 @@ export const InventoryList = ({
               {selected?.title && (
                 <h3 className="line-clamp-1"> | {selected?.title}</h3>
               )}
+              <IconButton
+                className="ml-auto"
+                round
+                icon="FaChevronLeft"
+                onClick={() => {
+                  const sel = sorted
+                    ?.filter((itm) => itm.title === selected?.title)
+                    .at(-1);
+                  const index = sel ? sorted?.indexOf(sel) : -1;
+                  setSelected(
+                    sorted[(sorted?.length + index - 1) % sorted?.length]
+                  );
+                }}
+              ></IconButton>
+              <IconButton
+                className=""
+                round
+                icon="FaChevronRight"
+                onClick={() => {
+                  const sel = sorted
+                    ?.filter((itm) => itm.title === selected?.title)
+                    .at(-1);
+                  const index = sel ? sorted?.indexOf(sel) : -1;
+                  setSelected(sorted[(index + 1) % sorted?.length]);
+                }}
+              ></IconButton>
               <Chip
                 label={uniqueIngredientsOnStock?.length.toString()}
                 icon="FaBottleDroplet"
                 iconClsn="!h-5 !w-5"
-                className="bg-blue-500 h-8 items-center text-lg font-semibold border-2 ml-auto"
+                className="bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
               ></Chip>
               <Chip
                 label={totalValue.toString()}
