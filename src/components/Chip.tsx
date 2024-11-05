@@ -23,12 +23,12 @@ export const Chip = (props: ChipProps) => {
     iconClsn,
     containerClsn,
     containerStyle,
-    
+
     ...rest
   } = props;
   return (
     <button
-      {...rest as any}
+      {...(rest as any)}
       className={clsx(
         "chip select-none rounded-full border-white/80 hover:border-white/100 hover:brightness-105 h-fit flex gap-1",
         {
@@ -60,6 +60,7 @@ export const Chip = (props: ChipProps) => {
           ></IconButton>
         )}
       </span>
+      {rest.children}
     </button>
   );
 };
@@ -68,7 +69,7 @@ function getContrastYIQ(hexcolor: string) {
   const r = parseInt(hexcolor.substring(1, 3), 16);
   const g = parseInt(hexcolor.substring(3, 5), 16);
   const b = parseInt(hexcolor.substring(5, 7), 16);
-  const a = parseInt(hexcolor.substring( 7,9) || 'FF', 16);
+  const a = parseInt(hexcolor.substring(7, 9) || "FF", 16);
   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
   if (a < 128) return "white";
   return yiq >= 128 ? "black" : "white";
@@ -81,19 +82,20 @@ export type OdorChipProps = Component<{
 }>;
 export const OdorChip = (props: OdorChipProps) => {
   const { className, odor, filter, onClick } = props;
-  const bgColor = OdorColors[odor] +
-  (OdorColors[odor]?.length < 8
-    ? filter?.includes(odor) || !filter?.length
-      ? "FF"
-      : "33"
-    : "");
+  const bgColor =
+    OdorColors[odor] +
+    (OdorColors[odor]?.length < 8
+      ? filter?.includes(odor) || !filter?.length
+        ? "FF"
+        : "33"
+      : "");
   return (
     <Chip
       label={odor}
       style={{
-        background:bgColor,
-          
-        color: getContrastYIQ(bgColor || '#FFFFFF'),
+        background: bgColor,
+
+        color: getContrastYIQ(bgColor || "#FFFFFF"),
       }}
       className={clsx(
         "pb-[2px] border-[1.7px]",

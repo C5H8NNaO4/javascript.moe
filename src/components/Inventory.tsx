@@ -2,7 +2,7 @@ import { useIndexedDB } from "react-indexed-db-hook";
 import { DestructiveButton, IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { ScrollContainer } from "./ScrollContainer";
 import fls from "fast-levenshtein";
 import clsx from "clsx";
@@ -22,6 +22,9 @@ import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
 import { toggle } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
+import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
+import i18next from "i18next";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -136,6 +139,7 @@ export type Item = {
   onStock?: boolean;
   dilution?: string | null;
   list?: string | null;
+  remoteList?: string | null;
   items?: Item[];
   local?: Item | null;
   remote?: boolean;
@@ -156,10 +160,19 @@ export const InventoryList = ({
   const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>({
     Local: [],
   });
+
+  const params = useParams<{
+    list: string;
+    title: string;
+  }>();
+
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
-  const [invRemote, setInvRemote] = useState<string | null>("Moe");
+  const [invRemote, setInvRemote] = useState<string | null>(
+    params?.list || "Moe"
+  );
   const [invLocal, setInvLocal] = useState<string | null>("Local");
   const [sort, setSort] = useState<string>("+AZ");
+  const [notification, setNotification] = useState<string>("");
 
   const storedList = storedListLkp[invLocal || "Local"] || [];
   const [localLists, setLocalLists] = useLocalStorage(
@@ -249,6 +262,7 @@ export const InventoryList = ({
 
     setStoredLkp((list) => {
       const newList = { ...list };
+      newList[invLocal || "Local"] = newList[invLocal || "Local"] || [];
       newList[invLocal || "Local"].splice(index, 1);
       return newList;
     });
@@ -388,8 +402,29 @@ export const InventoryList = ({
       return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
     }, 0);
 
+  useEffect(() => {
+    console.log("TITLE", params.title);
+    const ingredient = inventories.remote[params?.list || "All"]?.find(
+      (itm) => {
+        return params.title === itm.title;
+      }
+    );
+    console.log("TITLE", params.title, "INGREDIENT", ingredient);
+
+    if (!params?.list || !ingredient || !inventories?.remote[params?.list])
+      return;
+
+    setSelected(ingredient);
+  }, [params.title, params.list]);
+
   return (
     <div className="flex flex-col gap-1 w-full overflow-hidden h-full">
+      {notification && (
+        <Notification
+          title={notification}
+          setNotification={setNotification}
+        ></Notification>
+      )}
       {showAdd && (
         <form
           action="#"
@@ -436,7 +471,10 @@ export const InventoryList = ({
               type="currency"
               className="w-[7ch] h-[34px] pr-[34px]"
             ></Input>
-            <Icon icon="FaDollarSign" className="-ml-[34px] h-6 w-6 mr-2"></Icon>
+            <Icon
+              icon="FaDollarSign"
+              className="-ml-[34px] h-6 w-6 mr-2"
+            ></Icon>
             <IconButton icon="FaPlus" type="submit"></IconButton>
             <IconButton
               icon="FaSearch"
@@ -636,6 +674,7 @@ export const InventoryList = ({
                 listNames={localLists}
                 onChange={(k: string | null) => setInvLocal(k || "Local")}
                 onDelete={deleteList}
+                setNotification={setNotification}
                 onRemove={(key) => {
                   console.log("REMOVE", key, localLists);
                   setLocalLists(localLists?.filter((k: string) => k !== key));
@@ -717,6 +756,8 @@ export const InventoryList = ({
                           upd={upd}
                           setSelected={setSelected}
                           list={invLocal}
+                          remoteList={invRemote}
+                          setNotification={setNotification}
                           toggleFilter={(key) => {
                             // setShowTags(true);
                             setFilter(toggle(filter, key));
@@ -1122,6 +1163,7 @@ export type IngredientItemProps = Component<{
   upd: (id: string, item: Partial<Item>) => void;
   toggleFilter?: (key: string) => void;
   setSelected: (item: Item | null) => void;
+  setNotification: (v: string) => void;
   filter?: string[];
 }> &
   Item;
@@ -1134,13 +1176,36 @@ export const IngredientItem = (props: IngredientItemProps) => {
     upd,
     setSelected,
     list,
+    remoteList,
     toggleFilter,
+    setNotification,
     filter,
   } = props;
   const entry = props;
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let to: number;
+    console.log("SELECTED", selected?.title, title);
+    if (selected?.title === title) {
+      console.log("SELECTED!!", selected?.title, title);
+
+      to = setTimeout(() => {
+        ref?.current?.scrollIntoView({
+          behavior: "instant",
+          block: "nearest",
+          inline: "nearest",
+        });
+      }, 1000);
+    }
+    return () => {
+      clearTimeout(to);
+    };
+  }, [selected?.title, title]);
   return (
     <>
       <div
+        ref={ref}
         className={clsx("flex gap-1 w-full items-center p-1", {
           "bg-white/40":
             selected?.title === props?.title && selected?.id === props?.id,
@@ -1238,6 +1303,30 @@ export const IngredientItem = (props: IngredientItemProps) => {
                     />
                   );
                 })}
+
+          {selected?.title === entry?.title && !entry?.amount && (
+            <Chip
+              label=""
+              icon="FaLink"
+              className="bg-white/30 hover:bg-white/50 items-center"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                copy(
+                  window.location.origin +
+                    "/" +
+                    i18next.language +
+                    "/inventory/" +
+                    remoteList +
+                    "/" +
+                    encodeURIComponent(entry?.title)
+                );
+                setNotification("Copied URL!");
+              }}
+            >
+              <Icon icon="FaCopy" className="h-5 w-5 my-1 "></Icon>
+            </Chip>
+          )}
           {between(getRawPricePerMl?.(entry), 10, 20) && (
             <Chip className="bg-yellow-500/30 w-fit" label="$"></Chip>
           )}
@@ -1270,6 +1359,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   selected={selected}
                   setSelected={setSelected}
                   list={list}
+                  remoteList={remoteList}
                 ></IngredientItem>
               );
             })}
@@ -1289,6 +1379,7 @@ export type LocalListChipsProps = Component<{
   onDelete: (activeKey: string | null) => void;
   onRemove: (activeKey: string | null) => void;
   onAdd: (activeKey: string | null) => void;
+  setNotification: (v: string) => void;
 }>;
 export const LocalListChips = (props: LocalListChipsProps) => {
   const {
@@ -1301,6 +1392,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     onRemove,
     onAdd,
     items,
+    setNotification,
   } = props;
 
   const [listAliases, setAliases] = useLocalStorage({}, "listNames");
@@ -1355,57 +1447,83 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           );
         })}
 
-     <div className="flex gap-1 ml-auto">
-      {!!items?.length && (
-  
-        <IconButton
-          className="h-7 w-7"
-          icon="FaCopy"
-          round
-          onClick={() => {
-            const plain = items.reduce((txt, itm) => {
-              return (
-                txt +
-                `${itm.amount} ${itm.title} ${itm.dilution} ${itm.price}\n`
-              );
-            }, "# " + (listAliases[value || ""] || value || "Local") + ":\n");
+      <div className="flex gap-1 ml-auto">
+        {!!items?.length && (
+          <IconButton
+            className="h-7 w-7"
+            icon="FaCopy"
+            round
+            onClick={() => {
+              const plain = items.reduce((txt, itm) => {
+                return (
+                  txt +
+                  `${itm.amount} ${itm.title} ${itm.dilution} ${itm.price}\n`
+                );
+              }, "# " + (listAliases[value || ""] || value || "Local") + ":\n");
 
-            copy(plain);
-          }}
-        ></IconButton>
-      )}
-      <IconButton
-        className="h-7 w-7"
-        icon="FaPlus"
-        round
-        onClick={() => {
-          onAdd("List " + listNames?.length);
-        }}
-      ></IconButton>
-      {items?.length > 0 && (
-        <DestructiveButton
-          className="h-7 w-7"
-          level={2}
-          icon="FaTrash"
-          round
-          promptTitle="Empty this list?"
-          promptText="This will delete all local ingredients from this list."
-          onDestruct={(confirmed: boolean) => {
-            if (confirmed) onDelete?.(value);
-          }}
-        ></DestructiveButton>
-      )}
-      {value !== "Local" && (
+              copy(plain);
+              setNotification("Copied List!");
+            }}
+          ></IconButton>
+        )}
         <IconButton
           className="h-7 w-7"
-          icon="FaPencil"
+          icon="FaPlus"
           round
           onClick={() => {
-            setShowEdit?.(!showEdit);
+            onAdd("List " + listNames?.length);
           }}
         ></IconButton>
-      )}
+        {items?.length > 0 && (
+          <DestructiveButton
+            className="h-7 w-7"
+            level={2}
+            icon="FaTrash"
+            round
+            promptTitle="Empty this list?"
+            promptText="This will delete all local ingredients from this list."
+            onDestruct={(confirmed: boolean) => {
+              if (confirmed) onDelete?.(value);
+            }}
+          ></DestructiveButton>
+        )}
+        {value !== "Local" && (
+          <IconButton
+            className="h-7 w-7"
+            icon="FaPencil"
+            round
+            onClick={() => {
+              setShowEdit?.(!showEdit);
+            }}
+          ></IconButton>
+        )}
       </div>
+    </div>
+  );
+};
+
+export type NotificationProps = Component<{
+  className?: string;
+  title: string;
+  setNotification: (v: string) => void;
+}>;
+
+export const Notification = (props: NotificationProps) => {
+  const { setNotification, title } = props;
+
+  useEffect(() => {
+    const to = setTimeout(() => setNotification(""), 5000);
+    return () => clearTimeout(to);
+  });
+
+  return (
+    <div className="fixed top-2 right-1/2 bg-blue-500/70 rounded-md font-semibold z-[1000] p-1 gap-2 flex items-center justify-between">
+      <div className="p-2 bg-black/30 rounded-md">{title}</div>
+      <IconButton
+        round
+        icon="FaX"
+        onClick={() => setNotification("")}
+      ></IconButton>
     </div>
   );
 };
