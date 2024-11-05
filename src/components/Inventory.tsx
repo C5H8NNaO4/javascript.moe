@@ -1278,7 +1278,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
             {getAmountUnit(amount)}
           </div>
         )}
-        {entry?.dilution !== 100 && <div className="">{entry?.dilution}</div>}
+        {entry?.dilution !== "100%" && <div className="">{entry?.dilution}</div>}
         {entry?.items && <div className="font-semibold">{entry.title}</div>}
         {!entry?.items && (
           <>
