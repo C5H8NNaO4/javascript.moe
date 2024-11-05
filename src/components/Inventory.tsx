@@ -1303,29 +1303,6 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   );
                 })}
 
-          {selected?.title === entry?.title && !entry?.amount && (
-            <Chip
-              label=""
-              icon="FaLink"
-              className="bg-white/30 hover:bg-white/50 items-center"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                copy(
-                  window.location.origin +
-                    "/" +
-                    i18next.language +
-                    "/inventory/" +
-                    remoteList +
-                    "/" +
-                    encodeURIComponent(entry?.title)
-                );
-                setNotification("Copied URL!");
-              }}
-            >
-              <Icon icon="FaCopy" className="h-5 w-5 my-1 "></Icon>
-            </Chip>
-          )}
           {between(getRawPricePerMl?.(entry), 10, 20) && (
             <Chip className="bg-yellow-500/30 w-fit" label="$"></Chip>
           )}
@@ -1339,6 +1316,29 @@ export const IngredientItem = (props: IngredientItemProps) => {
             <Chip className="bg-yellow-500/90 w-fit" label="🤯"></Chip>
           )}
         </div>
+        {selected?.title === entry?.title && !entry?.amount && (
+          <Chip
+            label=""
+            icon="FaLink"
+            className="bg-white/30 hover:bg-white/50 items-center"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              copy(
+                window.location.origin +
+                  "/" +
+                  i18next.language +
+                  "/inventory/" +
+                  remoteList +
+                  "/" +
+                  encodeURIComponent(entry?.title)
+              );
+              setNotification("Copied URL!");
+            }}
+          >
+            <Icon icon="FaCopy" className="h-5 w-5 my-1 "></Icon>
+          </Chip>
+        )}
       </div>
       {selected?.title === props.title && (
         <div className="flex flex-col " key={items?.length}>
