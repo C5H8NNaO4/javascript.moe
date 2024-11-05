@@ -1,0 +1,10 @@
+[...$(".product-listing li")].map((li) => {
+  const title = li.querySelector("h2")?.innerText;
+  const options = [...li.querySelectorAll("select option")].map((option) => {
+    const text = option.innerText;
+    const [, amount] = /(\d+(?:g|kg|ml))/.exec(text) || [];
+    const [, price] = /\$(\d+)/.exec(text) || [];
+    return { title, amount, price: price + "$" };
+  });
+  return options;
+});
