@@ -151,13 +151,15 @@ export const InventoryList = ({
   };
 }) => {
   const db = useIndexedDB("inventory");
-  const [storedList, setList] = useState<Item[]>([]);
-
+  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>({
+    Local: [],
+  });
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
   const [invRemote, setInvRemote] = useState<string | null>("Moe");
   const [invLocal, setInvLocal] = useState<string | null>("Local");
   const [sort, setSort] = useState<string>("+AZ");
 
+  const storedList = storedListLkp[invLocal || "Local"] || [];
   const [localLists, setLocalLists] = useLocalStorage(
     Object.keys(inventories.local),
     "localLists"
@@ -173,12 +175,14 @@ export const InventoryList = ({
       remote: true,
       local: !invLocal
         ? null
-        : storedList?.find((sitm) => {
-            return (
-              itm.title?.trim() === sitm.title?.trim() &&
-              itm.amount === sitm.amount
-            );
-          }),
+        : Object.values(storedListLkp)
+            .flat()
+            ?.find((sitm) => {
+              return (
+                itm.title?.trim() === sitm.title?.trim() &&
+                itm.amount === sitm.amount
+              );
+            }),
     };
   });
 
@@ -212,11 +216,12 @@ export const InventoryList = ({
         ]),
       ].filter(Boolean)
     );
-    setList(
-      res.filter((itm) => {
-        return itm.list === invLocal;
-      })
-    );
+    setStoredLkp({
+      ...storedListLkp,
+      ...res.reduce((acc, itm) => {
+        return { ...acc, [itm.list]: [...(acc[itm.list] || []), itm] };
+      }, {}),
+    });
   };
 
   const add = async (props: Partial<Item>) => {
@@ -227,7 +232,10 @@ export const InventoryList = ({
       id: res,
       list: invLocal || "Local",
     } as unknown as Item;
-    setList((list) => [...list, toAdd]);
+    setStoredLkp((list) => ({
+      ...list,
+      [invLocal || "Local"]: [...list[invLocal || "Local"], toAdd],
+    }));
   };
 
   const del = async (id: string, noUpdate?: boolean) => {
@@ -237,15 +245,15 @@ export const InventoryList = ({
       return itm.id === id;
     });
 
-    setList((list) => {
-      const newList = [...list];
-      newList.splice(index, 1);
+    setStoredLkp((list) => {
+      const newList = { ...list };
+      newList[invLocal || "Local"].splice(index, 1);
       return newList;
     });
   };
 
   const deleteList = async () => {
-    setList([]);
+    setStoredLkp({ [invLocal || "Local"]: [] });
     storedList.forEach((itm) => del(itm.id, true));
     setInvRemote(null);
   };
@@ -307,9 +315,9 @@ export const InventoryList = ({
       });
     }
 
-    setList((storedList) => {
-      const newList = [...storedList];
-      newList.splice(index, index > -1 ? 1 : 0, toAdd);
+    setStoredLkp((storedList) => {
+      const newList = { ...storedList };
+      newList[invLocal || "Local"].splice(index, index > -1 ? 1 : 0, toAdd);
       return newList;
     });
   };
@@ -326,6 +334,7 @@ export const InventoryList = ({
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
+  const [listAliases] = useLocalStorage({}, "listNames");
   const filtered = list
     ?.filter((itm) => {
       if (hideOnStock === 0) return true;
@@ -849,10 +858,28 @@ export const InventoryList = ({
                   <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
                     {<img src={ingredients[selected?.title?.trim()]} />}
                     <div className="flex flex-wrap gap-1 h-fit">
-                      {selected?.onStock && (
+                      {selected?.remote && selected?.onStock && (
                         <Chip
-                          className="bg-green-500 w-fit"
-                          label="On Stock"
+                          icon="FaShoppingCart"
+                          className="bg-yellow-500 w-fit"
+                          label="Available"
+                        ></Chip>
+                      )}
+                      {(selected?.local?.onStock ||
+                        (!selected?.remote && selected?.onStock)) && (
+                        <Chip
+                          onClick={() =>
+                            setInvLocal(selected?.local?.list || "Local")
+                          }
+                          icon="FaCheck"
+                          className={clsx("w-fit", {
+                            "bg-green-600": invLocal === selected?.local?.list || invLocal === selected?.list,
+                            "bg-yellow-500": invLocal !== selected?.local?.list && invLocal !== selected?.list,
+                          })}
+                          label={
+                            listAliases[selected?.list || selected?.local?.list || "Local"] 
+                            || selected?.list || selected?.local?.list || "In collection"
+                          }
                         ></Chip>
                       )}
                       {between(
@@ -972,9 +999,7 @@ export const InventoryList = ({
                       return (
                         <button
                           onClick={() => {
-                            setSelected(
-                               entry
-                            );
+                            setSelected(entry);
                           }}
                           className={clsx(
                             "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
@@ -1023,9 +1048,7 @@ export const InventoryList = ({
                         return (
                           <button
                             onClick={() => {
-                              setSelected(
-                                 entry
-                              );
+                              setSelected(entry);
                             }}
                             className={clsx(
                               "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
@@ -1154,7 +1177,8 @@ export const IngredientItem = (props: IngredientItemProps) => {
             className={clsx(
               "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
-                "checked:bg-green-700/80": 1,
+                "checked:bg-green-700/80": list === props?.local?.list || list === props?.list,
+                "checked:bg-yellow-500/80": list !== props?.local?.list && list !== props.list,
                 "disabled:checked:bg-green-700/40": 1,
                 "border-yellow-400": props.onStock,
                 "border-white": !props.onStock,
