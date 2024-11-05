@@ -2,7 +2,7 @@ import { useIndexedDB } from "react-indexed-db-hook";
 import { DestructiveButton, IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollContainer } from "./ScrollContainer";
 import fls from "fast-levenshtein";
 import clsx from "clsx";
@@ -22,8 +22,7 @@ import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
 import { toggle } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
-import { useNavigate, useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { useParams } from "react-router";
 import i18next from "i18next";
 
 export const getMostExpensive = (list: Item[]) => {
@@ -1354,6 +1353,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   key={itm.title}
                   {...itm}
                   title={title}
+                  setNotification={setNotification}
                   id={itm.id}
                   upd={upd}
                   selected={selected}
