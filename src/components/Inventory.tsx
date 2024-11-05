@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ScrollContainer } from "./ScrollContainer";
 import fls from "fast-levenshtein";
 import clsx from "clsx";
+import copy from "copy-to-clipboard";
 import { ingredients, thumbnails } from "../static/assets";
 import {
   allOdors,
@@ -20,6 +21,7 @@ import { groupByTitle } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
 import { toggle } from "@/lib/util";
+import { importPlainText } from "@/utils/app";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -415,34 +417,12 @@ export const InventoryList = ({
             </select>
             <Input
               onPaste={(e) => {
-                const lines = e.clipboardData
-                  ?.getData("text")
-                  .split("\n")
-                  .map((l) => {
-                    return l?.trim();
-                  })
-                  .filter(Boolean);
-
-                lines.forEach((line) => {
-                  const [amount] = /\d+(g|ml)/.exec(line) || [];
-                  const [, title] =
-                    /\s(.+?)(?:\s\d+%)?\s?\d+[$€]$/.exec(line) || [];
-                  const [, dilution = "100%"] =
-                    /\s(\d+%)\s?\d+[$€]/.exec(line) || [];
-                  const [, price] = /\s(\d+(€|\$))/.exec(line) || [];
-
-                  add({
-                    amount,
-                    quantity: 1,
-                    title: title?.trim(),
-                    dilution,
-                    price,
-                  });
-                });
+                const text = e.clipboardData?.getData("text");
+                importPlainText(add, text);
               }}
               //   type="submit"
               name="title"
-              placeholder="title"
+              placeholder="Paste plain text export or enter a title."
               className="flex-1 h-[34px]"
             ></Input>
             <select name="dilution" className="bg-black/80 border-b-2 h-[34px]">
@@ -454,9 +434,9 @@ export const InventoryList = ({
             <Input
               name="price"
               type="currency"
-              className="flex-1 w-[4ch] h-[34px] pr-[34px]"
+              className="w-[7ch] h-[34px] pr-[34px]"
             ></Input>
-            <Icon icon="FaDollarSign" className="-ml-[34px]"></Icon>
+            <Icon icon="FaDollarSign" className="-ml-[34px] h-6 w-6 mr-2"></Icon>
             <IconButton icon="FaPlus" type="submit"></IconButton>
             <IconButton
               icon="FaSearch"
@@ -873,12 +853,20 @@ export const InventoryList = ({
                           }
                           icon="FaCheck"
                           className={clsx("w-fit", {
-                            "bg-green-600": invLocal === selected?.local?.list || invLocal === selected?.list,
-                            "bg-yellow-500": invLocal !== selected?.local?.list && invLocal !== selected?.list,
+                            "bg-green-600":
+                              invLocal === selected?.local?.list ||
+                              invLocal === selected?.list,
+                            "bg-yellow-500":
+                              invLocal !== selected?.local?.list &&
+                              invLocal !== selected?.list,
                           })}
                           label={
-                            listAliases[selected?.list || selected?.local?.list || "Local"] 
-                            || selected?.list || selected?.local?.list || "In collection"
+                            listAliases[
+                              selected?.list || selected?.local?.list || "Local"
+                            ] ||
+                            selected?.list ||
+                            selected?.local?.list ||
+                            "In collection"
                           }
                         ></Chip>
                       )}
@@ -1177,8 +1165,10 @@ export const IngredientItem = (props: IngredientItemProps) => {
             className={clsx(
               "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
-                "checked:bg-green-700/80": list === props?.local?.list || list === props?.list,
-                "checked:bg-yellow-500/80": list !== props?.local?.list && list !== props.list,
+                "checked:bg-green-700/80":
+                  list === props?.local?.list || list === props?.list,
+                "checked:bg-yellow-500/80":
+                  list !== props?.local?.list && list !== props.list,
                 "disabled:checked:bg-green-700/40": 1,
                 "border-yellow-400": props.onStock,
                 "border-white": !props.onStock,
@@ -1364,8 +1354,28 @@ export const LocalListChips = (props: LocalListChipsProps) => {
             </div>
           );
         })}
+
+     <div className="flex gap-1 ml-auto">
+      {!!items?.length && (
+  
+        <IconButton
+          className="h-7 w-7"
+          icon="FaCopy"
+          round
+          onClick={() => {
+            const plain = items.reduce((txt, itm) => {
+              return (
+                txt +
+                `${itm.amount} ${itm.title} ${itm.dilution} ${itm.price}\n`
+              );
+            }, "# " + (listAliases[value || ""] || value || "Local") + ":\n");
+
+            copy(plain);
+          }}
+        ></IconButton>
+      )}
       <IconButton
-        className="h-7 w-7 ml-auto"
+        className="h-7 w-7"
         icon="FaPlus"
         round
         onClick={() => {
@@ -1395,6 +1405,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           }}
         ></IconButton>
       )}
+      </div>
     </div>
   );
 };

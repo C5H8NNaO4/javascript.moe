@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/fast-levenshtein": "^0.0.4",
     "clsx": "^2.1.1",
+    "copy-to-clipboard": "^3.3.3",
     "fast-levenshtein": "^3.0.0",
     "framer-motion": "11.3.2",
     "i18n": "^0.15.1",
