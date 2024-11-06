@@ -784,7 +784,7 @@ export const InventoryList = ({
                   <h1 className="line-clamp-1">{invRemote}</h1>
                 )}
               </div>
-              <div className="flex gap-1 ml-auto justify-start flex-1 items-center">
+              <div className="flex gap-1 ml-auto justify-start flex-1 items-center w-full lg:w-fit">
                 <IconButton
                   className=""
                   round
