@@ -651,7 +651,7 @@ export const InventoryList = ({
       )}
 
       <div className="flex gap-4 overflow-hidden flex-1">
-        {(isMobile ? !selected?.amount : true) && (
+        {(isMobile ? !selected : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
             <div className="flex justify-between flex-wrap mb-1 gap-1">
               <div className="flex gap-1 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
@@ -774,60 +774,65 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {(isMobile ? selected?.amount : true) && (
+        {(isMobile ? !!selected : true) && (
           <div className="border-white flex flex-col md:basis-1/2 w-full md:max-w-[66%] md:flex-shrink pb-0">
-            <div className="flex gap-1 justify-between bg-yellow-500/20 p-1 rounded-md items-center mb-2 h-[51px]">
-              <h2>{invRemote || invLocal}</h2>
-              {selected?.title && (
-                <h3 className="line-clamp-1"> | {selected?.title}</h3>
-              )}
-              <IconButton
-                className="ml-auto"
-                round
-                icon="FaChevronLeft"
-                onClick={() => {
-                  const sel = sorted
-                    ?.filter((itm) => itm.title === selected?.title)
-                    .at(-1);
-                  const index = sel ? sorted?.indexOf(sel) : -1;
-                  setSelected(
-                    sorted[(sorted?.length + index - 1) % sorted?.length]
-                  );
-                }}
-              ></IconButton>
-              <IconButton
-                className=""
-                round
-                icon="FaChevronRight"
-                onClick={() => {
-                  const sel = sorted
-                    ?.filter((itm) => itm.title === selected?.title)
-                    .at(-1);
-                  const index = sel ? sorted?.indexOf(sel) : -1;
-                  setSelected(sorted[(index + 1) % sorted?.length]);
-                }}
-              ></IconButton>
-              <Chip
-                label={uniqueIngredientsOnStock?.length.toString()}
-                icon="FaBottleDroplet"
-                iconClsn="!h-5 !w-5"
-                className="bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
-              ></Chip>
-              <Chip
-                label={totalValue.toString()}
-                icon="FaDollarSign"
-                iconClsn="!h-5 !w-5"
-                className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
-              ></Chip>
-              {selected && (
+            <div className="flex gap-1 flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
+              <div className="flex gap-1 flex-grow items-center">
+                {selected?.title ? (
+                  <h1 className="line-clamp-1">{selected?.title}</h1>
+                ) : (
+                  <h1 className="line-clamp-1">{invRemote}</h1>
+                )}
+              </div>
+              <div className="flex gap-1 ml-auto justify-start flex-1 ">
                 <IconButton
+                  className=""
                   round
-                  icon="FaX"
+                  icon="FaChevronLeft"
                   onClick={() => {
-                    setSelected(null);
+                    const sel = sorted
+                      ?.filter((itm) => itm.title === selected?.title)
+                      .at(-1);
+                    const index = sel ? sorted?.indexOf(sel) : -1;
+                    setSelected(
+                      sorted[(sorted?.length + index - 1) % sorted?.length]
+                    );
                   }}
                 ></IconButton>
-              )}
+                <IconButton
+                  className="mr-auto"
+                  round
+                  icon="FaChevronRight"
+                  onClick={() => {
+                    const sel = sorted
+                      ?.filter((itm) => itm.title === selected?.title)
+                      .at(-1);
+                    const index = sel ? sorted?.indexOf(sel) : -1;
+                    setSelected(sorted[(index + 1) % sorted?.length]);
+                  }}
+                ></IconButton>
+                <Chip
+                  label={uniqueIngredientsOnStock?.length.toString()}
+                  icon="FaBottleDroplet"
+                  iconClsn="!h-5 !w-5"
+                  className="ml-auto bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
+                ></Chip>
+                <Chip
+                  label={totalValue.toString()}
+                  icon="FaDollarSign"
+                  iconClsn="!h-5 !w-5"
+                  className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
+                ></Chip>
+                {selected && (
+                  <IconButton
+                    round
+                    icon="FaX"
+                    onClick={() => {
+                      setSelected(null);
+                    }}
+                  ></IconButton>
+                )}
+              </div>
             </div>
             {!!selected?.title && (
               <div
@@ -1278,7 +1283,9 @@ export const IngredientItem = (props: IngredientItemProps) => {
             {getAmountUnit(amount)}
           </div>
         )}
-        {entry?.dilution !== "100%" && <div className="">{entry?.dilution}</div>}
+        {entry?.dilution !== "100%" && (
+          <div className="">{entry?.dilution}</div>
+        )}
         {entry?.items && <div className="font-semibold">{entry.title}</div>}
         {!entry?.items && (
           <>
