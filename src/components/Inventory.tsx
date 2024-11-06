@@ -777,14 +777,14 @@ export const InventoryList = ({
         {(isMobile ? !!selected : true) && (
           <div className="border-white flex flex-col md:basis-1/2 w-full md:max-w-[66%] md:flex-shrink pb-0">
             <div className="flex gap-1 flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
-              <div className="flex gap-1 flex-grow items-center">
+              <div className="flex gap-1 flex-grow items-center ">
                 {selected?.title ? (
                   <h1 className="line-clamp-1">{selected?.title}</h1>
                 ) : (
                   <h1 className="line-clamp-1">{invRemote}</h1>
                 )}
               </div>
-              <div className="flex gap-1 ml-auto justify-start flex-1 items-center w-full lg:w-fit">
+              <div className="flex gap-1 ml-auto justify-start flex-shrink items-center  basis-[0px]">
                 <IconButton
                   className=""
                   round
