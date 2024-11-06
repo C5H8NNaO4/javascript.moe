@@ -776,15 +776,16 @@ export const InventoryList = ({
         )}
         {(isMobile ? !!selected : true) && (
           <div className="border-white flex flex-col md:basis-1/2 w-full md:max-w-[66%] md:flex-shrink pb-0">
-            <div className="flex gap-1 flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
-              <div className="flex gap-1 flex-grow items-center ">
+            <div className="flex gap-1 flex-col lg:flex-row justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
+              
+              <div className="flex gap-1 flex-1 flex-grow items-center justify-start w-full">
                 {selected?.title ? (
                   <h1 className="line-clamp-1">{selected?.title}</h1>
                 ) : (
                   <h1 className="line-clamp-1">{invRemote}</h1>
                 )}
               </div>
-              <div className="flex gap-1 ml-auto justify-start flex-shrink items-center  basis-[0px]">
+              <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
                 <IconButton
                   className=""
                   round
@@ -800,7 +801,7 @@ export const InventoryList = ({
                   }}
                 ></IconButton>
                 <IconButton
-                  className="mr-auto"
+                  className="mr-auto lg:mr-0"
                   round
                   icon="FaChevronRight"
                   onClick={() => {
@@ -815,7 +816,7 @@ export const InventoryList = ({
                   label={uniqueIngredientsOnStock?.length.toString()}
                   icon="FaBottleDroplet"
                   iconClsn="!h-5 !w-5"
-                  className="ml-auto bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
+                  className="ml-auto md:ml-0 bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
                 ></Chip>
                 <Chip
                   label={totalValue.toString()}
