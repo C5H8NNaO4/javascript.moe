@@ -1420,6 +1420,54 @@ const Z1110MIPOdor = [
   "uplifting",
 ];
 
+const PropanediolDesc = `1,3 Propanediol is a clear, colorless liquid with a mild, slightly sweet, and neutral aroma. It is widely used in perfumery for its clean, smooth texture and as a solvent in formulations. Its scent is subtle, often undetectable in high concentrations, but when present, it adds a gentle sweetness and softness to compositions. This ingredient is valued for its ability to stabilize and blend fragrances, creating a smooth, rounded experience in perfumes.`;
+const PropanediolOdor = ["sweet", "neutral", "smooth", "slightly sugary"];
+
+const MethylHexenalDesc = `5-Methyl-2-Phenyl-2-Hexenal is a fragrant compound with a fresh, green, and slightly fruity aroma. It has strong notes of cucumber and melon, with a subtle floral undertone. Often used in modern, fresh fragrances, it brings a bright and lively character to compositions. This compound is associated with clean, refreshing scents reminiscent of crisp fruits and vibrant vegetation.`;
+const MethylHexenalOdor = ["green", "fruity", "cucumber", "melon", "floral"];
+
+const AcetalDesc = `Acetal is a light, fresh, and somewhat sweet compound with a characteristic green, slightly floral aroma. Often used in fragrances to evoke a clean, crisp scent, it offers a refreshing quality that can remind one of freshly cut grass or green foliage. Acetal is valued for its subtle elegance and is commonly used in fragrances aimed at creating an airy, natural, and clean atmosphere.`;
+const AcetalOdor = ["green", "floral", "fresh", "clean", "herbaceous"];
+
+const AcetaldehydeEthylLinalylAcetalDesc = `Acetaldehyde ethyl linalyl acetal is a soft, fruity fragrance compound with citrus and floral qualities. Its scent is light and refreshing, evoking the sweet, zesty aroma of fresh citrus fruits and delicate flowers. This compound is often used in perfumery to create fresh, uplifting notes with a pleasant, fruity sweetness. It adds a lively brightness to compositions.`;
+const AcetaldehydeEthylLinalylAcetalOdor = [
+  "fruity",
+  "citrus",
+  "floral",
+  "sweet",
+  "fresh",
+];
+
+const AcetanisoleCrystalsDesc = `Acetanisole Crystals is a compound known for its warm, sweet, and slightly almond-like aroma. It offers soft, comforting notes with a light, subtle sweetness that evokes the warmth of baked goods or cozy spaces. This compound is used in perfumery to add a creamy, smooth element, enhancing the sweetness of fragrances while adding depth and roundness.`;
+const AcetanisoleCrystalsOdor = [
+  "sweet",
+  "almond",
+  "creamy",
+  "powdery",
+  "warm",
+];
+
+const AcetateC8Desc = `Acetate C-8 is a sweet, fruity, and slightly floral compound with a tropical character. Its aroma is often described as vibrant and refreshing, with prominent notes of ripe fruits like pineapple and pear. Acetate C-8 is used in perfumery to add a crisp, juicy, and sweet element to fragrances, evoking the essence of fresh, sun-kissed fruit. It is widely used to create fresh, bright, and youthful scents.`;
+const AcetateC8Odor = ["fruity", "tropical", "sweet", "pear", "pineapple"];
+
+const AcetateC9Desc = `Acetate C-9 is a fruity, green, and slightly sweet compound, often compared to the smell of apples or fresh herbs. Its scent is clean, crisp, and refreshing, making it an ideal choice for fragrances aiming to evoke freshness, clarity, and a sense of clean, natural beauty. Acetate C-9 is commonly used in light, airy perfumes to enhance the feeling of freshness.`;
+const AcetateC9Odor = ["green", "fruity", "fresh", "sweet", "apple-like"];
+
+const AceticAcidDesc = `Acetic Acid is a sharp, pungent compound with a vinegar-like aroma. Its odor is distinctive, acidic, and sharp, often used to enhance and bring out certain characteristics in perfumes. While strong on its own, Acetic Acid plays an important role in creating complex fragrance compositions by providing tangy, crisp notes that can evoke a sense of tangy freshness or intensify other components in a fragrance.`;
+const AceticAcidOdor = ["sharp", "vinegar-like", "pungent", "acidy"];
+
+const AcetophenoneDesc = `Acetophenone is a sweet, floral, and slightly almond-like compound with a warm, creamy aroma. It has a subtle, powdery sweetness that brings to mind the soft, comforting scent of baked goods or delicate flowers. Acetophenone is used in perfumery to add complexity and depth, often enhancing sweeter, warmer fragrances with its smooth and inviting character.`;
+const AcetophenoneOdor = [
+  "sweet",
+  "almond-like",
+  "creamy",
+  "floral",
+  "powdery",
+];
+
+const AdoxalDesc = `Adoxal is a fresh, slightly sweet, and clean fragrance compound with a prominent floral undertone. It has a delicate, airy character reminiscent of freshly blooming flowers or clean linens. Its aroma is light, fresh, and slightly fruity, with a soothing quality that evokes feelings of cleanliness and purity. Adoxal is often used in perfumery to create subtle, uplifting floral scents.`;
+const AdoxalOdor = ["floral", "fresh", "clean", "slightly sweet", "fruity"];
+
 export const perfumeIngredientsDesc = {
   "Oud Assafi™": OudAssafiDesc,
   "Orange Flower Absolute": OrangeFlowerAbsoluteDesc,
@@ -1542,7 +1590,17 @@ export const perfumeIngredientsDesc = {
   "Woody Base (Pellwall)": WoodyBasePellwallDesc,
   "Ysamber K": YsamberKDesc,
   "Z11 10 MIP": Z1110MIPDesc,
-} as Record<string, string>
+  "1,3 Propanediol": PropanediolDesc,
+  "5-Methyl-2-Phenyl-2-Hexenal": MethylHexenalDesc,
+  Acetal: AcetalDesc,
+  "Acetaldehyde ethyl linalyl acetal": AcetaldehydeEthylLinalylAcetalDesc,
+  "Acetanisole Crystals": AcetanisoleCrystalsDesc,
+  "Acetate C-8": AcetateC8Desc,
+  "Acetate C9": AcetateC9Desc,
+  "Acetic Acid": AceticAcidDesc,
+  Acetophenone: AcetophenoneDesc,
+  Adoxal: AdoxalDesc,
+} as Record<string, string>;
 
 export const perfumeIngredientsOdours = {
   "Oud Assafi™": OudAssafiOdor,
@@ -1666,7 +1724,17 @@ export const perfumeIngredientsOdours = {
   "Woody Base (Pellwall)": WoodyBasePellwallOdor,
   "Ysamber K": YsamberKOdor,
   "Z11 10 MIP": Z1110MIPOdor,
-} as Record<string, string[]>
+  "1,3 Propanediol": PropanediolOdor,
+  "5-Methyl-2-Phenyl-2-Hexenal": MethylHexenalOdor,
+  Acetal: AcetalOdor,
+  "Acetaldehyde ethyl linalyl acetal": AcetaldehydeEthylLinalylAcetalOdor,
+  "Acetanisole Crystals": AcetanisoleCrystalsOdor,
+  "Acetate C-8": AcetateC8Odor,
+  "Acetate C9": AcetateC9Odor,
+  "Acetic Acid": AceticAcidOdor,
+  Acetophenone: AcetophenoneOdor,
+  Adoxal: AdoxalOdor,
+} as Record<string, string[]>;
 
 export const allOdors = [
   ...new Set(Object.values(perfumeIngredientsOdours).flat()),
@@ -1850,8 +1918,25 @@ export const OdorColors = {
   silky: "#C8BFD4", // A soft, muted lavender that conveys a silky texture
   seductive: "#8B3A3A",
   opulent: "#A67B5B",
-  vibrant: '#FF4C4C',         // A bright and bold red
-  dynamic: '#007BFF',
-  modern: '#A8D300',
-  "almond-like": '#EFDECD',
-} as Record<string, string>
+  vibrant: "#FF4C4C", // A bright and bold red
+  dynamic: "#007BFF",
+  modern: "#A8D300",
+  "almond-like": "#EFDECD",
+  cucumber: '#A1D7B3', // Light green, fresh and crisp like cucumber
+  "vinegar-like": '#D4E6B5', // Light, acidic green, reflecting vinegar's sharpness
+  pungent: '#9A9A9A',
+} as Record<string, string>;
+
+export const TagColors = {
+  natural: "#4A7C59", // A deep, earthy green to evoke the organic feel of natural elements
+  flammable: "#FF4500", // A bold orange-red, symbolizing caution and flammability
+  absolute: "#8B4513", // A rich, warm brown, representing the concentrated, resinous quality of absolutes
+  essentialOil: "#FFD700",
+} as Record<string, string>;
+
+export const TagIcons = {
+  natural: "FaTree",
+  flammable: "FaFireFlameCurved",
+  "essential oil": "FaBottleDroplet",
+  absolute: "MdScience",
+} as Record<string, string>;

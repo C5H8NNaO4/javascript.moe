@@ -13,11 +13,13 @@ import {
   OdorColors,
   perfumeIngredientsDesc,
   perfumeIngredientsOdours,
+  TagColors,
+  TagIcons,
 } from "../static/descriptions";
 import { Chip, Component, OdorChip } from "./Chip";
 import { between } from "../utils/numbers";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { groupByTitle } from "@/utils/perfumersApprentice";
+import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
 import { toggle } from "@/lib/util";
@@ -142,6 +144,8 @@ export type Item = {
   items?: Item[];
   local?: Item | null;
   remote?: boolean;
+  tags: string[];
+  aliases: string[];
 };
 
 type Inventories = Record<string, Item[]>;
@@ -303,7 +307,7 @@ export const InventoryList = ({
       );
     });
 
-    const toAdd = {
+    const toAdd = normalize({
       ...existing,
       title: title!,
       amount,
@@ -314,7 +318,7 @@ export const InventoryList = ({
       id,
       remote: false,
       list,
-    };
+    });
 
     if (id) {
       await db.update({
@@ -775,14 +779,16 @@ export const InventoryList = ({
           </div>
         )}
         {(isMobile ? !!selected : true) && (
-          <div className="border-white flex flex-col md:basis-1/2 w-full md:max-w-[66%] md:flex-shrink pb-0">
-            <div className="flex gap-1 flex-col lg:flex-row justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
-              
-              <div className="flex gap-1 flex-1 flex-grow items-center justify-start w-full">
+          <div className="border-white flex flex-col basis-1/2 w-full md:max-w-[66%] md:flex-shrink pb-0">
+            <div className="flex gap-1 flex-col lg:flex-row lg:flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
+              <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full min-w-max">
                 {selected?.title ? (
-                  <h1 className="line-clamp-1">{selected?.title}</h1>
+                  <h2 className="line-clamp-1">{selected?.title}</h2>
                 ) : (
-                  <h1 className="line-clamp-1">{invRemote}</h1>
+                  <h2 className="line-clamp-1">{invRemote}</h2>
+                )}
+                {selected?.aliases?.length && (
+                  <em>{selected?.aliases?.join(", ")}</em>
                 )}
               </div>
               <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
@@ -964,6 +970,19 @@ export const InventoryList = ({
                       ) && (
                         <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
                       )}
+                    </div>
+                    <div className="flex flex-wrap gap-1 h-fit">
+                      {selected?.tags?.map((tag) => {
+                        return (
+                          <Chip
+                            label={tag}
+                            icon={TagIcons[tag]}
+                            style={{
+                              backgroundColor: TagColors[tag],
+                            }}
+                          ></Chip>
+                        );
+                      })}
                     </div>
                     {selected?.amount && !selected?.remote && (
                       <DestructiveButton
@@ -1287,7 +1306,18 @@ export const IngredientItem = (props: IngredientItemProps) => {
         {entry?.dilution !== "100%" && (
           <div className="">{entry?.dilution}</div>
         )}
-        {entry?.items && <div className="font-semibold">{entry.title}</div>}
+
+        {entry?.items && (
+          <div className="flex flex-col">
+            <span className="font-semibold ">{entry.title}</span>
+            <span className="text-xs">
+              {!!entry?.aliases?.length && (
+                <em>{entry?.aliases?.join(", ")}</em>
+              )}
+            </span>
+          </div>
+        )}
+
         {!entry?.items && (
           <>
             <div className="">{entry.price}</div>
@@ -1296,38 +1326,58 @@ export const IngredientItem = (props: IngredientItemProps) => {
         )}
 
         <div className="min-w-[4ch] ml-auto justify-end flex gap-1 my-auto">
-          {!entry?.items
-            ? null
-            : perfumeIngredientsOdours[entry?.title]
-                ?.slice(0, 3)
-                ?.map?.((key) => {
+          <div className="flex flex-col gap-1">
+            <div className="flex gap-1">
+              {!entry?.items
+                ? null
+                : perfumeIngredientsOdours[entry?.title]
+                    ?.slice(0, 3)
+                    ?.map?.((key) => {
+                      return (
+                        <Chip
+                          label={key}
+                          className={clsx(
+                            "flex items-start text-xs pb-[2px] whitespace-nowrap line-clamp-1",
+                            {
+                              "border-yellow-500 border-[1px]":
+                                filter?.includes(key),
+                              "text-gray-400":
+                                !filter?.includes(key) && filter?.length,
+                            }
+                          )}
+                          style={{
+                            background:
+                              OdorColors[key] +
+                              (filter?.includes(key) || !filter?.length
+                                ? "AA"
+                                : "33"),
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFilter?.(key);
+                          }}
+                        />
+                      );
+                    })}
+            </div>
+
+            <div className="hidden flex gap-1">
+              {entry?.tags &&
+                !entry?.amount &&
+                entry?.tags?.map((tag) => {
                   return (
                     <Chip
-                      label={key}
-                      className={clsx(
-                        "flex items-start text-xs pb-[2px] whitespace-nowrap line-clamp-1",
-                        {
-                          "border-yellow-500 border-[1px]":
-                            filter?.includes(key),
-                          "text-gray-400":
-                            !filter?.includes(key) && filter?.length,
-                        }
-                      )}
+                      className="text-xs"
+                      label={tag}
+                      icon={TagIcons[tag]}
                       style={{
-                        background:
-                          OdorColors[key] +
-                          (filter?.includes(key) || !filter?.length
-                            ? "AA"
-                            : "33"),
+                        backgroundColor: TagColors[tag],
                       }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFilter?.(key);
-                      }}
-                    />
+                    ></Chip>
                   );
                 })}
-
+            </div>
+          </div>
           {between(getRawPricePerMl?.(entry), 10, 20) && (
             <Chip className="bg-yellow-500/30 w-fit" label="$"></Chip>
           )}
