@@ -78,6 +78,28 @@ export const LandingPage = () => {
             hrefLang="en"
             href={`https://javscript.moe/en`}
           />
+          <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+          <meta
+            name="description"
+            content="JavaScript, TypeScript, React, Node.js, SQL, AWS, Serverless | Frontend Developer, Gehalt"
+          />
+          <meta
+            property="og:title"
+            content="Moritz Roessler | Freiburg im Breisgau | Senior Frontend Developer"
+            data-react-helmet="true"
+          />
+          <meta
+            property="og:description"
+            content="JavaScript, TypeScript, React, Node.js, SQL, AWS, Serverless | Frontend Developer, Gehalt"
+          />
+          <meta
+            property="og:image"
+            content="https://javascript.moe/images/preview.png"
+          />
+          <meta property="og:url" content="https://javascript.moe" />
+          <title>
+            Moritz Roessler | Freiburg im Breisgau | Senior Frontend Developer
+          </title>
         </>,
         document.head
       )}

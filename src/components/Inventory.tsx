@@ -340,11 +340,13 @@ export const InventoryList = ({
       return newList;
     });
   };
+  
   useEffect(() => {
     if (!invLocal || !localLists?.includes(invLocal))
       setLocalLists([...Object.keys(inventories?.local)]);
     if (invLocal) load();
   }, [invLocal]);
+
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
   const [filterType, setFilterType] = useState("OR");
