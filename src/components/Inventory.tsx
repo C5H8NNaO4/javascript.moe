@@ -24,7 +24,7 @@ import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
 import { toggle } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
 
 export const getMostExpensive = (list: Item[]) => {
@@ -356,6 +356,18 @@ export const InventoryList = ({
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
   const [listAliases] = useLocalStorage({}, "listNames");
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate(
+      '/' +
+      i18next.language +
+        "/" +
+        "inventory/" +
+        invRemote +
+        "/" +
+        encodeURIComponent(selected?.title || "")
+    );
+  }, [selected?.title]);
   const filtered = list
     ?.filter((itm) => {
       if (hideOnStock === 0) return true;
@@ -837,7 +849,9 @@ export const InventoryList = ({
                     round
                     icon="FaX"
                     onClick={() => {
-                      setSelected(isMobile ? { title: selected?.title } as any : null);
+                      setSelected(
+                        isMobile ? ({ title: selected?.title } as any) : null
+                      );
                     }}
                   ></IconButton>
                 )}
