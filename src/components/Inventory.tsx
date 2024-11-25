@@ -340,7 +340,7 @@ export const InventoryList = ({
       return newList;
     });
   };
-  
+
   useEffect(() => {
     if (!invLocal || !localLists?.includes(invLocal))
       setLocalLists([...Object.keys(inventories?.local)]);
@@ -657,7 +657,7 @@ export const InventoryList = ({
       )}
 
       <div className="flex gap-4 overflow-hidden flex-1">
-        {(isMobile ? !selected : true) && (
+        {(isMobile ? !selected?.amount : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
             <div className="flex justify-between flex-wrap mb-1 gap-1">
               <div className="flex gap-1 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
@@ -780,8 +780,8 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {(isMobile ? !!selected : true) && (
-          <div className="border-white flex flex-col basis-1/2 w-full md:max-w-[66%] md:flex-shrink pb-0">
+        {(isMobile ? !!selected?.amount : true) && (
+          <div className="border-white flex flex-col w-full md:max-w-[66%] md:flex-shrink pb-0">
             <div className="flex gap-1 flex-col lg:flex-row lg:flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
               <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full min-w-max">
                 {selected?.title ? (
@@ -837,7 +837,7 @@ export const InventoryList = ({
                     round
                     icon="FaX"
                     onClick={() => {
-                      setSelected(null);
+                      setSelected(isMobile ? { title: selected?.title } as any : null);
                     }}
                   ></IconButton>
                 )}
