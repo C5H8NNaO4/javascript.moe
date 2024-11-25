@@ -358,15 +358,16 @@ export const InventoryList = ({
   const [listAliases] = useLocalStorage({}, "listNames");
   const navigate = useNavigate();
   useEffect(() => {
-    navigate(
-      '/' +
-      i18next.language +
+    if (selected?.title)
+      navigate(
         "/" +
-        "inventory/" +
-        invRemote +
-        "/" +
-        encodeURIComponent(selected?.title || "")
-    );
+          i18next.language +
+          "/" +
+          "inventory/" +
+          invRemote +
+          "/" +
+          encodeURIComponent(selected?.title || "")
+      );
   }, [selected?.title]);
   const filtered = list
     ?.filter((itm) => {
