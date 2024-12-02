@@ -532,7 +532,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           </div>
         )}
         {showSuggestions && (
-          <div className="w-[330px] h-full ">
+          <div className="w-[330px] h-full pr-1">
             <div className="overflow-y-scroll  max-h-full h-[90%] pr-1 mr-[-3px]">
               <div>
                 <div className="bg-white/40">Utilities</div>
