@@ -25,7 +25,6 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Link, useSearchParams } from "react-router-dom";
 import i18next from "i18next";
 import { isSmaller, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
-import { inventory } from "@/static/inventory";
 export type FragrancePlannerProps = Component<{
   className?: string;
   inventories: {
