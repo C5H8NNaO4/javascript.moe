@@ -1116,8 +1116,8 @@ export const InventoryList = ({
                           <span>{selected?.price}</span>
 
                           <span>
-                            ({getRawPricePerMl(selected)}
-                            {selected?.price?.slice(-1)}/
+                            ({selected?.price?.slice(-1)}
+                            {getRawPricePerMl(selected)}/
                             {getAmountUnit(selected?.amount)})
                           </span>
                         </div>
