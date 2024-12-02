@@ -479,7 +479,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
             </div>
 
             {!edit && (
-              <div className="flex flex-col flex-grow overflow-y-scroll !min-h-0 mt-1 pr-1 mr-[-8px] max-h-[60vh]">
+              <div className="flex flex-col flex-grow overflow-y-scroll !min-h-0 mt-1 pr-1 mr-[-8.5px] max-h-[60vh]">
                 <ul className="">
                   {ingredients.map((itm, i) => {
                     return (
