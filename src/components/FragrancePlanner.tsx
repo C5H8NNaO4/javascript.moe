@@ -213,7 +213,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   };
 
   return (
-    <div className={clsx("w-full max-h-full  ", {}, className)}>
+    <div className={clsx("w-full h-full flex flex-col", {}, className)}>
       <div className="flex gap-2 mb-2 items-center">
         <IconButton
           disabled={!formula}
@@ -357,7 +357,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           </div>
         )}
 
-        <div className="flex-1 ">
+        <div className="flex-1 flex flex-col">
           <div className="flex gap-1 ">
             <div>
               Unit
@@ -441,22 +441,24 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           </div>
 
           {!edit && (
-            <ul className="mt-4">
-              {ingredients.map((itm, i) => {
-                return (
-                  <FormulaIngredient
-                    {...itm}
-                    step={step}
-                    update={update(itm.title)}
-                    remove={() => {
-                      const newIngs = ingredients.slice();
-                      newIngs.splice(i, 1);
-                      setIngredients(newIngs);
-                    }}
-                  ></FormulaIngredient>
-                );
-              })}
-            </ul>
+            <div className="flex flex-col flex-grow overflow-y-auto !min-h-0 mt-1 pr-1 max-h-[60vh]">
+              <ul className="">
+                {ingredients.map((itm, i) => {
+                  return (
+                    <FormulaIngredient
+                      {...itm}
+                      step={step}
+                      update={update(itm.title)}
+                      remove={() => {
+                        const newIngs = ingredients.slice();
+                        newIngs.splice(i, 1);
+                        setIngredients(newIngs);
+                      }}
+                    ></FormulaIngredient>
+                  );
+                })}
+              </ul>
+            </div>
           )}
           {edit && (
             <div>
@@ -553,7 +555,7 @@ export type FormulaIngredientProps = Component<{
 }> &
   FormulaItem;
 export const FormulaIngredient = (props: FormulaIngredientProps) => {
-  const { title, usedAmount, unit, update, remove, step} = props;
+  const { title, usedAmount, unit, update, remove, step } = props;
   return (
     <li className="flex gap-2">
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>

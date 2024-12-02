@@ -16,3 +16,7 @@ label span {
   top: -1px;
   right: 20px;
 }
+
+* {
+  box-sizing: border-box;
+}
