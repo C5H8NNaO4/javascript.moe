@@ -325,6 +325,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 <Icon icon="MdInventory" className="!h-8 !w-8"></Icon>
               </Link>
             </div>
+            {!fragrances?.length && <em className="p-2">
+              Saved formulas show up here.
+            </em>}
             <ul>
               {fragrances?.map((frmla) => {
                 return (
@@ -349,6 +352,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                       iconClsn=""
                       onDestruct={(confirm) => {
                         if (confirm && frmla?.id) remove(frmla?.id);
+                        load();
                       }}
                       level={2}
                     ></DestructiveButton>
@@ -436,6 +440,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                   icon="FaSave"
                   onClick={() => {
                     save();
+                    load();
                   }}
                 ></IconButton>
               </div>
