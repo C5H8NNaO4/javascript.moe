@@ -26,6 +26,7 @@ import { toggle } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
+import { Link } from "react-router-dom";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -119,6 +120,16 @@ export const getRawPricePerMl = (
   return Math.round(100 * (prc / nr) * (100 / dil)) / 100;
 };
 
+export const getPricePerMl = (
+  entry: Pick<Item, "amount" | "price" | "dilution"> | null
+) => {
+  if (entry === null) return 0;
+  const nr = getGrams(entry.amount);
+  const prc = getPrice(entry);
+
+  return Math.round(100 * (prc / nr)) / 100;
+};
+
 export const getPricePerUnit = (
   entry: Pick<Item, "amount" | "price" | "dilution"> | null
 ) => {
@@ -148,7 +159,23 @@ export type Item = {
   aliases: string[];
 };
 
-type Inventories = Record<string, Item[]>;
+export type AutoSuggestItem = Item & {
+  id: string;
+  name: string;
+};
+
+export type FormulaItem = Item & {
+  usedAmount?: number;
+  unit?: string;
+};
+
+export type Formula = {
+  id?: string;
+  title?: string;
+  ingredients: FormulaItem[];
+};
+
+export type Inventories = Record<string, Item[]>;
 export const InventoryList = ({
   list: initialList = [],
   inventories = { remote: {}, local: {} },
@@ -723,6 +750,12 @@ export const InventoryList = ({
                     </div>
                   );
                 })}
+                <Link
+                  className="ml-auto text-blue-500"
+                  to={`/${i18next.language}/formula/compose?library=${invRemote}`}
+                >
+                  <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
+                </Link>
               </div>
               <LocalListChips
                 listNames={localLists}
@@ -1590,6 +1623,12 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           ></IconButton>
         )}
       </div>
+      <Link
+      className="text-blue-500"
+        to={`/${i18next.language}/formula/compose?library=${value}&source=local `}
+      >
+        <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
+      </Link>
     </div>
   );
 };

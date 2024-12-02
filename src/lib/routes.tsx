@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import i18n from "i18next";
-import { IngredientPage, InventoryPage, PerfumePage } from "@/pages/ParfumPage";
+import { FragrancePage, IngredientPage, InventoryPage, PerfumePage } from "@/pages/ParfumPage";
 
 export const RedirectToLanguage = ({ path = "" }) => {
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ export const routes = (
     <Route path="/:language/perfumes" Component={PerfumePage} />,
     <Route path="/:language/ingredients" Component={IngredientPage} />,
     <Route path="/:language/inventory" Component={InventoryPage} />
+    <Route path="/:language/formula/compose" Component={FragrancePage} />
     <Route path="/:language/inventory/:list/:title" Component={InventoryPage} />,
     <Route path="/:language" Component={LandingPage}></Route>
   </Routes>

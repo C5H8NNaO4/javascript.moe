@@ -27,6 +27,7 @@
     "react-responsive": "^10.0.0",
     "react-router": "^6.25.1",
     "react-router-dom": "^6.25.1",
+    "react-search-autocomplete": "^8.5.2",
     "recharts": "^2.12.7",
     "swiper": "^11.1.10",
     "vite-plugin-compression": "^0.5.1",

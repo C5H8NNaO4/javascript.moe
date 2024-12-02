@@ -1,6 +1,6 @@
 export const DBConfig = {
   name: "WebGPT",
-  version: 9,
+  version: 10,
   objectStoresMeta: [
     {
       store: "notes",
@@ -37,6 +37,14 @@ export const DBConfig = {
           keypath: "list",
           options: { unique: false },
         },
+      ],
+    },
+    {
+      store: "formulas",
+      storeConfig: { keyPath: "id", autoIncrement: true },
+      storeSchema: [
+        { name: "title", keypath: "title", options: { unique: false } },
+        { name: "ingredients", keypath: "ingredients", options: { unique: false } },
       ],
     },
   ],

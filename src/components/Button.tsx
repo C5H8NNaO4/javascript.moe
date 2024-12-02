@@ -9,8 +9,9 @@ import useOnClickOutside from "../hooks/useOnClickOutside";
 export type ButtonProps = {
   tooltip?: string;
   variant?: string;
-}
-export type ReactButton = React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
+};
+export type ReactButton = React.ButtonHTMLAttributes<HTMLButtonElement> &
+  ButtonProps;
 
 export const Button = ({
   className,
@@ -45,9 +46,10 @@ export const Button = ({
   );
 };
 
-export type IconButtonProps = ReactButton & { round?: boolean; icon?: string };
+export type IconButtonProps = ReactButton & { round?: boolean; icon?: string, iconClsn?: string};
 export const IconButton = ({
   className,
+  iconClsn = "p-[4px]",
   round,
   tooltip,
   icon,
@@ -67,7 +69,7 @@ export const IconButton = ({
       tooltip={tooltip}
       {...rest}
     >
-      {icon && <Icon className="p-[4px] w-fit h-fit" icon={icon} />}
+      {icon && <Icon className={clsx(iconClsn, " w-fit h-fit")} icon={icon} />}
       {rest.children}
     </Button>
   );
@@ -125,15 +127,16 @@ export const MenuButton = ({
   );
 };
 
-export type DestructiveButtonProps = ReactButton & IconButtonProps & {
-  promptTitle?: string;
-  promptText?: string;
-  renderPrompt?: any ;
-  round?: boolean;
-  onDestruct?: (confirmed: boolean, props: any) => void;
-  level?: number;
-  params?: any;
-}
+export type DestructiveButtonProps = ReactButton &
+  IconButtonProps & {
+    promptTitle?: string;
+    promptText?: string;
+    renderPrompt?: any;
+    round?: boolean;
+    onDestruct?: (confirmed: boolean, props: any) => void;
+    level?: number;
+    params?: any;
+  };
 export const DestructiveButton = ({
   className,
   round,
@@ -154,7 +157,10 @@ export const DestructiveButton = ({
   );
   return (
     <div>
-      {ReactDOM.createPortal(overlay, document.getElementById("root") || document.body)}
+      {ReactDOM.createPortal(
+        overlay,
+        document.getElementById("root") || document.body
+      )}
       <Cmp
         {...rest}
         round={round}

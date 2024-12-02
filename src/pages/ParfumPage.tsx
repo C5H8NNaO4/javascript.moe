@@ -57,6 +57,7 @@ import { InventoryList } from "../components/Inventory";
 import { inventory } from "@/static/inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { useCurrentBreakpoint } from "@/hooks/useBreakpoint";
+import { FragrancePlanner } from "@/components/FragrancePlanner";
 
 const Images: Record<string, string[]> = {
   "Vetiveryl Acetat": [
@@ -328,7 +329,10 @@ export const InventoryPage = () => {
             property="og:image"
             content="https://javascript.moe/images/inventory.png"
           />
-          <meta property="og:url" content="https://javascript.moe/en/inventory" />
+          <meta
+            property="og:url"
+            content="https://javascript.moe/en/inventory"
+          />
           <title>Perfumery Ingredients | Inventory Web App</title>
         </>,
         document.head
@@ -351,6 +355,95 @@ export const InventoryPage = () => {
               },
             }}
           ></InventoryList>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FragrancePage = () => {
+  const params = useParams();
+
+  return (
+    <div className="h-full w-full relative flex justify-center">
+      {ReactDOM.createPortal(
+        <>
+          <div></div>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${params.language}/inventory`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/de/inventory`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/en/inventory`}
+          />
+
+          <link
+            rel="icon"
+            type="image/png"
+            href="/icons/inventory/favicon-96x96.png"
+            sizes="96x96"
+          />
+          <link
+            rel="icon"
+            type="image/svg+xml"
+            href="/icons/inventory/favicon.svg"
+          />
+          <link rel="shortcut icon" href="/icons/inventory/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/icons/inventory/apple-touch-icon.png"
+          />
+          <link rel="manifest" href="/icons/inventory/site.webmanifest" />
+          <meta
+            name="description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:title"
+            content="Perfumery Ingredients Inventory"
+            data-react-helmet="true"
+          />
+          <meta
+            property="og:description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:image"
+            content="https://javascript.moe/images/inventory.png"
+          />
+          <meta
+            property="og:url"
+            content="https://javascript.moe/en/inventory"
+          />
+          <title>Perfumery Ingredients | Inventory Web App</title>
+        </>,
+        document.head
+      )}
+      <EnsureLanguage path="/inventory" />
+
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+        <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
+      </div>
+      <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/80 text-white h-full ">
+        <div className="backdrop-blur-sm h-screen w-full flex flex-col overflow-hidden">
+          <FragrancePlanner 
+          inventories={{
+              remote: {
+                All: perfumersApprenticeInventory,
+                Moe: inventory || [],
+              },
+              local: {
+                Local: [],
+              },
+            }}></FragrancePlanner>
         </div>
       </div>
     </div>

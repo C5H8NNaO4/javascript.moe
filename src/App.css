@@ -1,3 +1,18 @@
 [type="checkbox"] {
   -webkit-appearance: none;
 }
+
+label {
+  position: relative;
+}
+
+label input {
+  display: inline-flex;
+  gap: 8px;
+  
+}
+label span {
+  position: absolute;
+  top: -1px;
+  right: 20px;
+}
