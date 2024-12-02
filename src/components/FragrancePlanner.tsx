@@ -25,6 +25,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Link, useSearchParams } from "react-router-dom";
 import i18next from "i18next";
 import { isSmaller, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
+import { inventory } from "@/static/inventory";
 export type FragrancePlannerProps = Component<{
   className?: string;
   inventories: {
@@ -487,6 +488,8 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                         {...itm}
                         step={step}
                         update={update(itm.title)}
+                        library={library}
+                        inventory={inventory}
                         remove={() => {
                           const newIngs = ingredients.slice();
                           newIngs.splice(i, 1);
@@ -601,12 +604,15 @@ export type FormulaIngredientProps = Component<{
   className?: string;
   title: string;
   step: number;
+  library: string;
+  inventory: FormulaItem[];
   update?: (itm: Partial<FormulaItem>) => void;
   remove?: () => void;
 }> &
   FormulaItem;
 export const FormulaIngredient = (props: FormulaIngredientProps) => {
-  const { title, usedAmount, unit, update, remove, step } = props;
+  const { title, usedAmount, unit, update, remove, step, library, inventory } =
+    props;
   return (
     <li className="flex gap-2">
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
@@ -615,13 +621,39 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         {usedAmount}
         {unit}
       </div>
+      {props.dilution !== "100%" && <div>{props.dilution}</div>}
 
-      <div className="ml-auto flex gap-1">
+      <div className="ml-auto flex gap-1 items-center">
+        <Link
+          aria-disabled={
+            !props.remoteList && !inventory?.some((inv) => inv.title === title)
+          }
+          to={
+            !props.remoteList && !inventory?.some((inv) => inv.title === title)
+              ? window.location.href
+              : "/" +
+                i18next.language +
+                "/inventory/" +
+                (props.remoteList || library) +
+                "/" +
+                encodeURIComponent(title)
+          }
+          className={clsx("mr-2", {
+            "text-blue-300 hover:text-blue-400":
+              props.remoteList || inventory?.some((inv) => inv.title === title),
+            "!text-gray-300 cursor-default":
+              !props.remoteList &&
+              !inventory?.some((inv) => inv.title === title),
+          })}
+        >
+          <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
+        </Link>
         <IconButton
           icon="FaMinus"
           onClick={() => {
             update?.({
               usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
+              remoteList: props.remoteList || library,
             });
           }}
         ></IconButton>
@@ -630,6 +662,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
           onClick={() => {
             update?.({
               usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
+              remoteList: props.remoteList || library,
             });
           }}
         ></IconButton>

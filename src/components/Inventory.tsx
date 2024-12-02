@@ -386,7 +386,7 @@ export const InventoryList = ({
   const [filterType, setFilterType] = useState(
     searchParams.get("filter") || "OR"
   );
-  const [selected, setSelected] = useState<Item | null>(null);
+  const [selected, setSelected] = useState<Item | null | undefined>(undefined);
   const [showAdd, setShowAdd] = useState<boolean>(false);
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
@@ -409,18 +409,20 @@ export const InventoryList = ({
   const navigate = useNavigate();
   useEffect(() => {
     if (selected?.title) {
-      navigate(
-        "/" +
-          i18next.language +
+      if (selected?.title !== decodeURIComponent(params.title || "")) {
+        navigate(
           "/" +
-          "inventory/" +
-          invRemote +
-          "/" +
-          encodeURIComponent(selected?.title || "") +
-          "?" +
-          new URLSearchParams(searchParams).toString()
-      );
-    } else {
+            i18next.language +
+            "/" +
+            "inventory/" +
+            invRemote +
+            "/" +
+            encodeURIComponent(selected?.title || "") +
+            "?" +
+            new URLSearchParams(searchParams).toString()
+        );
+      }
+    } else if (selected === null) {
       navigate(
         "/" +
           i18next.language +
@@ -790,6 +792,7 @@ export const InventoryList = ({
                 <Link
                   className="ml-auto text-blue-500"
                   to={`/${i18next.language}/formula/compose?library=${invRemote}`}
+                  replace={false}
                 >
                   <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
                 </Link>

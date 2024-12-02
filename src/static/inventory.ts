@@ -1210,7 +1210,7 @@ export const inventory: Item[] = [
     id: 1005,
     onStock: true,
   },
- {
+  {
     amount: "4ml",
     quantity: 1,
     title: "Orange Flower Absolute",
@@ -1379,5 +1379,9 @@ export const inventory: Item[] = [
     onStock: true,
   },
 ].map((itm) => {
-  return itm;
-}) as unknown as Item[]
+  return {
+    ...itm,
+    remote: true,
+    remoteList: "Moe",
+  };
+}) as unknown as Item[];
