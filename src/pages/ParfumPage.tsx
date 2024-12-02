@@ -371,17 +371,17 @@ export const FragrancePage = () => {
           <div></div>
           <link
             rel="canonical"
-            href={`https://javscript.moe/${params.language}/inventory`}
+            href={`https://javscript.moe/${params.language}/formula/compose`}
           />
           <link
             rel="alternate"
             hrefLang="de"
-            href={`https://javscript.moe/de/inventory`}
+            href={`https://javscript.moe/de/formula/compose`}
           />
           <link
             rel="alternate"
             hrefLang="en"
-            href={`https://javscript.moe/en/inventory`}
+            href={`https://javscript.moe/en/formula/compose`}
           />
 
           <link
@@ -423,11 +423,11 @@ export const FragrancePage = () => {
             property="og:url"
             content="https://javascript.moe/en/inventory"
           />
-          <title>Perfumery Ingredients | Inventory Web App</title>
+          <title>Perfumery Ingredients | Formula Builder</title>
         </>,
         document.head
       )}
-      <EnsureLanguage path="/inventory" />
+      <EnsureLanguage path="/formula/compose" />
 
       <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
         <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
