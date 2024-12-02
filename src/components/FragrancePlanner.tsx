@@ -446,6 +446,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 return (
                   <FormulaIngredient
                     {...itm}
+                    step={step}
                     update={update(itm.title)}
                     remove={() => {
                       const newIngs = ingredients.slice();
@@ -546,12 +547,13 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
 export type FormulaIngredientProps = Component<{
   className?: string;
   title: string;
+  step: number;
   update?: (itm: Partial<FormulaItem>) => void;
   remove?: () => void;
 }> &
   FormulaItem;
 export const FormulaIngredient = (props: FormulaIngredientProps) => {
-  const { title, usedAmount, unit, update, remove } = props;
+  const { title, usedAmount, unit, update, remove, step} = props;
   return (
     <li className="flex gap-2">
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
@@ -562,12 +564,19 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       </div>
 
       <div className="ml-auto flex gap-1">
-        <IconButton icon="FaMinus"></IconButton>
+        <IconButton
+          icon="FaMinus"
+          onClick={() => {
+            update?.({
+              usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
+            });
+          }}
+        ></IconButton>
         <IconButton
           icon="FaPlus"
           onClick={() => {
             update?.({
-              usedAmount: Math.round(100 * (Number(usedAmount) + 0.1)) / 100,
+              usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
             });
           }}
         ></IconButton>
