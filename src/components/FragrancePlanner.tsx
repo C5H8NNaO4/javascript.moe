@@ -24,6 +24,7 @@ import { Input } from "./Input";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Link, useSearchParams } from "react-router-dom";
 import i18next from "i18next";
+import { isSmaller, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
 export type FragrancePlannerProps = Component<{
   className?: string;
   inventories: {
@@ -89,11 +90,13 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [formula, setFormula] = useState<Formula | null>(null);
   const fragranceDb = useIndexedDB("formulas");
 
+  const bp = useCurrentBreakpoint();
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [edit, setEdit] = useState(false);
-  const [showList, setShowList] = useState(true);
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  const isMobile = isSmaller(bp, "lg");
+  const [showList, setShowList] = useState(!isMobile);
+  const [showSuggestions, setShowSuggestions] = useState(!isMobile);
 
   const load = async () => {
     const list = await fragranceDb.getAll();
@@ -214,89 +217,93 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
 
   return (
     <div className={clsx("w-full h-full flex flex-col", {}, className)}>
-      <div className="flex gap-2 mb-2 items-center">
-        <IconButton
-          disabled={!formula}
-          icon="FaPlus"
-          onClick={() => {
-            setFormula(null);
-            setIngredients([]);
-            setTitle("");
-          }}
-        ></IconButton>
-        <IconButton
-          className={clsx({
-            "bg-green-500/40 hover:bg-green-500/30": showList,
-            "hover:bg-green-500/20": !showList,
-          })}
-          icon="FaList"
-          onClick={() => setShowList(!showList)}
-        ></IconButton>
-        <IconButton
-          className={clsx({
-            "bg-green-500/40 hover:bg-green-500/30 text-yellow-500":
-              showSuggestions,
-            "hover:bg-green-500/20": !showSuggestions,
-          })}
-          icon="FaLightbulb"
-          onClick={() => setShowSuggestions(!showSuggestions)}
-        ></IconButton>
-        <MenuButton
-          className={clsx(
-            {
-              "hover:bg-orange-500/30": true,
-            },
-            "!h-9 !w-9"
-          )}
-          icon="IoLibrary"
-        >
-          {Object.keys(inventories?.remote)?.map((list) => {
-            return (
-              <Button
-                className={clsx("flex gap-2 items-center !w-full ", {
-                  "font-semibold text-yellow-500":
-                    library === list && source === "remote",
-                })}
-                onClick={() => {
-                  setSearch({
-                    library: list,
-                    source: "remote",
-                  });
-                }}
-              >
-                <Icon icon="FaServer" className="!h-5 !w-5"></Icon>
-                {list}
-              </Button>
-            );
-          })}
-          {localLists?.map((list: string) => {
-            return (
-              <Button
-                className={clsx("flex gap-2 items-center !w-full", {
-                  "font-semibold text-yellow-500":
-                    library === list && source === "local",
-                })}
-                onClick={() => {
-                  setSearch({
-                    library: list,
-                    source: "local",
-                  });
-                }}
-              >
-                <Icon icon="FaBook" className="!h-5 !w-5"></Icon>
-                {list}
-              </Button>
-            );
-          })}
-        </MenuButton>
+      <div className="flex flex-col lg:flex-row gap-2 mb-2 items-center">
+        <div className="flex gap-1">
+          <IconButton
+            disabled={!formula}
+            icon="FaPlus"
+            onClick={() => {
+              setFormula(null);
+              setIngredients([]);
+              setTitle("");
+            }}
+          ></IconButton>
+          <IconButton
+            className={clsx({
+              "bg-green-500/40 hover:bg-green-500/30": showList,
+              "hover:bg-green-500/20": !showList,
+            })}
+            icon="FaList"
+            onClick={() => setShowList(!showList)}
+          ></IconButton>
+          <IconButton
+            className={clsx({
+              "bg-green-500/40 hover:bg-green-500/30 text-yellow-500":
+                showSuggestions,
+              "hover:bg-green-500/20": !showSuggestions,
+            })}
+            icon="FaLightbulb"
+            onClick={() => setShowSuggestions(!showSuggestions)}
+          ></IconButton>
+          <MenuButton
+            className={clsx(
+              {
+                "hover:bg-orange-500/30": true,
+              },
+              "!h-9 !w-9"
+            )}
+            icon="IoLibrary"
+          >
+            {Object.keys(inventories?.remote)?.map((list) => {
+              return (
+                <Button
+                  className={clsx("flex gap-2 items-center !w-full ", {
+                    "font-semibold text-yellow-500":
+                      library === list && source === "remote",
+                  })}
+                  onClick={() => {
+                    setSearch({
+                      library: list,
+                      source: "remote",
+                    });
+                  }}
+                >
+                  <Icon icon="FaServer" className="!h-5 !w-5"></Icon>
+                  {list}
+                </Button>
+              );
+            })}
+            {localLists?.map((list: string) => {
+              return (
+                <Button
+                  className={clsx("flex gap-2 items-center !w-full", {
+                    "font-semibold text-yellow-500":
+                      library === list && source === "local",
+                  })}
+                  onClick={() => {
+                    setSearch({
+                      library: list,
+                      source: "local",
+                    });
+                  }}
+                >
+                  <Icon icon="FaBook" className="!h-5 !w-5"></Icon>
+                  {list}
+                </Button>
+              );
+            })}
+          </MenuButton>
+        </div>
         <ReactSearchAutocomplete
           placeholder="Add Ingredients"
           className="z-[100000] w-full"
           inputSearchString={value}
           onSearch={(s) => setValue(s)}
-          items={inventory.filter((ing, i, arr) => {
-            return !arr.slice(0,i).some((inv) => inv.title === ing.title)
-          }).map(({ title }) => ({ name: title }))}
+          items={inventory
+            .filter((ing, i, arr) => {
+              return !arr.slice(0, i).some((inv) => inv.title === ing.title);
+            })
+            .map(({ title }) => ({ name: title }))}
           // onSearch={handleOnSearch}
           // onHover={handleOnHover}
           onSelect={(ing) => onAdd(ing.name)}
@@ -325,9 +332,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 <Icon icon="MdInventory" className="!h-8 !w-8"></Icon>
               </Link>
             </div>
-            {!fragrances?.length && <em className="p-2">
-              Saved formulas show up here.
-            </em>}
+            {!fragrances?.length && (
+              <em className="p-2">Saved formulas show up here.</em>
+            )}
             <ul>
               {fragrances?.map((frmla) => {
                 return (
@@ -363,140 +370,142 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           </div>
         )}
 
-        <div className="flex-1 flex flex-col">
-          <div className="flex gap-1 ">
-            <div>
-              Unit
-              <select
-                className="bg-black/40 ml-1"
-                value={baseUnit}
-                onChange={(e) => setBaseUnit(e.target.value)}
-              >
-                <option value="g">Grams</option>
-                <option value="ml">Ml</option>
-                <option value="dr">Drops</option>
-              </select>
+        {(isMobile ? !showSuggestions : true) && (
+          <div className="flex-1 flex flex-col">
+            <div className="flex flex-wrap gap-1 ">
+              <div>
+                Unit
+                <select
+                  className="bg-black/40 ml-1"
+                  value={baseUnit}
+                  onChange={(e) => setBaseUnit(e.target.value)}
+                >
+                  <option value="g">Grams</option>
+                  <option value="ml">Ml</option>
+                  <option value="dr">Drops</option>
+                </select>
+              </div>
+              <label>
+                Step
+                <input
+                  className="bg-black/40 w-[8ch] ml-1"
+                  step={0.1}
+                  type="number"
+                  value={step}
+                  onChange={(e) => setStep(Number(e.target.value))}
+                ></input>
+                <span>{baseUnit}</span>
+              </label>
+              <label>
+                Probe Amount
+                <input
+                  className="bg-black/40 w-[8ch] ml-2"
+                  step={0.1}
+                  type="number"
+                  value={probeAmount}
+                  onChange={(e) => setProbeAmount(Number(e.target.value))}
+                ></input>
+                <span>{baseUnit}</span>
+              </label>
             </div>
-            <label>
-              Step
-              <input
-                className="bg-black/40 w-[8ch] ml-1"
-                step={0.1}
-                type="number"
-                value={step}
-                onChange={(e) => setStep(Number(e.target.value))}
-              ></input>
-              <span>{baseUnit}</span>
-            </label>
-            <label>
-              Probe Amount
-              <input
-                className="bg-black/40 w-[8ch] ml-2"
-                step={0.1}
-                type="number"
-                value={probeAmount}
-                onChange={(e) => setProbeAmount(Number(e.target.value))}
-              ></input>
-              <span>{baseUnit}</span>
-            </label>
-          </div>
 
-          <div className="flex flex-col md:flex-row w-full">
-            <div className="w-full flex gap-2">
-              <Input
-                placeholder="Title"
-                className="bg-black/40 w-full"
-                value={title}
-                onChange={(e) =>
-                  setTitle((e.target as HTMLInputElement).value || "")
-                }
-              ></Input>
-              <div className="flex gap-1">
-                <IconButton
-                  icon="GiPouringChalice"
-                  onClick={() => {
-                    removeProbe(0.2);
-                  }}
-                ></IconButton>
-                <IconButton
-                  icon="FaPencil"
-                  onClick={() => {
-                    if (!edit) {
-                      setEdit(true);
-                      setText(toText());
-                    } else {
-                      setIngredients(fromText(text));
-                      setEdit(false);
-                    }
-                  }}
-                ></IconButton>
-                <IconButton
-                  disabled={!title}
-                  title={
-                    !title
-                      ? "Set a title to save."
-                      : "Save this formula locally."
+            <div className="flex flex-col md:flex-row w-full pr-1">
+              <div className="w-full flex gap-2 ">
+                <Input
+                  placeholder="Title"
+                  className="bg-black/40 w-full"
+                  value={title}
+                  onChange={(e) =>
+                    setTitle((e.target as HTMLInputElement).value || "")
                   }
-                  icon="FaSave"
-                  onClick={() => {
-                    save();
-                    load();
-                  }}
-                ></IconButton>
+                ></Input>
+                <div className="flex gap-1">
+                  <IconButton
+                    icon="GiPouringChalice"
+                    onClick={() => {
+                      removeProbe(0.2);
+                    }}
+                  ></IconButton>
+                  <IconButton
+                    icon="FaPencil"
+                    onClick={() => {
+                      if (!edit) {
+                        setEdit(true);
+                        setText(toText());
+                      } else {
+                        setIngredients(fromText(text));
+                        setEdit(false);
+                      }
+                    }}
+                  ></IconButton>
+                  <IconButton
+                    disabled={!title}
+                    title={
+                      !title
+                        ? "Set a title to save."
+                        : "Save this formula locally."
+                    }
+                    icon="FaSave"
+                    onClick={() => {
+                      save();
+                      load();
+                    }}
+                  ></IconButton>
+                </div>
               </div>
             </div>
-          </div>
 
-          {!edit && (
-            <div className="flex flex-col flex-grow overflow-y-auto !min-h-0 mt-1 pr-1 max-h-[60vh]">
-              <ul className="">
-                {ingredients.map((itm, i) => {
-                  return (
-                    <FormulaIngredient
-                      {...itm}
-                      step={step}
-                      update={update(itm.title)}
-                      remove={() => {
-                        const newIngs = ingredients.slice();
-                        newIngs.splice(i, 1);
-                        setIngredients(newIngs);
-                      }}
-                    ></FormulaIngredient>
-                  );
-                })}
-              </ul>
+            {!edit && (
+              <div className="flex flex-col flex-grow overflow-y-auto !min-h-0 mt-1 pr-1 max-h-[60vh]">
+                <ul className="">
+                  {ingredients.map((itm, i) => {
+                    return (
+                      <FormulaIngredient
+                        {...itm}
+                        step={step}
+                        update={update(itm.title)}
+                        remove={() => {
+                          const newIngs = ingredients.slice();
+                          newIngs.splice(i, 1);
+                          setIngredients(newIngs);
+                        }}
+                      ></FormulaIngredient>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {edit && (
+              <div>
+                <textarea
+                  value={text.trim()}
+                  className="bg-black/40 w-full h-full"
+                  rows={10}
+                  onChange={(e) => {
+                    setText(e.target.value.trim());
+                  }}
+                ></textarea>
+              </div>
+            )}
+            <div className="flex gap-2 items-center mt-4">
+              <Chip
+                className="bg-blue-500"
+                icon="FaFlask"
+                label={ingredients?.length?.toString()}
+              ></Chip>
+              <Chip
+                className="bg-gray-500"
+                icon="TbSum"
+                label={totalAmount.toFixed(2) + baseUnit}
+              ></Chip>
+              <Chip
+                className="bg-yellow-500"
+                icon="FaDollarSign"
+                label={ingredients.reduce(totalIngredientCost, 0).toFixed(2)}
+              ></Chip>
             </div>
-          )}
-          {edit && (
-            <div>
-              <textarea
-                value={text.trim()}
-                className="bg-black/40 w-full h-full"
-                rows={10}
-                onChange={(e) => {
-                  setText(e.target.value.trim());
-                }}
-              ></textarea>
-            </div>
-          )}
-          <div className="flex gap-2 items-center mt-4">
-            <Chip
-              className="bg-blue-500"
-              icon="FaFlask"
-              label={ingredients?.length?.toString()}
-            ></Chip>
-            <Chip
-              className="bg-gray-500"
-              icon="TbSum"
-              label={totalAmount.toFixed(2) + baseUnit}
-            ></Chip>
-            <Chip
-              className="bg-yellow-500"
-              icon="FaDollarSign"
-              label={ingredients.reduce(totalIngredientCost, 0).toFixed(2)}
-            ></Chip>
           </div>
-        </div>
+        )}
         {showSuggestions && (
           <div className="w-[330px] overflow-hidden h-full ">
             <div className="overflow-y-scroll max-h-full h-[90%] mb-8">
@@ -520,8 +529,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 <div className="bg-white/40">Similar</div>
                 <div>
                   {inventory
-                    .filter((inv,i ,arr) => {
-                      if(arr.slice(0,i).some((i) =>i.title === inv.title )) return false;
+                    .filter((inv, i, arr) => {
+                      if (arr.slice(0, i).some((i) => i.title === inv.title))
+                        return false;
                       return perfumeIngredientsOdours[inv.title]?.some(
                         (odor) => {
                           return ingredients?.some((ing) =>
