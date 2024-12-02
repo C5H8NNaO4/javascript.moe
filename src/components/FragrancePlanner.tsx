@@ -472,7 +472,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
               ></textarea>
             </div>
           )}
-          <div className="flex gap-2 items-center ">
+          <div className="flex gap-2 items-center mt-4">
             <Chip
               className="bg-blue-500"
               icon="FaFlask"
