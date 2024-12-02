@@ -77,7 +77,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     loadLocalLists();
   }, []);
 
-  const [ingredients, setIngredients] = useLocalStorage([], "formulaDraft");
+  const [ingredients, setIngredients] = useLocalStorage<FormulaItem[]>(
+    [],
+    "formulaDraft"
+  );
   const [value, setValue] = useState("");
   const [baseUnit, setBaseUnit] = useState("g");
   const [step, setStep] = useState(0.1);

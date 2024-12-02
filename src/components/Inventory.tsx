@@ -382,7 +382,7 @@ export const InventoryList = ({
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
-  const [listAliases] = useLocalStorage({}, "listNames");
+  const [listAliases] = useLocalStorage<Record<string, string>>({}, "listNames");
   const navigate = useNavigate();
   useEffect(() => {
     if (selected?.title)
@@ -770,7 +770,7 @@ export const InventoryList = ({
                 }}
                 hasAll={targetHasAll}
                 onAdd={(key: string | null) => {
-                  setLocalLists([...localLists, key].filter(Boolean));
+                  setLocalLists([...localLists, key!].filter(Boolean));
                 }}
                 items={storedList || []}
                 value={invLocal}
@@ -1520,7 +1520,10 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     setNotification,
   } = props;
 
-  const [listAliases, setAliases] = useLocalStorage({}, "listNames");
+  const [listAliases, setAliases] = useLocalStorage<Record<string, string>>(
+    {},
+    "listNames"
+  );
   const [showEdit, setShowEdit] = useState(false);
   return (
     <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
@@ -1624,7 +1627,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
         )}
       </div>
       <Link
-      className="text-blue-500"
+        className="text-blue-500"
         to={`/${i18next.language}/formula/compose?library=${value}&source=local `}
       >
         <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>

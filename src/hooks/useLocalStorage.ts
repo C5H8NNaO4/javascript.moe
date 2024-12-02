@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 
-export const useLocalStorage = (initialVal: any, key: string) => {
+export const useLocalStorage = <T>(initialVal: T, key: string): [T, (v: T) => void] => {
   let loaded;
   try {
     loaded = JSON.parse(localStorage[key]);
