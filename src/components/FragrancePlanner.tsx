@@ -77,7 +77,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     loadLocalLists();
   }, []);
 
-  const [ingredients, setIngredients] = useState<FormulaItem[]>([]);
+  const [ingredients, setIngredients] = useLocalStorage([], "formulaDraft");
   const [value, setValue] = useState("");
   const [baseUnit, setBaseUnit] = useState("g");
   const [step, setStep] = useState(0.1);
@@ -313,7 +313,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           <div className="shrink-1 min-w-[200px] shadow-sm bg-white/20 h-full">
             <div className="text-gray-200 bg-black/20 p-2 font-semibold border-white flex justify-between items-center text-xl">
               Formulas
-              <Link to={"/" + i18next.language + "/inventory"} className="text-blue-500">
+              <Link
+                to={"/" + i18next.language + "/inventory"}
+                className="text-blue-500"
+              >
                 <Icon icon="MdInventory" className="!h-8 !w-8"></Icon>
               </Link>
             </div>
