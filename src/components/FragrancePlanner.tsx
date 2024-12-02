@@ -87,7 +87,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [step, setStep] = useState(0.1);
   const [probeAmount, setProbeAmount] = useState(0.1);
   const [fragrances, setFragrances] = useState<Formula[]>([]);
-  const [formula, setFormula] = useState<Formula | null>(null);
+  const [formula, setFormula] = useLocalStorage<Formula | null>(null, 'formulas.selectedFormula');
   const fragranceDb = useIndexedDB("formulas");
 
   const bp = useCurrentBreakpoint();
