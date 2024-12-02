@@ -1,7 +1,4 @@
-import {
-  FormulaItem,
-  getPricePerMl,
-} from "@/components/Inventory";
+import { FormulaItem, getPricePerMl } from "@/components/Inventory";
 import { perfumeIngredientsOdours } from "@/static/descriptions";
 
 export const getHeight = (container: HTMLElement | null) => {
@@ -29,24 +26,24 @@ export function getGCD(arr: number[]) {
 }
 
 export const convert = (amount: number, from: string, to: string) => {
-  if (from === 'g') {
-    if (to === 'ml') return amount * 5;
-    if (to === 'dr') return amount * 100;
-    if (to === 'g') return amount * 1;
+  if (from === "g") {
+    if (to === "ml") return amount * 5;
+    if (to === "dr") return amount * 100;
+    if (to === "g") return amount * 1;
   }
 
-  if (from === 'ml') {
-    if (to === 'g') return amount / 5;
-    if (to === 'dr') return amount * 20;
-    if (to === 'ml') return amount * 1;
+  if (from === "ml") {
+    if (to === "g") return amount / 5;
+    if (to === "dr") return amount * 20;
+    if (to === "ml") return amount * 1;
   }
 
-  if (from === 'dr') {
-    if (to === 'g') return amount * 0.01;
-    if (to === 'ml') return amount / 20;
-    if (to === 'dr') return amount * 1;
+  if (from === "dr") {
+    if (to === "g") return amount * 0.01;
+    if (to === "ml") return amount / 20;
+    if (to === "dr") return amount * 1;
   }
-}
+};
 export const toDrops = (amount: string) => {
   if (amount.includes("dr")) return Number(amount.replace("dr", ""));
   if (amount.includes("ml")) return 20 * Number(amount.replace("ml", ""));
@@ -76,17 +73,24 @@ export const toggle = (arr: string[], key: string) => {
   return arr.filter((k) => k !== key);
 };
 
-export const totalUsedIngredientAmount = (unit: string) => (acc: number, cur: FormulaItem) => {
-  return acc + Number(convert(Number(cur.usedAmount), cur.unit || 'g', unit));
-};
+export const totalUsedIngredientAmount =
+  (unit: string) => (acc: number, cur: FormulaItem) => {
+    return acc + Number(convert(Number(cur.usedAmount), cur.unit || "g", unit));
+  };
 
 export const totalIngredientCost = (acc: number, cur: FormulaItem) => {
   return acc + getPricePerMl(cur) * Number(cur.usedAmount);
 };
 
-export const similarity = (a: FormulaItem, ingredients: FormulaItem[])  =>  {
+export const similarity = (a: FormulaItem, ingredients: FormulaItem[]) => {
   // return getRawPricePerMl(b) - getRawPricePerMl(a);
-  return (perfumeIngredientsOdours[a?.title]?.filter((o) => {
-    return ingredients?.some(ing =>  perfumeIngredientsOdours[ing?.title]?.includes(o));
-  })?.length || 0) - 1;
-}
+  return (
+    (perfumeIngredientsOdours[a?.title]?.filter((o) => {
+      return ingredients?.some((ing) =>
+        perfumeIngredientsOdours[ing?.title]?.includes(o)
+      );
+    })?.length || 0) - 1
+  );
+};
+
+export const trim = (str: string) => str.trim();

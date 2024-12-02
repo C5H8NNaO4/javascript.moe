@@ -73,7 +73,6 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     });
   };
 
-  console.log("INVENTORY", "'" + library + "'", inventories?.remote[library]);
   useEffect(() => {
     loadLocalLists();
   }, []);
@@ -273,7 +272,6 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                   onClick={() => {
                     setSearch({
                       library: list,
-                      source: "remote",
                     });
                   }}
                 >

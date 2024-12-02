@@ -22,7 +22,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import { toggle } from "@/lib/util";
+import { toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
@@ -196,18 +196,7 @@ export const InventoryList = ({
     title: string;
   }>();
 
-  const [searchParams] = useSearchParams();
-
-  useEffect(() => {
-    if (searchParams.get("odors")) {
-      setFilter(
-        searchParams
-          .get("odors")
-          ?.split(",")
-          .map((o) => o.trim()) || []
-      );
-    }
-  }, []);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
   const [invRemote, setInvRemote] = useState<string | null>(
@@ -388,8 +377,15 @@ export const InventoryList = ({
   }, [invLocal]);
 
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<string[]>([]);
-  const [filterType, setFilterType] = useState("OR");
+  const odors = decodeURIComponent(searchParams.get("odors") || "")
+    ?.split(",")
+    .map(trim)
+    .filter(Boolean);
+
+  const [filter, osetFilter] = useState<string[]>(odors);
+  const [filterType, setFilterType] = useState(
+    searchParams.get("filter") || "OR"
+  );
   const [selected, setSelected] = useState<Item | null>(null);
   const [showAdd, setShowAdd] = useState<boolean>(false);
   const [showTags, setShowTags] = useState<boolean>(false);
@@ -399,9 +395,20 @@ export const InventoryList = ({
     {},
     "listNames"
   );
+
+  const setFilter = (filter: string[]) => {
+    setSearchParams(
+      filter?.length
+        ? {
+            odors: encodeURIComponent(filter.join(",")),
+          }
+        : {}
+    );
+    osetFilter(filter);
+  };
   const navigate = useNavigate();
   useEffect(() => {
-    if (selected?.title)
+    if (selected?.title) {
       navigate(
         "/" +
           i18next.language +
@@ -409,8 +416,23 @@ export const InventoryList = ({
           "inventory/" +
           invRemote +
           "/" +
-          encodeURIComponent(selected?.title || "")
+          encodeURIComponent(selected?.title || "") +
+          "?" +
+          new URLSearchParams(searchParams).toString()
       );
+    } else {
+      navigate(
+        "/" +
+          i18next.language +
+          "/" +
+          "inventory/" +
+          invRemote +
+          "/" +
+          "?" +
+          new URLSearchParams(searchParams).toString()
+      );
+    }
+    // setTimeout(() => setSearchParams((prev) => prev), 0);
   }, [selected?.title]);
   const filtered = list
     ?.filter((itm) => {
