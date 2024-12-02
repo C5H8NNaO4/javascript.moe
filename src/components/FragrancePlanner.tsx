@@ -253,53 +253,62 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
             icon="FaLightbulb"
             onClick={() => setShowSuggestions(!showSuggestions)}
           ></IconButton>
-          <MenuButton
-            className={clsx(
-              {
-                "hover:bg-orange-500/30": true,
-              },
-              "!h-9 !w-9"
-            )}
-            icon="IoLibrary"
-          >
-            {Object.keys(inventories?.remote)?.map((list) => {
-              return (
-                <Button
-                  className={clsx("flex gap-2 items-center !w-full ", {
-                    "font-semibold text-yellow-500":
-                      library === list && source === "remote",
-                  })}
-                  onClick={() => {
-                    setSearch({
-                      library: list,
-                    });
-                  }}
-                >
-                  <Icon icon="FaServer" className="!h-5 !w-5"></Icon>
-                  {list}
-                </Button>
-              );
-            })}
-            {localLists?.map((list: string) => {
-              return (
-                <Button
-                  className={clsx("flex gap-2 items-center !w-full", {
-                    "font-semibold text-yellow-500":
-                      library === list && source === "local",
-                  })}
-                  onClick={() => {
-                    setSearch({
-                      library: list,
-                      source: "local",
-                    });
-                  }}
-                >
-                  <Icon icon="FaBook" className="!h-5 !w-5"></Icon>
-                  {list}
-                </Button>
-              );
-            })}
-          </MenuButton>
+          <div className="relative">
+            <MenuButton
+              className={clsx(
+                {
+                  "hover:bg-orange-500/30": true,
+                },
+                "!h-9 !w-9"
+              )}
+              icon="IoLibrary"
+            >
+              {Object.keys(inventories?.remote)?.map((list) => {
+                return (
+                  <Button
+                    className={clsx("flex gap-2 items-center !w-full ", {
+                      "font-semibold text-yellow-500":
+                        library === list && source === "remote",
+                    })}
+                    onClick={() => {
+                      setSearch({
+                        library: list,
+                      });
+                    }}
+                  >
+                    <Icon icon="FaServer" className="!h-5 !w-5"></Icon>
+                    {list}
+                  </Button>
+                );
+              })}
+              {localLists?.map((list: string) => {
+                return (
+                  <Button
+                    className={clsx("flex gap-2 items-center !w-full", {
+                      "font-semibold text-yellow-500":
+                        library === list && source === "local",
+                    })}
+                    onClick={() => {
+                      setSearch({
+                        library: list,
+                        source: "local",
+                      });
+                    }}
+                  >
+                    <Icon icon="FaBook" className="!h-5 !w-5"></Icon>
+                    {list}
+                  </Button>
+                );
+              })}
+            </MenuButton>
+            <span
+              className={clsx(
+                "absolute -bottom-1 -right-1  bg-yellow-600/70 px-1 py-[1.5px] text-[8px] w-max"
+              )}
+            >
+              {library} [{inventory?.length}]
+            </span>
+          </div>
         </div>
         <ReactSearchAutocomplete
           placeholder="Add Ingredients"
@@ -455,9 +464,11 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                     title={
                       !title
                         ? "Set a title to save."
-                        : "Save this formula locally."
+                        : formula?.id
+                        ? "Update this formula."
+                        : "Save a new formula."
                     }
-                    icon="FaSave"
+                    icon={!formula?.id ? "FaPlus" : "FaSave"}
                     onClick={() => {
                       save();
                       load();
