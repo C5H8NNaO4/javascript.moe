@@ -87,7 +87,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [step, setStep] = useState(0.1);
   const [probeAmount, setProbeAmount] = useState(0.1);
   const [fragrances, setFragrances] = useState<Formula[]>([]);
-  const [formula, setFormula] = useLocalStorage<Formula | null>(null, 'formulas.selectedFormula');
+  const [formula, setFormula] = useLocalStorage<Formula | null>(
+    null,
+    "formulas.selectedFormula"
+  );
   const fragranceDb = useIndexedDB("formulas");
 
   const bp = useCurrentBreakpoint();
@@ -216,7 +219,13 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   };
 
   return (
-    <div className={clsx("w-full h-full flex flex-col", {}, className)}>
+    <div
+      className={clsx(
+        "w-full h-full flex flex-col overflow-x-clip",
+        {},
+        className
+      )}
+    >
       <div className="flex flex-col lg:flex-row gap-2 mb-2 items-center">
         <div className="flex gap-1">
           <IconButton
@@ -335,7 +344,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
             {!fragrances?.length && (
               <em className="p-2">Saved formulas show up here.</em>
             )}
-            <ul>
+            <ul className="overflow-y-scroll">
               {fragrances?.map((frmla) => {
                 return (
                   <li
@@ -456,7 +465,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
             </div>
 
             {!edit && (
-              <div className="flex flex-col flex-grow overflow-y-auto !min-h-0 mt-1 pr-1 max-h-[60vh]">
+              <div className="flex flex-col flex-grow overflow-y-scroll !min-h-0 mt-1 pr-1 mr-[-8px] max-h-[60vh]">
                 <ul className="">
                   {ingredients.map((itm, i) => {
                     return (
@@ -507,27 +516,31 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           </div>
         )}
         {showSuggestions && (
-          <div className="w-[330px] overflow-hidden h-full ">
-            <div className="overflow-y-scroll max-h-full h-[90%] mb-8">
+          <div className="w-[330px] h-full ">
+            <div className="overflow-y-scroll  max-h-full h-[90%] pr-1 mr-[-3px]">
               <div>
                 <div className="bg-white/40">Utilities</div>
-                {utilities
-                  .filter(
-                    (title) => !ingredients.some((ing) => title === ing.title)
-                  )
-                  .map((title) => {
-                    return inventory?.find((inv) => inv.title.includes(title));
-                  })
-                  .map((ing) => {
-                    return (
-                      <SuggestedIngredient
-                        {...ing}
-                        onAdd={onAdd.bind(0, ing?.title || "")}
-                      ></SuggestedIngredient>
-                    );
-                  })}
+                <ul className="">
+                  {utilities
+                    .filter(
+                      (title) => !ingredients.some((ing) => title === ing.title)
+                    )
+                    .map((title) => {
+                      return inventory?.find((inv) =>
+                        inv.title.includes(title)
+                      );
+                    })
+                    .map((ing) => {
+                      return (
+                        <SuggestedIngredient
+                          {...ing}
+                          onAdd={onAdd.bind(0, ing?.title || "")}
+                        ></SuggestedIngredient>
+                      );
+                    })}
+                </ul>
                 <div className="bg-white/40">Similar</div>
-                <div>
+                <ul className="">
                   {inventory
                     .filter((inv, i, arr) => {
                       if (
@@ -560,7 +573,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                         ></SuggestedIngredient>
                       );
                     })}
-                </div>
+                </ul>
               </div>
             </div>
           </div>

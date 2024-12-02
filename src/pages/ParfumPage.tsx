@@ -433,7 +433,7 @@ export const FragrancePage = () => {
         <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
       </div>
       <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/80 text-white h-full ">
-        <div className="backdrop-blur-sm h-screen w-full flex flex-col overflow-hidden">
+        <div className="backdrop-blur-sm h-screen w-full flex flex-col overflow-y-hidden">
           <FragrancePlanner 
           inventories={{
               remote: {
