@@ -294,7 +294,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           className="z-[100000] w-full"
           inputSearchString={value}
           onSearch={(s) => setValue(s)}
-          items={inventory.map(({ title }) => ({ name: title }))}
+          items={inventory.filter((ing, i, arr) => {
+            return !arr.slice(0,i).some((inv) => inv.title === ing.title)
+          }).map(({ title }) => ({ name: title }))}
           // onSearch={handleOnSearch}
           // onHover={handleOnHover}
           onSelect={(ing) => onAdd(ing.name)}
@@ -513,7 +515,8 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 <div className="bg-white/40">Similar</div>
                 <div>
                   {inventory
-                    .filter((inv) => {
+                    .filter((inv,i ,arr) => {
+                      if(arr.slice(0,i).some((i) =>i.title === inv.title )) return false;
                       return perfumeIngredientsOdours[inv.title]?.some(
                         (odor) => {
                           return ingredients?.some((ing) =>
