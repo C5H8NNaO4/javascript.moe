@@ -46,6 +46,7 @@ export const routes = (
     <Route path="/:language/formula/compose" Component={FragrancePage} />
     <Route path="/:language/inventory/:list/" Component={InventoryPage} />,
     <Route path="/:language/inventory/:list/:title" Component={InventoryPage} />,
+    <Route path="/:language/inventory/:list/:title/:amount" Component={InventoryPage} />,
     <Route path="/:language" Component={LandingPage}></Route>
   </Routes>
 );

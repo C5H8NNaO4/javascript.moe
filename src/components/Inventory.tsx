@@ -194,6 +194,7 @@ export const InventoryList = ({
   const params = useParams<{
     list: string;
     title: string;
+    amount: string;
   }>();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -408,8 +409,13 @@ export const InventoryList = ({
   };
   const navigate = useNavigate();
   useEffect(() => {
+    console.log("SEELECT", selected?.amount, params?.amount);
+
     if (selected?.title) {
-      if (selected?.title !== decodeURIComponent(params.title || "")) {
+      if (
+        selected?.title !== decodeURIComponent(params.title || "") ||
+        selected?.amount !== params?.amount
+      ) {
         navigate(
           "/" +
             i18next.language +
@@ -418,8 +424,12 @@ export const InventoryList = ({
             invRemote +
             "/" +
             encodeURIComponent(selected?.title || "") +
+            (selected?.amount ? "/" + selected?.amount : "") +
             "?" +
-            new URLSearchParams(searchParams).toString()
+            new URLSearchParams(searchParams).toString(),
+          {
+            replace: selected?.title === decodeURIComponent(params.title || ""),
+          }
         );
       }
     } else if (selected === null) {
@@ -435,7 +445,7 @@ export const InventoryList = ({
       );
     }
     // setTimeout(() => setSearchParams((prev) => prev), 0);
-  }, [selected?.title]);
+  }, [selected?.title, selected?.amount]);
   const filtered = list
     ?.filter((itm) => {
       if (hideOnStock === 0) return true;
@@ -527,7 +537,10 @@ export const InventoryList = ({
     if (!params?.title) return;
     const ingredient = inventories.remote[params?.list || "All"]?.find(
       (itm) => {
-        return params.title === itm.title;
+        const titleMatches = params.title === itm.title;
+        const amountMatches = params.amount === itm.amount;
+
+        return params.amount ? titleMatches && amountMatches : titleMatches;
       }
     );
 
