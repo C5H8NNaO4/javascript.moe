@@ -9,7 +9,7 @@ import {
   Inventories,
   Item,
 } from "./Inventory";
-import { ingredients as imgs } from "@/static/assets";
+import { ingredients as imgs, ingredients } from "@/static/assets";
 import { Button, DestructiveButton, IconButton, MenuButton } from "./Button";
 import { Icon } from "./Icon";
 import {
@@ -109,8 +109,8 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     load();
   }, []);
 
-  const toText = () => {
-    return ingredients?.reduce((txt, ing) => {
+  const toText = (ings = ingredients) => {
+    return ings?.reduce((txt, ing) => {
       return (
         txt + `${ing.title} ${ing.usedAmount}${ing.unit} ${ing.dilution}\n`
       );
@@ -357,7 +357,8 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                   >
                     <button
                       onClick={() => {
-                        setFormula(frmla);
+                        if (formula?.id === frmla.id) setFormula(null);
+                        else setFormula(frmla);
                       }}
                     >
                       {frmla?.title} ({frmla?.ingredients?.length})
@@ -448,6 +449,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                     }}
                   ></IconButton>
                   <IconButton
+                    className={clsx({
+                      "bg-orange-500":
+                        toText(formula?.ingredients) !== toText(ingredients),
+                    })}
                     disabled={!title}
                     title={
                       !title
