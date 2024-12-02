@@ -26,7 +26,7 @@ import { toggle } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -195,6 +195,19 @@ export const InventoryList = ({
     list: string;
     title: string;
   }>();
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("odors")) {
+      setFilter(
+        searchParams
+          .get("odors")
+          ?.split(",")
+          .map((o) => o.trim()) || []
+      );
+    }
+  }, []);
 
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
   const [invRemote, setInvRemote] = useState<string | null>(
@@ -382,7 +395,10 @@ export const InventoryList = ({
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
-  const [listAliases] = useLocalStorage<Record<string, string>>({}, "listNames");
+  const [listAliases] = useLocalStorage<Record<string, string>>(
+    {},
+    "listNames"
+  );
   const navigate = useNavigate();
   useEffect(() => {
     if (selected?.title)
@@ -484,13 +500,12 @@ export const InventoryList = ({
     }, 0);
 
   useEffect(() => {
-    console.log("TITLE", params.title);
+    if (!params?.title) return;
     const ingredient = inventories.remote[params?.list || "All"]?.find(
       (itm) => {
         return params.title === itm.title;
       }
     );
-    console.log("TITLE", params.title, "INGREDIENT", ingredient);
 
     if (!params?.list || !ingredient || !inventories?.remote[params?.list])
       return;
