@@ -463,7 +463,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           {edit && (
             <div>
               <textarea
-                value={text}
+                value={text.trim()}
                 className="bg-black/40 w-full h-full"
                 rows={10}
                 onChange={(e) => {
