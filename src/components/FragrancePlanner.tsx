@@ -21,7 +21,6 @@ import { perfumeIngredientsOdours } from "@/static/descriptions";
 import { utilities } from "@/static/categories";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { Input } from "./Input";
-import { useNavigate } from "react-router";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Link, useSearchParams } from "react-router-dom";
 import i18next from "i18next";
