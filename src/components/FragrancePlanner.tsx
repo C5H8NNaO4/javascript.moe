@@ -530,6 +530,12 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 <div>
                   {inventory
                     .filter((inv, i, arr) => {
+                      if (
+                        ingredients?.some((ing) => {
+                          return ing.title === inv.title;
+                        })
+                      )
+                        return false;
                       if (arr.slice(0, i).some((i) => i.title === inv.title))
                         return false;
                       return perfumeIngredientsOdours[inv.title]?.some(
