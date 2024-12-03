@@ -18,24 +18,6 @@
           "value": "public, max-age=6000, stale-while-revalidate=59"
         }
       ]
-    },
-    {
-      "source": "/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=600, stale-while-revalidate=59"
-        }
-      ]
-    },
-    {
-      "source": "/about",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=600, stale-while-revalidate=59"
-        }
-      ]
     }
   ]
 }
