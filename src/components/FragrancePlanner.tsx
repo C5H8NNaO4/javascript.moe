@@ -613,7 +613,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
   const { title, usedAmount, unit, update, remove, step, library, inventory } =
     props;
   return (
-    <li className="flex gap-2">
+    <li className="flex gap-2 group hover:bg-white/20 items-center">
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
       <div>{title}</div>
       <div>
@@ -622,7 +622,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       </div>
       {props.dilution !== "100%" && <div>{props.dilution}</div>}
 
-      <div className="ml-auto flex gap-1 items-center">
+      <div className="ml-auto hidden gap-1 items-center  group-hover:flex">
         <Link
           aria-disabled={
             !props.remoteList && !inventory?.some((inv) => inv.title === title)
@@ -649,6 +649,8 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         </Link>
         <IconButton
           icon="FaMinus"
+          className="!h-7 !w-7"
+
           onClick={() => {
             update?.({
               usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
@@ -658,6 +660,8 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         ></IconButton>
         <IconButton
           icon="FaPlus"
+          className="!h-7 !w-7"
+
           onClick={() => {
             update?.({
               usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
@@ -667,6 +671,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         ></IconButton>
         <DestructiveButton
           icon="FaTrash"
+          className="!h-7 !w-7"
           level={1}
           onDestruct={() => {
             remove?.();
@@ -683,11 +688,11 @@ export const SuggestedIngredient = (props: {
 }) => {
   const { title, onAdd } = props;
   return (
-    <li className="flex gap-2">
+    <li className="flex gap-2 group">
       <img src={imgs[title || ""]} className="h-8 w-8"></img>
       <div>{title}</div>
 
-      <div className="ml-auto flex gap-1 items-center">
+      <div className="ml-auto hidden group-hover:flex gap-1 items-center">
         <IconButton
           icon="FaPlus"
           className="!h-7 !w-7"
