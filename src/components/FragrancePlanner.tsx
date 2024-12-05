@@ -688,7 +688,7 @@ export const SuggestedIngredient = (props: {
 }) => {
   const { title, onAdd } = props;
   return (
-    <li className="flex gap-2 group">
+    <li tabIndex={0} className="flex gap-2 group">
       <img src={imgs[title || ""]} className="h-8 w-8"></img>
       <div className="group-focus-within:font-semibold">{title}</div>
 
