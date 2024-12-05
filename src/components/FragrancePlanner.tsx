@@ -613,16 +613,16 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
   const { title, usedAmount, unit, update, remove, step, library, inventory } =
     props;
   return (
-    <li className="flex gap-2 group hover:bg-white/20 items-center">
+    <li tabIndex={0} className="flex gap-2 group hover:bg-white/20 items-center">
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
-      <div>{title}</div>
+      <div className="group-focus:font-semibold">{title}</div>
       <div>
         {usedAmount}
         {unit}
       </div>
       {props.dilution !== "100%" && <div>{props.dilution}</div>}
 
-      <div className="ml-auto absolute right-0 md:relative hidden gap-1 items-center nohover:flex group-hover:flex">
+      <div className="ml-auto absolute right-0 md:relative hidden gap-1 items-center group-focus:flex group-hover:flex">
         <Link
           aria-disabled={
             !props.remoteList && !inventory?.some((inv) => inv.title === title)
@@ -690,9 +690,9 @@ export const SuggestedIngredient = (props: {
   return (
     <li className="flex gap-2 group">
       <img src={imgs[title || ""]} className="h-8 w-8"></img>
-      <div>{title}</div>
+      <div className="group-focus:font-semibold">{title}</div>
 
-      <div className="ml-auto hidden nohover:flex lg:group-hover:flex gap-1 items-center">
+      <div className="ml-auto hidden group-focus::flex lg:group-hover:flex gap-1 items-center">
         <IconButton
           icon="FaPlus"
           className="!h-7 !w-7"
