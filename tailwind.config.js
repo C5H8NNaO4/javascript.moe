@@ -22,6 +22,7 @@ export default {
       landscape: {
         raw: "(orientation: landscape)",
       },
+      'nohover': {'raw': '(hover: none)'},
     },
     extend: {},
   },

@@ -622,7 +622,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       </div>
       {props.dilution !== "100%" && <div>{props.dilution}</div>}
 
-      <div className="ml-auto hidden gap-1 items-center  group-hover:flex">
+      <div className="ml-auto absolute right-0 md:relative hidden gap-1 items-center nohover:flex group-hover:flex">
         <Link
           aria-disabled={
             !props.remoteList && !inventory?.some((inv) => inv.title === title)
@@ -692,7 +692,7 @@ export const SuggestedIngredient = (props: {
       <img src={imgs[title || ""]} className="h-8 w-8"></img>
       <div>{title}</div>
 
-      <div className="ml-auto hidden group-hover:flex gap-1 items-center">
+      <div className="ml-auto hidden nohover:flex lg:group-hover:flex gap-1 items-center">
         <IconButton
           icon="FaPlus"
           className="!h-7 !w-7"
