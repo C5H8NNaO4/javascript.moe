@@ -618,7 +618,32 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       className="flex gap-2 group hover:bg-white/20 items-center"
     >
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
-      <div className="group-focus-within:font-semibold">{title}</div>
+      <Link
+      
+        aria-disabled={
+          !props.remoteList && !inventory?.some((inv) => inv.title === title)
+        }
+        to={
+          !props.remoteList && !inventory?.some((inv) => inv.title === title)
+            ? window.location.href
+            : "/" +
+              i18next.language +
+              "/inventory/" +
+              (props.remoteList || library) +
+              "/" +
+              encodeURIComponent(title)
+        }
+        className={clsx("mr-2 items-center gap-2 hidden group-hover:flex group-focus-within:flex", {
+          "text-blue-300 hover:text-blue-400":
+            props.remoteList || inventory?.some((inv) => inv.title === title),
+          "!text-gray-300 cursor-default":
+            !props.remoteList && !inventory?.some((inv) => inv.title === title),
+        })}
+      >
+        <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
+        <div className="group-focus-within:font-semibold ">{title}</div>
+      </Link>
+      <div className="block group-focus-within:hidden group-hover:hidden ">{title}</div>
       <div>
         {usedAmount}
         {unit}
@@ -628,52 +653,27 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         // icon="FaPercentage"
         label={
           <span className="flex">
-          <input
-          className="w-[3ch] bg-blue-600"
-            value={props.dilution?.replace('%', '')}
-            onChange={(e) => {
-              const dil = Math.min(
-                100,
-                 Number(e.target.value?.replace(/\.$/,''))
-              ) ;
-              update?.({
-                dilution:
-                  /\.$/.test(e.target.value) ? dil + '.' : + dil + "%",
-              });
-            }}
-          ></input>
-          %
+            <input
+              className="w-[3ch] bg-blue-600"
+              value={props.dilution?.replace("%", "")}
+              onChange={(e) => {
+                const dil = Math.min(
+                  100,
+                  Number(e.target.value?.replace(/\.$/, ""))
+                );
+                update?.({
+                  dilution: /\.$/.test(e.target.value) ? dil + "." : +dil + "%",
+                });
+              }}
+            ></input>
+            %
           </span>
         }
       ></Chip>
-      <div className="block group-hover:hidden">
+      <div className="block group-hover:hidden group-focus-within:hidden">
         {props.dilution}
       </div>
       <div className="ml-auto absolute right-0 md:relative hidden gap-1 items-center group-focus-within:flex group-hover:flex">
-        <Link
-          aria-disabled={
-            !props.remoteList && !inventory?.some((inv) => inv.title === title)
-          }
-          to={
-            !props.remoteList && !inventory?.some((inv) => inv.title === title)
-              ? window.location.href
-              : "/" +
-                i18next.language +
-                "/inventory/" +
-                (props.remoteList || library) +
-                "/" +
-                encodeURIComponent(title)
-          }
-          className={clsx("mr-2", {
-            "text-blue-300 hover:text-blue-400":
-              props.remoteList || inventory?.some((inv) => inv.title === title),
-            "!text-gray-300 cursor-default":
-              !props.remoteList &&
-              !inventory?.some((inv) => inv.title === title),
-          })}
-        >
-          <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
-        </Link>
         <IconButton
           icon="FaMinus"
           className="!h-7 !w-7"
