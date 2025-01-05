@@ -613,15 +613,43 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
   const { title, usedAmount, unit, update, remove, step, library, inventory } =
     props;
   return (
-    <li tabIndex={0} className="flex gap-2 group hover:bg-white/20 items-center">
+    <li
+      tabIndex={0}
+      className="flex gap-2 group hover:bg-white/20 items-center"
+    >
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
       <div className="group-focus-within:font-semibold">{title}</div>
       <div>
         {usedAmount}
         {unit}
       </div>
-      {props.dilution !== "100%" && <div>{props.dilution}</div>}
-
+      <Chip
+        className="bg-blue-500 text-yellow-400 hidden group-hover:block"
+        // icon="FaPercentage"
+        label={
+          <span className="flex">
+          
+          <input
+          className="w-[3ch] bg-blue-600"
+            value={props.dilution?.replace('%', '')}
+            onChange={(e) => {
+              const dil = Math.min(
+                100,
+                 Number(e.target.value?.replace(/\.$/,''))
+              ) ;
+              update?.({
+                dilution:
+                  /\.$/.test(e.target.value) ? dil + '.' : + dil + "%",
+              });
+            }}
+          ></input>
+          %
+          </span>
+        }
+      ></Chip>
+      <div className="block group-hover:hidden">
+        {props.dilution}
+      </div>
       <div className="ml-auto absolute right-0 md:relative hidden gap-1 items-center group-focus-within:flex group-hover:flex">
         <Link
           aria-disabled={
@@ -650,7 +678,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         <IconButton
           icon="FaMinus"
           className="!h-7 !w-7"
-
           onClick={() => {
             update?.({
               usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
@@ -661,7 +688,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         <IconButton
           icon="FaPlus"
           className="!h-7 !w-7"
-
           onClick={() => {
             update?.({
               usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,

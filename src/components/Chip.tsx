@@ -3,10 +3,11 @@ import clsx from "clsx";
 import { Icon } from "./Icon";
 import { IconButton } from "./Button";
 import { OdorColors } from "@/static/descriptions";
+import { ReactNode } from "react";
 export type Component<T> = T;
 export type ChipProps = Component<{
   className?: string;
-  label: string;
+  label: string | ReactNode;
   icon?: string;
   iconClsn?: string;
   containerClsn?: string;
