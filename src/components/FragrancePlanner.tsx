@@ -624,7 +624,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         {unit}
       </div>
       <Chip
-        className="bg-blue-500 text-yellow-400 hidden group-hover:block"
+        className="bg-blue-500 text-yellow-400 hidden group-hover:block group-focus-within:block"
         // icon="FaPercentage"
         label={
           <span className="flex">
