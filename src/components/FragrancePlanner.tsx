@@ -628,7 +628,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
         // icon="FaPercentage"
         label={
           <span className="flex">
-          
           <input
           className="w-[3ch] bg-blue-600"
             value={props.dilution?.replace('%', '')}

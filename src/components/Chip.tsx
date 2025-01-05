@@ -3,19 +3,20 @@ import clsx from "clsx";
 import { Icon } from "./Icon";
 import { IconButton } from "./Button";
 import { OdorColors } from "@/static/descriptions";
-import { ReactNode } from "react";
+
 export type Component<T> = T;
 export type ChipProps = Component<{
   className?: string;
-  label: string | ReactNode;
+  label: any;
   icon?: string;
   iconClsn?: string;
   containerClsn?: string;
   containerStyle?: any;
   onRemove?: (ek: React.MouseEvent) => void;
-}> &
-  React.HTMLProps<HTMLButtonElement>;
-export const Chip = (props: ChipProps) => {
+  onClick?: React.MouseEventHandler
+  style?:any;
+}>
+export const Chip = (props: React.PropsWithChildren<ChipProps> ) => {
   const {
     className,
     label,
