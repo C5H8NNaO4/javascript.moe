@@ -9,7 +9,7 @@ import {
   Inventories,
   Item,
 } from "./Inventory";
-import { formulas, ingredients as imgs } from "@/static/assets";
+import { ingredients as imgs } from "@/static/assets";
 import { Button, IconButton, MenuButton } from "./Button";
 import { Icon } from "./Icon";
 import {

@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { Button, IconButton, IconButtonProps, ReactButton } from "./Button";
-import { Confirm } from "@/hooks/usePrompt";
 import ReactDOM from "react-dom";
 import { Tooltip } from "react-tooltip";
 import { useMemo, useRef, useState } from "react";
@@ -8,7 +7,6 @@ import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { Icon } from "./Icon";
 import { useIdentity } from "@/lib/hooks/useIdentity";
 import { GoogleLoginButton } from "./oauth/Google";
-import { fn } from "@storybook/test";
 
 export type ActionButtonProps = ReactButton &
   IconButtonProps & {

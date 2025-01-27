@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Button, ReactButton } from "../Button";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { usePublishListMutation } from "@/apollo/queries/generated/graphql";
-import { Formula } from "../Inventory";
 import { Icon } from "../Icon";
 import clsx from "clsx";
 import { useNavigate } from "react-router";
