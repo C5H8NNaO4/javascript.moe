@@ -6,7 +6,6 @@ import { useRef, useState } from "react";
 import useOnClickOutside from "../hooks/useOnClickOutside";
 import { PlacesType, Tooltip } from "react-tooltip";
 
-
 export type ButtonProps = {
   tooltip?: string;
   variant?: string;
