@@ -80,7 +80,6 @@ import { useListFormulasQuery } from "@/apollo/queries/generated/graphql";
 import { ActionInput } from "@/components/Input";
 import { IdentifyOverlay } from "@/components/IdentifyOverlay";
 import { IdentifyItem } from "@/components/Items";
-import { adaptIndexedDBFormula } from "@/utils/dataStructure";
 
 const Images: Record<string, string[]> = {
   "Vetiveryl Acetat": [
