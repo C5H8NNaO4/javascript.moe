@@ -1,0 +1,3 @@
+query GetStars ($listId: String!, $identity: String) {
+    getStars(listId: $listId, identity: $identity)
+}

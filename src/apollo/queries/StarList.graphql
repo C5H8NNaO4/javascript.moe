@@ -1,0 +1,3 @@
+mutation StarList($listId: String!, $identity: String!) {
+  starList(listId: $listId, identity: $identity)
+}

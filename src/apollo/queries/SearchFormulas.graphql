@@ -1,0 +1,19 @@
+query SearchFormulas($q: String!) {
+  searchFormulas(q: $q) {
+    q
+    items {
+      remoteId: id
+      title
+      author
+      published
+      items {
+        title
+        amount
+        usedAmount
+        dilution
+        unit
+        price
+      }
+    }
+  }
+}

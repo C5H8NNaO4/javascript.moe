@@ -1,0 +1,9 @@
+mutation Identify($provider: Providers!, $providerToken: OAuthCode!) {
+  identify(provider: $provider, providerToken: $providerToken) {
+    exp
+    signed
+    GOOGLE {
+      id_token
+    }
+  }
+}

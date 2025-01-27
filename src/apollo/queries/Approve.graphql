@@ -1,0 +1,5 @@
+mutation approveList($listId: String!) {
+  approveList(listId: $listId) {
+    status
+  }
+}

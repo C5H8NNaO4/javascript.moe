@@ -1,0 +1,5 @@
+mutation swapToken($provider: Providers!, $providerToken: OAuthCode!) {
+  swapToken(provider: $provider, providerToken: $providerToken) {
+    signed
+  }
+}

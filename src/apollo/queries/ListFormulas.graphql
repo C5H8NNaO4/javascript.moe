@@ -1,0 +1,19 @@
+query ListFormulas($identity: String) {
+  listFormulas {
+    remoteId: id
+    title
+    desc
+    author
+    stars
+    published
+    identityStars(identity: $identity)
+    items {
+      title
+      amount
+      usedAmount
+      dilution
+      unit
+      price
+    }
+  }
+}
