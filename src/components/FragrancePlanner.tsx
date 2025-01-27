@@ -36,8 +36,8 @@ import { useLocalFormulas } from "@/hooks/dbs/useFormulaDb";
 import { ToggleButton } from "./ToggleButton";
 import { NavButton } from "./NavButton";
 import { ActionButton } from "./ActionButton";
-import { IngredientList } from "@/apollo/__generated__/schema.types";
-import { ingredientListAsFormula } from "@/utils/types";
+import { idbToFormula } from "@/utils/types";
+import { IDBFormula } from "@/utils/dataStructure";
 export type FragrancePlannerProps = Component<{
   className?: string;
   inventories: {
@@ -51,7 +51,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const db = useIndexedDB("inventory");
   const [search, setSearch] = useSearchParams();
   const [fragrances, { refetch }] = useLocalFormulas() as [
-    IngredientList[],
+    IDBFormula[],
     any
   ];
   const { listId } = useParams();
@@ -62,11 +62,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
       setIngredients([]);
       setTitle("");
     } else {
-      setFormula(
-        ingredientListAsFormula(
-          fragrances?.find((f) => Number(f.id) === Number(listId))
-        )
-      );
+      const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
+      console.log("SELECT", frmla);
+      setFormula(formula);
     }
   }, [listId, fragrances?.length]);
   const source = search.get("source") || "remote";
@@ -119,11 +117,11 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [step, setStep] = useState(0.1);
   const [probeAmount, setProbeAmount] = useState(0.1);
 
-  const [dnFormula, setFormula] = useLocalStorage<Formula | null>(
+  const [dnFormula, setFormula] = useLocalStorage<IDBFormula | null>(
     null,
     "formulas.selectedFormula"
   );
-  const formula = props.formula || dnFormula;
+  const formula = dnFormula;
   const fragranceDb = useIndexedDB("formulas");
 
   const bp = useCurrentBreakpoint();
@@ -144,7 +142,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
 
   useEffect(() => {
     console.log("FORMULA CHANGE", formula);
-    if (formula?.items?.length) setIngredients(formula?.items);
+    if (formula?.ingredients?.length) setIngredients(formula?.ingredients);
     if (formula?.title) setTitle(formula?.title);
   }, [formula]);
 
@@ -241,14 +239,14 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     }
   };
 
-  const remove = async (id: string) => {
+  const remove = async (id: number) => {
     if (!id) return;
     await fragranceDb.deleteRecord(id);
     if (Number(dnFormula?.id) === Number(id)) setFormula(null);
   };
 
   const navigate = useNavigate();
-  const selectFormula = (frmla: Formula | null) => {
+  const selectFormula = (frmla: IDBFormula | null) => {
     setFormula(frmla);
     if (frmla === null) {
       setIngredients([]);
@@ -429,15 +427,15 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                     <button
                       className="w-full text-start"
                       onClick={() => {
-                        selectFormula(frmla as unknown as Formula);
+                        selectFormula(frmla);
                       }}
                     >
-                      {frmla?.title} ({frmla?.items?.length})
+                      {frmla?.title} ({idbToFormula(frmla)?.items?.length})
                     </button>
                     <div className="hidden gap-1 group-hover:flex ">
                       {frmla.id && (
                         <NavLink
-                          to={lngLnk`/formula/publish/${frmla.id}`}
+                          to={lngLnk`/formula/publish/${frmla.id.toString()}`}
                           className="!h-5 !w-5"
                         >
                           <NavButton
@@ -547,7 +545,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                   <IconButton
                     className={clsx({
                       "bg-orange-500":
-                        toText(formula?.items) !== toText(ingredients),
+                        toText(formula?.ingredients) !== toText(ingredients),
                     })}
                     disabled={!title}
                     allowDisabledClick

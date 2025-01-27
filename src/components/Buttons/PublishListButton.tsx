@@ -8,7 +8,6 @@ import clsx from "clsx";
 import { useNavigate } from "react-router";
 import { lngLnk } from "@/lib/util";
 import useFormulaDb from "@/hooks/dbs/useFormulaDb";
-import { ingredientListAsFormula } from "@/utils/types";
 
 type PublishListButtonProps = {
   listId: string;
@@ -35,7 +34,7 @@ export const PublishListButton = ({
   useEffect(() => {
     (async () => {
       const list = await fragranceDb.getByID(Number(listId));
-      setFormula(ingredientListAsFormula(list));
+      setFormula(list);
     })();
   }, [fragranceDb, listId]);
 
@@ -49,17 +48,17 @@ export const PublishListButton = ({
       items: formula.items.map((ing) => {
         return {
           title: ing.title,
-          dilution: ing.dilution || '100%',
+          dilution: ing.dilution || "100%",
           amount: ing.amount,
           usedAmount: ing.usedAmount,
-          unit: ing.unit || 'g',
+          unit: ing.unit || "g",
           price: ing.price,
         };
       }),
     };
 
     const meta = {
-      identity: identity || '',
+      identity: identity || "",
       name: name!,
       author: data?.author,
       desc: data?.desc,
