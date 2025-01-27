@@ -9,7 +9,7 @@ import {
   Inventories,
   Item,
 } from "./Inventory";
-import { ingredients as imgs } from "@/static/assets";
+import { formulas, ingredients as imgs } from "@/static/assets";
 import { Button, IconButton, MenuButton } from "./Button";
 import { Icon } from "./Icon";
 import {
@@ -50,10 +50,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const { className, inventories } = props;
   const db = useIndexedDB("inventory");
   const [search, setSearch] = useSearchParams();
-  const [fragrances, { refetch }] = useLocalFormulas() as [
-    IDBFormula[],
-    any
-  ];
+  const [fragrances, { refetch }] = useLocalFormulas() as [IDBFormula[], any];
   const { listId } = useParams();
   useEffect(() => {
     if (!fragrances?.length) return;
@@ -240,9 +237,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   };
 
   const remove = async (id: number) => {
-    if (!id) return;
+    if (id === null || id === undefined) return;
     await fragranceDb.deleteRecord(id);
-    if (Number(dnFormula?.id) === Number(id)) setFormula(null);
+    if (Number(dnFormula?.id) === Number(id))
+      setFormula(fragrances[fragrances.findIndex((f) => f.id === id) - 1] || null);
   };
 
   const navigate = useNavigate();
@@ -456,7 +454,16 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                         className=""
                         iconClsn="!h-3 !w-3 !p-0"
                         onDestruct={(confirm) => {
+                          console.log("ON DESTRUCT", confirm, frmla.id);
                           if (confirm && frmla?.id) remove(frmla?.id);
+                          refetch();
+                          // if (formula?.id === frmla?.id)
+                          //   setFormula(
+                          //     fragrances[
+                          //       fragrances.findIndex((f) => f.id === frmla.id) -
+                          //         1
+                          //     ] || null
+                          //   );
                           // selectActiveList();
                         }}
                         level={2}

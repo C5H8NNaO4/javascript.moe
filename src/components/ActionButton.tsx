@@ -8,6 +8,7 @@ import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { Icon } from "./Icon";
 import { useIdentity } from "@/lib/hooks/useIdentity";
 import { GoogleLoginButton } from "./oauth/Google";
+import { fn } from "@storybook/test";
 
 export type ActionButtonProps = ReactButton &
   IconButtonProps & {
@@ -25,9 +26,6 @@ export type ActionButtonProps = ReactButton &
 export const ActionButton = ({
   className,
   round,
-  promptTitle,
-  promptText,
-  renderPrompt = Confirm,
   needsLogin,
   onDestruct,
   onConstruct,
@@ -47,13 +45,13 @@ export const ActionButton = ({
   //   );
   const ref = useRef<any>();
   useOnClickOutside(ref, () => {
-    setConirm(false);
+    setConfirm(false);
   });
   const { trackUse, active } = useIdentity();
   const identity = useMemo(() => {
     return trackUse();
   }, [active]);
-  const [confirm, setConirm] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   return (
     <>
       <Cmp
@@ -63,7 +61,7 @@ export const ActionButton = ({
         onClick={() => {
           const fn = constructive ? onConstruct : onDestruct;
           if (level > 1) {
-            setConirm(true);
+            setConfirm(true);
           } else if (level === 1) {
             fn?.(true, params);
           }
@@ -83,11 +81,10 @@ export const ActionButton = ({
           "overflow-hidden group",
           className
         )}
-        id="confirmButton"
+        id={id + "confirmButton"}
       >
         {rest.children}
-        {needsLogin &&
-        !identity?.active?.GOOGLE?.id_token && (
+        {needsLogin && !identity?.active?.GOOGLE?.id_token && (
           <div
             className="hidden pointer-events-none group-hover:flex absolute w-full h-full bg-red-500/40 -ml-1  items-center justify-center "
             id={id + "lock"}
@@ -98,7 +95,7 @@ export const ActionButton = ({
       </Cmp>
       {ReactDOM.createPortal(
         <Tooltip
-          anchorSelect="#confirmButton"
+          anchorSelect={`#${id}confirmButton`}
           isOpen={confirm}
           clickable
           place={tooltipPlacement}
@@ -108,7 +105,16 @@ export const ActionButton = ({
             className="flex gap-2 items-center font-bold text-base"
           >
             Confirm
-            <IconButton icon="FaCheck" className="bg-green-400"></IconButton>
+            <IconButton
+              icon="FaCheck"
+              className="bg-green-400"
+              onClick={async () => {
+                console.log("CLICK CONFIRM", constructive,id, onDestruct);
+                const fn = constructive ? onConstruct : onDestruct;
+                fn?.(true, params);
+                setConfirm(false);
+              }}
+            ></IconButton>
           </span>
         </Tooltip>,
         document.body
@@ -117,9 +123,9 @@ export const ActionButton = ({
       {needsLogin &&
         !identity?.active?.GOOGLE?.id_token &&
         ReactDOM.createPortal(
-          <Tooltip anchorSelect="#confirmButton" place="right" clickable>
+          <Tooltip anchorSelect={`#${id}confirmButton`} place="right" clickable>
             <span className="flex gap-2 items-center font-bold text-base">
-              <GoogleLoginButton  className="h-4 w-4"></GoogleLoginButton>
+              <GoogleLoginButton className="h-4 w-4"></GoogleLoginButton>
               Login Required
             </span>
           </Tooltip>,
