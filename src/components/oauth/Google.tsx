@@ -18,7 +18,7 @@ const swapToken = async (code: string) => {
       providerToken: {
         code,
       },
-      redirectUri: window.location.protocol + '//' + window.location.host
+      redirectUri: window.location.protocol + "//" + window.location.host,
     },
   });
   return token;
@@ -35,18 +35,17 @@ export const GoogleLoginButton = ({ className, scheme, id, tooltip }: any) => {
   const startLogin = useGoogleLogin({
     flow: "auth-code",
     scope: ["email", "profile"].join(" "),
+    redirect_uri:  window.location.protocol + "//" + window.location.host,
     onError: (error) => {
       console.log("Google OAuth Error", error);
     },
     onSuccess: async (tokenResponse) => {
-      console.log("RESPONSE", tokenResponse);
       const response = await swapToken(tokenResponse.code);
 
       if (response.data?.identify) {
         setIdentity(response.data?.identify);
         setActiveIdentity(response.data?.identify);
       }
-      console.log("GOOGLE RESPONSE SWAPPED", response.data?.identify);
     },
   });
 
