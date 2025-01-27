@@ -1,4 +1,4 @@
-import { HashRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import { routes } from "@/lib/routes";
 import ScrollToTop from "@/components/ScrollToTop";

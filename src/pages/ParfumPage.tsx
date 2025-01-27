@@ -606,7 +606,7 @@ export const FormulaPage = () => {
               ></FormulaList>
               {selected && (
                 <Formula
-                  formula={adaptIndexedDBFormula(selected as any)}
+                  formula={selected }
                   inventories={{
                     remote: {
                       All: perfumersApprenticeInventory,
