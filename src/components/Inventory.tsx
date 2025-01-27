@@ -28,7 +28,6 @@ import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
 import { Link, useSearchParams } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
-import { isNotNull, notNull } from "@/utils/types";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -895,7 +894,7 @@ export type IngredientDetailProps = {
   setSelected: (itm: Item) => void;
   invRemote: string;
   invLocal?: string;
-  filter?: string | null;
+  filter?: string[] | null;
   list: Item[];
   sorted: Item[];
   emptyStock?: boolean;
@@ -1155,7 +1154,7 @@ export const IngredientDetail = ({
                   {perfumeIngredientsOdours[selected?.title].map((odor) => {
                     return (
                       <OdorChip
-                        filter={[filter].filter(isNotNull)}
+                        filter={filter}
                         odor={odor}
                         // onClick={(e) => {
                         //   e.stopPropagation();
