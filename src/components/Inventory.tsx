@@ -28,7 +28,7 @@ import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
 import { Link, useSearchParams } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
-import { notNull } from "@/utils/types";
+import { isNotNull, notNull } from "@/utils/types";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -1155,7 +1155,7 @@ export const IngredientDetail = ({
                   {perfumeIngredientsOdours[selected?.title].map((odor) => {
                     return (
                       <OdorChip
-                        filter={[notNull(filter)]}
+                        filter={[filter].filter(isNotNull)}
                         odor={odor}
                         // onClick={(e) => {
                         //   e.stopPropagation();

@@ -7,7 +7,9 @@ export const isFormula = (formula: Formula): formula is Formula =>
 
 export const asFormula = (formula: any[]): Formula[] => formula;
 
-export const notNull = <T>(val: Maybe<T>): NonNullable<T> => {
+export const isNotNull = <T>(val: T): val is NonNullable<T> => val !== null;
+
+export const notNull = <T>(val: T): NonNullable<T> => {
   if (!val) throw new Error("Non nullable value can not be null");
   return val;
 };

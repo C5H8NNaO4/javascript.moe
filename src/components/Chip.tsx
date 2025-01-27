@@ -82,7 +82,7 @@ export type OdorChipProps = Component<{
   className?: string;
   odor: string;
   onClick?: (e: React.MouseEvent) => void;
-  filter?: string[];
+  filter?: string[] | null;
   size?: "md" | "sm" | "xs";
 }>;
 export const OdorChip = (props: OdorChipProps) => {
