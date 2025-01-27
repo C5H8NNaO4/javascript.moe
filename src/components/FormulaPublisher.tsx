@@ -6,10 +6,7 @@ import { GoogleLoginButton } from "./oauth/Google";
 import { Icon } from "./Icon";
 import { useState } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import {
-  getNameFromGoogleIDToken,
-  getSubFromGoogleIDToken,
-} from "@/lib/jwt";
+import { getNameFromGoogleIDToken, getSubFromGoogleIDToken } from "@/lib/jwt";
 import { AuthTokens } from "@/types/oauth";
 import { toText } from "@/lib/app";
 import { PublishListButton } from "./Buttons/PublishListButton";
@@ -103,7 +100,7 @@ export const FormulaPublisher = ({}: { inventories: any }) => {
       </fieldset>
       <pre>
         {toText(
-          formula?.items?.sort(
+          formula?.ingredients?.sort(
             (a: any, b: any) => Number(b.usedAmount) - Number(a.usedAmount)
           ) || []
         )}

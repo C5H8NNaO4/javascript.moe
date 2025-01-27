@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { useNavigate } from "react-router";
 import { lngLnk } from "@/lib/util";
 import useFormulaDb from "@/hooks/dbs/useFormulaDb";
+import { IDBFormula } from "@/utils/dataStructure";
 
 type PublishListButtonProps = {
   listId: string;
@@ -25,7 +26,7 @@ export const PublishListButton = ({
 }: PublishListButtonProps) => {
   const fragranceDb = useIndexedDB("formulas");
 
-  const [formula, setFormula] = useState<Formula | null>(null);
+  const [formula, setFormula] = useState<IDBFormula | null>(null);
   const [publishList] = usePublishListMutation();
 
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export const PublishListButton = ({
 
     const list = {
       title: formula.title,
-      items: formula.items.map((ing) => {
+      items: formula.ingredients.map((ing) => {
         return {
           title: ing.title,
           dilution: ing.dilution || "100%",

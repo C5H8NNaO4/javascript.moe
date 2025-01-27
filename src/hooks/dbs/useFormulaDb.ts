@@ -3,7 +3,7 @@ import {
 } from "@/apollo/queries/generated/graphql";
 import { Formula } from "@/components/Inventory";
 import { DB_FORMULA } from "@/const/indexedDBNames";
-import { adaptIndexedDBFormula } from "@/utils/dataStructure";
+import { adaptIndexedDBFormula, IDBFormula } from "@/utils/dataStructure";
 import { useCallback, useEffect, useState } from "react";
 import { useIndexedDB } from "react-indexed-db-hook";
 
@@ -11,7 +11,7 @@ const useFormulaDb = () => useIndexedDB(DB_FORMULA);
 
 export const useFormulaItemById = (id?: string) => {
   const formulaDb = useFormulaDb();
-  const [itm, setItm] = useState<Formula | null | undefined>(undefined);
+  const [itm, setItm] = useState<IDBFormula | null | undefined>(undefined);
 
   const load = useCallback(async () => {
     if (!id) return;

@@ -421,7 +421,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                         "bg-white/40":
                           Number(frmla?.id) === Number(formula?.id),
                       },
-                      "flex justify-between p-1 gap-2 items-center group"
+                      "flex justify-between p-1 gap-2 items-center group w-full"
                     )}
                   >
                     <button
@@ -432,7 +432,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                     >
                       {frmla?.title} ({idbToFormula(frmla)?.items?.length})
                     </button>
-                    <div className="hidden gap-1 group-hover:flex ">
+                    <div className="flex opacity-0 gap-1 group-hover:opacity-100 ">
                       {frmla.id && (
                         <NavLink
                           to={lngLnk`/formula/publish/${frmla.id.toString()}`}
