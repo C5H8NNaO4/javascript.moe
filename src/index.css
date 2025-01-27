@@ -26,6 +26,7 @@ body {
   /* scroll-snap-align: bottom; */
   /* -webkit-overflow-scrolling: touch; */
   overscroll-behavior: none;
+  overflow: hidden;
   --text-color: #ffffffee;
 }
 
@@ -96,4 +97,12 @@ p {
   filter: brightness(124%);
   scale: 104%;
   background: #00000088 !important;
+}
+
+dialog:not([open]) {
+  display: none !important;
+}
+
+.sb-main-centered {
+  background-color: skyblue;
 }

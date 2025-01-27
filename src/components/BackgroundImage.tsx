@@ -32,7 +32,7 @@ export const FadingImage = ({
 
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(1);
-  const so = useRef(0);
+  const so = useRef(0 as unknown as NodeJS.Timeout);
   const transition = () => {
     clearTimeout(so.current);
     setFade(2);
@@ -60,7 +60,7 @@ export const FadingImage = ({
   return (
     <motion.div
       {...rest}
-      className={clsx("overflow-hidden", className)}
+      className={clsx("fadingImage overflow-hidden", className)}
       style={{}}
       onClick={transition}
     >

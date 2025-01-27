@@ -7,6 +7,7 @@
     }
   },
   "files": [],
+  "exclude": ["./src/stories/**/*", "src/apollo/queries/generated/graphql.tsx"],
   "references": [
     {
       "path": "./tsconfig.app.json"

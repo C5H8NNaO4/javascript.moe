@@ -1,5 +1,5 @@
 import { useIndexedDB } from "react-indexed-db-hook";
-import { DestructiveButton, IconButton } from "./Button";
+import { IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +27,8 @@ import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
 import { Link, useSearchParams } from "react-router-dom";
+import { ActionButton } from "./ActionButton";
+import { notNull } from "@/utils/types";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -167,12 +169,20 @@ export type AutoSuggestItem = Item & {
 export type FormulaItem = Item & {
   usedAmount?: number;
   unit?: string;
+  token?: string;
+  remoteId?: string;
 };
 
 export type Formula = {
-  id?: string;
+  published?: boolean;
+  author?: string;
+  id?: number;
+  remoteId?: string;
+  token?: string;
+  stars?: number;
+  identityStars?: number;
   title?: string;
-  ingredients: FormulaItem[];
+  items: FormulaItem[];
 };
 
 export type Inventories = Record<string, Item[]>;
@@ -514,24 +524,6 @@ export const InventoryList = ({
 
     return 0;
   });
-  const uniqueIngredientsOnStock = [
-    ...new Set(
-      list
-        .filter((itm) => {
-          return itm.onStock;
-        })
-        .map((itm) => {
-          return itm.title;
-        })
-    ),
-  ];
-  const totalValue = list
-    .filter((itm) => {
-      return itm.onStock;
-    })
-    .reduce((total, itm) => {
-      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
-    }, 0);
 
   useEffect(() => {
     if (!params?.title) return;
@@ -879,400 +871,414 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {(isMobile ? !!selected?.amount : true) && (
-          <div className="border-white flex flex-col w-full md:max-w-[66%] md:flex-shrink pb-0">
-            <div className="flex gap-1 flex-col lg:flex-row lg:flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
-              <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full min-w-max">
-                {selected?.title ? (
-                  <h2 className="line-clamp-1">{selected?.title}</h2>
-                ) : (
-                  <h2 className="line-clamp-1">{invRemote}</h2>
-                )}
-                {selected?.aliases?.length && (
-                  <em>{selected?.aliases?.join(", ")}</em>
-                )}
-              </div>
-              <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
-                <IconButton
-                  className=""
-                  round
-                  icon="FaChevronLeft"
-                  onClick={() => {
-                    const sel = sorted
-                      ?.filter((itm) => itm.title === selected?.title)
-                      .at(-1);
-                    const index = sel ? sorted?.indexOf(sel) : -1;
-                    setSelected(
-                      sorted[(sorted?.length + index - 1) % sorted?.length]
-                    );
-                  }}
-                ></IconButton>
-                <IconButton
-                  className="mr-auto lg:mr-0"
-                  round
-                  icon="FaChevronRight"
-                  onClick={() => {
-                    const sel = sorted
-                      ?.filter((itm) => itm.title === selected?.title)
-                      .at(-1);
-                    const index = sel ? sorted?.indexOf(sel) : -1;
-                    setSelected(sorted[(index + 1) % sorted?.length]);
-                  }}
-                ></IconButton>
-                <Chip
-                  label={uniqueIngredientsOnStock?.length.toString()}
-                  icon="FaBottleDroplet"
-                  iconClsn="!h-5 !w-5"
-                  className="ml-auto md:ml-0 bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
-                ></Chip>
-                <Chip
-                  label={totalValue.toString()}
-                  icon="FaDollarSign"
-                  iconClsn="!h-5 !w-5"
-                  className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
-                ></Chip>
-                {selected && (
-                  <IconButton
-                    round
-                    icon="FaX"
-                    onClick={() => {
-                      setSelected(
-                        isMobile ? ({ title: selected?.title } as any) : null
-                      );
-                    }}
-                  ></IconButton>
-                )}
-              </div>
-            </div>
-            {!!selected?.title && (
-              <div
-                className={clsx(
-                  "border-white border-[1px] max-w-full overflow-y-auto p-2 pb-2 rounded-md",
-                  {
-                    "border-yellow-500": between(
-                      getRawPricePerMl(selected as Item),
-                      30,
-                      1000
-                    ),
-                    "bg-yellow-500/55": between(
-                      getRawPricePerMl(selected as Item),
-                      100,
-                      1000
-                    ),
-                    "bg-orange-500/55": between(
-                      getRawPricePerMl(selected as Item),
-                      1,
-                      100
-                    ),
-
-                    "bg-green-500/55": between(
-                      getRawPricePerMl(selected as Item),
-                      0.2,
-                      1
-                    ),
-                    "bg-gray-400/55": between(
-                      getRawPricePerMl(selected as Item),
-                      0.1,
-                      0.2
-                    ),
-
-                    "bg-gray-200/55": between(
-                      getRawPricePerMl(selected as Item),
-                      0,
-                      0.1
-                    ),
-                  }
-                )}
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                }}
-                // onDrop={(event) => {
-                //   event.preventDefault(); // Prevent default browser behavior
-                //   const file = event.dataTransfer.files[0];
-
-                //   // Ensure the dropped file is an image
-                //   if (file && file.type.startsWith("image/")) {
-                //     const reader = new FileReader();
-
-                //     reader.onload = (e) => {
-                //       const imageDataUrl = e.target?.result;
-                //       if (selected) upd(selected?.id, { imgUrl: imageDataUrl }); // Call function to store the image
-                //     };
-
-                //     reader.readAsDataURL(file); // Read file as Data URL
-                //   }
-                // }}
-              >
-                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 p-1 ">
-                  <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
-                    {<img src={ingredients[selected?.title?.trim()]} />}
-                    <div className="flex flex-wrap gap-1 h-fit">
-                      {selected?.remote && selected?.onStock && (
-                        <Chip
-                          icon="FaShoppingCart"
-                          className="bg-yellow-500 w-fit"
-                          label="Available"
-                        ></Chip>
-                      )}
-                      {(selected?.local?.onStock ||
-                        (!selected?.remote && selected?.onStock)) && (
-                        <Chip
-                          onClick={() =>
-                            setInvLocal(selected?.local?.list || "Local")
-                          }
-                          icon="FaCheck"
-                          className={clsx("w-fit", {
-                            "bg-green-600":
-                              invLocal === selected?.local?.list ||
-                              invLocal === selected?.list,
-                            "bg-yellow-500":
-                              invLocal !== selected?.local?.list &&
-                              invLocal !== selected?.list,
-                          })}
-                          label={
-                            listAliases[
-                              selected?.list || selected?.local?.list || "Local"
-                            ] ||
-                            selected?.list ||
-                            selected?.local?.list ||
-                            "In collection"
-                          }
-                        ></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        10,
-                        20
-                      ) && (
-                        <Chip className="bg-yellow-300 w-fit" label="$"></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        20,
-                        30
-                      ) && (
-                        <Chip className="bg-yellow-400 w-fit" label="$$"></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        30,
-                        100
-                      ) && (
-                        <Chip
-                          className="bg-yellow-500 w-fit"
-                          label="$$$"
-                        ></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        100,
-                        1000
-                      ) && (
-                        <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-1 h-fit">
-                      {selected?.tags?.map((tag) => {
-                        return (
-                          <Chip
-                            label={tag}
-                            icon={TagIcons[tag]}
-                            style={{
-                              backgroundColor: TagColors[tag],
-                            }}
-                          ></Chip>
-                        );
-                      })}
-                    </div>
-                    {selected?.amount && !selected?.remote && (
-                      <DestructiveButton
-                        className="m-1 !h-7 !w-7 "
-                        level={1}
-                        onDestruct={() => {
-                          if (selected?.id) del(selected?.id);
-                          setSelected({ title: selected?.title } as Item);
-                        }}
-                        icon="FaTrash"
-                      ></DestructiveButton>
-                    )}
-                    {selected?.title?.match(/[$€]$/) && (
-                      <DestructiveButton
-                        className="m-1"
-                        level={1}
-                        onDestruct={() => {
-                          if (selected?.id)
-                            upd(selected?.id, {
-                              title: selected?.title
-                                .replace(/\s\d+[%]/, "")
-                                .replace(/\d+[$€]$/, ""),
-                            });
-                        }}
-                        icon="FaHammer"
-                      ></DestructiveButton>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%]">
-                    <div className="flex gap-1">
-                      {selected?.amount && (
-                        <b className="flex">
-                          {amountToNumber(selected?.amount) *
-                            selected?.quantity}
-                          {getAmountUnit(selected?.amount)}
-                        </b>
-                      )}
-                      {/* <h2 className="line-clamp-1 w-fit">{selected?.title}</h2> */}
-                      {selected?.price && (
-                        <div className="flex gap-1 ml-auto">
-                          <span>{selected?.price}</span>
-
-                          <span>
-                            ({selected?.price?.slice(-1)}
-                            {getRawPricePerMl(selected)}/
-                            {getAmountUnit(selected?.amount)})
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    {perfumeIngredientsOdours[selected?.title] && (
-                      <div className="flex gap-1 flex-wrap">
-                        {perfumeIngredientsOdours[selected?.title].map(
-                          (odor) => {
-                            return (
-                              <OdorChip
-                                filter={filter}
-                                odor={odor}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFilter(toggle(filter, odor));
-                                }}
-                              ></OdorChip>
-                            );
-                          }
-                        )}
-                      </div>
-                    )}
-                    {perfumeIngredientsDesc[selected?.title] && (
-                      <p className="mb-0 overflow-y-auto h-full w-full p-2 text-base bg-white/20 rounded-md">
-                        {perfumeIngredientsDesc[selected?.title]}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {!selected && (
-              <div className="flex flex-col gap-1">
-                <div className="bg-yellow-500/55 rounded-md p-2 flex gap-1 w-full">
-                  {getMostExpensive(emptyStock ? storedList : list || []).map(
-                    (entry, i) => {
-                      return (
-                        <button
-                          onClick={() => {
-                            setSelected(entry);
-                          }}
-                          className={clsx(
-                            "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
-                            "transition-all",
-                            {
-                              ["border-yellow-" + (7 - i) + "00"]: true,
-                            }
-                          )}
-                        >
-                          {ingredients[entry?.title?.trim()] && (
-                            <img
-                              className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
-                              src={ingredients[entry?.title?.trim()]}
-                            />
-                          )}
-                          <p
-                            className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
-                            style={{
-                              textShadow:
-                                "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
-                            }}
-                          >
-                            {entry.title}
-                          </p>
-                          <div className="absolute bottom-1 right-1 flex gap-1 ">
-                            <AmountChip
-                              className="h-fit"
-                              amount={entry.amount}
-                              dilution={
-                                entry.dilution === "100%"
-                                  ? undefined
-                                  : entry.dilution
-                              }
-                            ></AmountChip>
-                          </div>
-                        </button>
-                      );
-                    }
-                  )}
-                  <div className="bg-black/20 flex-1 rounded-r-md ml-1 -mr-2 -my-2"></div>
-                </div>
-                <div className="bg-green-500/55 rounded-md p-2 flex gap-1 w-full overflow-hidden">
-                  <div className="rounded-md overflow-hidden flex flex-wrap gap-1 w-full max-w-[600px]">
-                    {getMostOnStock(emptyStock ? storedList : list || []).map(
-                      (entry, i) => {
-                        return (
-                          <button
-                            onClick={() => {
-                              setSelected(entry);
-                            }}
-                            className={clsx(
-                              "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
-                              "transition-all",
-                              {
-                                ["border-yellow-" + (7 - i) + "00"]: true,
-                              }
-                            )}
-                          >
-                            {ingredients[entry?.title?.trim()] && (
-                              <img
-                                className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
-                                src={ingredients[entry?.title?.trim()]}
-                              />
-                            )}
-                            <p
-                              className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
-                              style={{
-                                textShadow:
-                                  "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
-                              }}
-                            >
-                              {entry.title}
-                            </p>
-                            <div className="absolute bottom-1 right-1 flex gap-1 ">
-                              <AmountChip
-                                className="h-fit"
-                                amount={entry.amount}
-                                dilution={
-                                  entry.dilution === "100%"
-                                    ? undefined
-                                    : entry.dilution || undefined
-                                }
-                              ></AmountChip>
-                            </div>
-                          </button>
-                        );
-                      }
-                    )}
-                  </div>
-                  <div className="bg-black/20 flex-1 rounded-r-md  -mr-2 -my-2"></div>
-                </div>
-              </div>
-            )}
-          </div>
+        {selected && (isMobile ? !!selected?.amount : true) && (
+          <IngredientDetail
+            invRemote="Moe"
+            selected={selected}
+            setSelected={setSelected}
+            list={list}
+            sorted={sorted}
+            emptyStock={emptyStock}
+            listAliases={listAliases}
+            storedList={storedList}
+            upd={upd}
+            del={del}
+          ></IngredientDetail>
         )}
       </div>
     </div>
   );
 };
 
+export type IngredientDetailProps = {
+  selected: Item;
+  setSelected: (itm: Item) => void;
+  invRemote: string;
+  invLocal?: string;
+  filter?: string | null;
+  list: Item[];
+  sorted: Item[];
+  emptyStock?: boolean;
+  storedList?: any;
+  listAliases?: Record<string, string>;
+  upd: any;
+  del: any;
+};
+export const IngredientDetail = ({
+  selected,
+  setSelected,
+  invRemote,
+  list,
+  sorted,
+  invLocal,
+  listAliases,
+  filter = null,
+  emptyStock,
+  storedList,
+  upd,
+  del,
+}: IngredientDetailProps) => {
+  const bp = useCurrentBreakpoint({ current: document.body });
+  const isMobile = isSmaller(bp, "md");
+
+  const uniqueIngredientsOnStock = [
+    ...new Set(
+      list
+        .filter((itm) => {
+          return itm.onStock;
+        })
+        .map((itm) => {
+          return itm.title;
+        })
+    ),
+  ];
+  const totalValue = list
+    .filter((itm) => {
+      return itm.onStock;
+    })
+    .reduce((total, itm) => {
+      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
+    }, 0);
+
+  return (
+    <div className="detail flex flex-col w-full md:max-w-[66%] md:flex-shrink pb-0 gap-0">
+      <div
+        className="
+      flex gap-1 flex-col lg:flex-row 
+      lg:flex-wrap justify-between bg-white/20
+      p-2 rounded-t-md items-center h-fit"
+      >
+        <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full ">
+          {selected?.title ? (
+            <h2 className="line-clamp-1">{selected?.title}</h2>
+          ) : (
+            <h2 className="line-clamp-1">{invRemote}</h2>
+          )}
+          {selected?.aliases?.length && (
+            <em>{selected?.aliases?.join(", ")}</em>
+          )}
+        </div>
+        <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
+          <IconButton
+            className=""
+            round
+            icon="FaChevronLeft"
+            onClick={() => {
+              const sel = sorted
+                ?.filter((itm) => itm.title === selected?.title)
+                .at(-1);
+              const index = sel ? sorted?.indexOf(sel) : -1;
+              console.log("SEL", sorted, sel, index);
+              setSelected(
+                sorted[(sorted?.length + index - 1) % sorted?.length]
+              );
+            }}
+          ></IconButton>
+          <IconButton
+            className="mr-auto lg:mr-0"
+            round
+            icon="FaChevronRight"
+            onClick={() => {
+              const sel = sorted
+                ?.filter((itm) => itm.title === selected?.title)
+                .at(-1);
+              const index = sel ? sorted?.indexOf(sel) : -1;
+              setSelected(sorted[(index + 1) % sorted?.length]);
+            }}
+          ></IconButton>
+          <Chip
+            label={uniqueIngredientsOnStock?.length.toString()}
+            icon="FaBottleDroplet"
+            iconClsn="!h-5 !w-5"
+            className="ml-auto md:ml-0 bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
+          ></Chip>
+          <Chip
+            label={totalValue.toString()}
+            icon="FaDollarSign"
+            iconClsn="!h-5 !w-5"
+            className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
+          ></Chip>
+          {selected && (
+            <IconButton
+              round
+              icon="FaX"
+              onClick={() => {
+                setSelected(
+                  isMobile ? ({ title: selected?.title } as any) : null
+                );
+              }}
+            ></IconButton>
+          )}
+        </div>
+      </div>
+      {!!selected?.title && (
+        <div
+          className={clsx(
+            "max-w-full overflow-y-auto  h-full rounded-b-md bg-white/10",
+            {}
+          )}
+          onDragEnter={(e) => {
+            e.preventDefault();
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+          }}
+          // onDrop={(event) => {
+          //   event.preventDefault(); // Prevent default browser behavior
+          //   const file = event.dataTransfer.files[0];
+
+          //   // Ensure the dropped file is an image
+          //   if (file && file.type.startsWith("image/")) {
+          //     const reader = new FileReader();
+
+          //     reader.onload = (e) => {
+          //       const imageDataUrl = e.target?.result;
+          //       if (selected) upd(selected?.id, { imgUrl: imageDataUrl }); // Call function to store the image
+          //     };
+
+          //     reader.readAsDataURL(file); // Read file as Data URL
+          //   }
+          // }}
+        >
+          <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 p-1 ">
+            <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
+              {<img src={ingredients[selected?.title?.trim()]} />}
+              <div className="flex flex-wrap gap-1 h-fit">
+                {selected?.remote && selected?.onStock && (
+                  <Chip
+                    icon="FaShoppingCart"
+                    className="bg-yellow-500 w-fit"
+                    label="Available"
+                  ></Chip>
+                )}
+                {(selected?.local?.onStock ||
+                  (!selected?.remote && selected?.onStock)) && (
+                  <Chip
+                    // onClick={() =>
+                    //   // setInvLocal(selected?.local?.list || "Local")
+                    // }
+                    icon="FaCheck"
+                    className={clsx("w-fit", {
+                      "bg-green-600":
+                        invLocal === selected?.local?.list ||
+                        invLocal === selected?.list,
+                      "bg-yellow-500":
+                        invLocal !== selected?.local?.list &&
+                        invLocal !== selected?.list,
+                    })}
+                    label={
+                      listAliases?.[
+                        selected?.list || selected?.local?.list || "Local"
+                      ] ||
+                      selected?.list ||
+                      selected?.local?.list ||
+                      "In collection"
+                    }
+                  ></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 10, 20) && (
+                  <Chip className="bg-yellow-300 w-fit" label="$"></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 20, 30) && (
+                  <Chip className="bg-yellow-400 w-fit" label="$$"></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 30, 100) && (
+                  <Chip className="bg-yellow-500 w-fit" label="$$$"></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 100, 1000) && (
+                  <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1 h-fit">
+                {selected?.tags?.map((tag) => {
+                  return (
+                    <Chip
+                      label={tag}
+                      icon={TagIcons[tag]}
+                      style={{
+                        backgroundColor: TagColors[tag],
+                      }}
+                    ></Chip>
+                  );
+                })}
+              </div>
+              {selected?.amount && !selected?.remote && (
+                <ActionButton
+                  className="m-1 !h-7 !w-7 "
+                  level={1}
+                  onDestruct={() => {
+                    if (selected?.id) del(selected?.id);
+                    setSelected({ title: selected?.title } as Item);
+                  }}
+                  icon="FaTrash"
+                ></ActionButton>
+              )}
+              {selected?.title?.match(/[$€]$/) && (
+                <ActionButton
+                  className="m-1"
+                  level={1}
+                  onDestruct={() => {
+                    if (selected?.id)
+                      upd(selected?.id, {
+                        title: selected?.title
+                          .replace(/\s\d+[%]/, "")
+                          .replace(/\d+[$€]$/, ""),
+                      });
+                  }}
+                  icon="FaHammer"
+                ></ActionButton>
+              )}
+            </div>
+            <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%]">
+              <div className="flex gap-1">
+                {selected?.amount && (
+                  <b className="flex">
+                    {amountToNumber(selected?.amount) * selected?.quantity}
+                    {getAmountUnit(selected?.amount)}
+                  </b>
+                )}
+                {/* <h2 className="line-clamp-1 w-fit">{selected?.title}</h2> */}
+                {selected?.price && (
+                  <div className="flex gap-1 ml-auto">
+                    <span>{selected?.price}</span>
+
+                    <span>
+                      ({selected?.price?.slice(-1)}
+                      {getRawPricePerMl(selected)}/
+                      {getAmountUnit(selected?.amount)})
+                    </span>
+                  </div>
+                )}
+              </div>
+              {perfumeIngredientsOdours[selected?.title] && (
+                <div className="flex gap-2 flex-wrap">
+                  {perfumeIngredientsOdours[selected?.title].map((odor) => {
+                    return (
+                      <OdorChip
+                        filter={[notNull(filter)]}
+                        odor={odor}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   setFilter(toggle(filter, odor));
+                        // }}
+                      ></OdorChip>
+                    );
+                  })}
+                </div>
+              )}
+              {perfumeIngredientsDesc[selected?.title] && (
+                <p className="mb-0 overflow-y-auto h-full w-full p-2 text-base bg-white/20 rounded-md">
+                  {perfumeIngredientsDesc[selected?.title]}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!selected && (
+        <div className="flex flex-col gap-1">
+          <div className="bg-yellow-500/55 rounded-md p-2 flex gap-1 w-full">
+            {getMostExpensive(emptyStock ? storedList : list || []).map(
+              (entry, i) => {
+                return (
+                  <button
+                    onClick={() => {
+                      setSelected(entry);
+                    }}
+                    className={clsx(
+                      "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
+                      "transition-all",
+                      {
+                        ["border-yellow-" + (7 - i) + "00"]: true,
+                      }
+                    )}
+                  >
+                    {ingredients[entry?.title?.trim()] && (
+                      <img
+                        className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
+                        src={ingredients[entry?.title?.trim()]}
+                      />
+                    )}
+                    <p
+                      className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
+                      style={{
+                        textShadow:
+                          "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
+                      }}
+                    >
+                      {entry.title}
+                    </p>
+                    <div className="absolute bottom-1 right-1 flex gap-1 ">
+                      <AmountChip
+                        className="h-fit"
+                        amount={entry.amount}
+                        dilution={
+                          entry.dilution === "100%" ? undefined : entry.dilution
+                        }
+                      ></AmountChip>
+                    </div>
+                  </button>
+                );
+              }
+            )}
+            <div className="bg-black/20 flex-1 rounded-r-md ml-1 -mr-2 -my-2"></div>
+          </div>
+          <div className="bg-green-500/55 rounded-md p-2 flex gap-1 w-full overflow-hidden">
+            <div className="rounded-md overflow-hidden flex flex-wrap gap-1 w-full max-w-[600px]">
+              {getMostOnStock(emptyStock ? storedList : list || []).map(
+                (entry, i) => {
+                  return (
+                    <button
+                      onClick={() => {
+                        setSelected(entry);
+                      }}
+                      className={clsx(
+                        "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
+                        "transition-all",
+                        {
+                          ["border-yellow-" + (7 - i) + "00"]: true,
+                        }
+                      )}
+                    >
+                      {ingredients[entry?.title?.trim()] && (
+                        <img
+                          className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
+                          src={ingredients[entry?.title?.trim()]}
+                        />
+                      )}
+                      <p
+                        className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
+                        style={{
+                          textShadow:
+                            "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
+                        }}
+                      >
+                        {entry.title}
+                      </p>
+                      <div className="absolute bottom-1 right-1 flex gap-1 ">
+                        <AmountChip
+                          className="h-fit"
+                          amount={entry.amount}
+                          dilution={
+                            entry.dilution === "100%"
+                              ? undefined
+                              : entry.dilution || undefined
+                          }
+                        ></AmountChip>
+                      </div>
+                    </button>
+                  );
+                }
+              )}
+            </div>
+            <div className="bg-black/20 flex-1 rounded-r-md  -mr-2 -my-2"></div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 export type AmountChipProps = Component<{
   className?: string;
   amount: string;
@@ -1329,11 +1335,9 @@ export const IngredientItem = (props: IngredientItemProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    let to: number;
-    console.log("SELECTED", selected?.title, title);
-    if (selected?.title === title) {
-      console.log("SELECTED!!", selected?.title, title);
+    let to: NodeJS.Timeout;
 
+    if (selected?.title === title) {
       to = setTimeout(() => {
         ref?.current?.scrollIntoView({
           behavior: "instant",
@@ -1656,7 +1660,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           }}
         ></IconButton>
         {items?.length > 0 && (
-          <DestructiveButton
+          <ActionButton
             className="h-7 w-7"
             level={2}
             icon="FaTrash"
@@ -1666,7 +1670,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
             onDestruct={(confirmed: boolean) => {
               if (confirmed) onDelete?.(value);
             }}
-          ></DestructiveButton>
+          ></ActionButton>
         )}
         {value !== "Local" && (
           <IconButton
@@ -1704,10 +1708,15 @@ export const Notification = (props: NotificationProps) => {
   });
 
   return (
-    <div className="fixed top-2 right-1/2 bg-blue-500/70 rounded-md font-semibold z-[1000] p-1 gap-2 flex items-center justify-between">
-      <div className="p-2 bg-black/30 rounded-md">{title}</div>
+    <div className="backdrop-blur-sm fixed top-2 right-1/2 translate-x-1/2 bg-blue-500/70 rounded-md font-semibold z-[1000] p-1 gap-0 flex items-center justify-between">
+      <Icon
+        icon="FaInfo"
+        className="!text-blue-200 h-8 w-8 p-2 rounded-md bg-black/20 mr-2"
+      ></Icon>
+      <div className="p-2 bg-black/30 rounded-md text-white ">{title}</div>
       <IconButton
-        round
+        // round
+        className="!rounded-md !ml-1"
         icon="FaX"
         onClick={() => setNotification("")}
       ></IconButton>

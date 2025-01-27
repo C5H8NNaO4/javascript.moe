@@ -1,15 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+const atoms = {} as Record<string, any>;
+import { atom, useAtom } from "jotai";
 
-export const useLocalStorage = <T>(initialVal: T, key: string): [T, (v: T) => void] => {
-  let loaded;
+export const useLocalStorage = <T>(
+  initialVal: T,
+  key: string
+): [T, (v: T) => void] => {
+  let loaded = initialVal;
   try {
     loaded = JSON.parse(localStorage[key]);
   } catch (e) {
     console.log("Error parsing local storage entry: ", key);
   }
-  const [val, setVal] = useState(loaded || initialVal);
+  if (!atoms[key]) atoms[key] = atom(loaded || initialVal);
 
+  const atm = atoms[key];
+  const [val, setVal] = useAtom<T>(atm);
   useEffect(() => {
     try {
       setVal(JSON.parse(localStorage[key]));

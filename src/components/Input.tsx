@@ -2,15 +2,17 @@
 import clsx from "clsx";
 import { IconButton } from "./Button";
 import { Component } from "./Chip";
-import { RefObject } from "react";
+import { RefObject, useState } from "react";
 
 export type InputProps = Component<{
   value?: string;
+  label?: string;
   onSubmit?: (v?: string) => void;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent) => void;
   fullWidth?: boolean;
   forwardRef?: RefObject<HTMLInputElement>;
+  valid?: boolean;
 }> &
   React.InputHTMLAttributes<HTMLInputElement>;
 export const Input = ({
@@ -24,33 +26,60 @@ export const Input = ({
   name,
   type,
   checked,
+  label,
   forwardRef,
+  valid,
   ...rest
 }: InputProps) => {
+  const [hasInteracted, setHasInteracted] = useState(false);
   return (
-    <input
-      ref={forwardRef}
-      type={type}
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      checked={checked}
-      onKeyUp={(e) => {
-        onKeyUp?.(e);
-        if (e.key === "Enter") {
-          onSubmit?.(value);
-        }
-      }}
-      onChange={onChange}
-      className={clsx(
-        "p-1 bg-black/40 border-b-2 border-white text-white",
-        {
-          "w-full flex-1": fullWidth,
-        },
-        className
+    <fieldset
+      className={clsx({
+        "mt-5": label,
+      })}
+    >
+      {label && (
+        <label
+          htmlFor={"input." + name}
+          className={clsx("bg-black/80 p-1 absolute text-sm -top-5 z-10", {
+            "text-red-500 font-bold": !valid && hasInteracted,
+          })}
+        >
+          {label}
+        </label>
       )}
-      {...rest}
-    />
+      <input
+        id={"input." + name}
+        ref={forwardRef}
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        checked={checked}
+        onFocus={() => {
+          // setHasInteracted(true);
+        }}
+        onKeyUp={(e) => {
+          setHasInteracted(true);
+          onKeyUp?.(e);
+          if (e.key === "Enter") {
+            onSubmit?.(value);
+          }
+        }}
+        onChange={onChange}
+        className={clsx(
+          "p-1 bg-black/40 border-b-2  text-white mb-1",
+          {
+            "border-white": valid === true && !hasInteracted,
+            "border-red-500": valid === false && hasInteracted,
+            "border-green-600": valid && hasInteracted,
+            "w-full flex-1": fullWidth,
+          },
+          className
+        )}
+        {...rest}
+      />
+    </fieldset>
   );
 };
 
@@ -65,13 +94,16 @@ export const ActionInput = ({
   children,
   placeholder,
   icon,
+  actionTooltip,
   ...rest
 }: any) => {
   return (
     <div
-      className={clsx("flex m-1 gap-1 justify-between items-center", className)}
+      className={clsx("flex m-1 gap-1 justify-between items-center te", className)}
     >
       <Input
+      id="searchInput"
+      className="placeholder-white"
         name={name}
         placeholder={placeholder}
         fullWidth
@@ -84,7 +116,7 @@ export const ActionInput = ({
         }}
         {...rest}
       />
-      <IconButton icon={icon} onClick={() => onSubmit(value)} type={type}>
+      <IconButton id="actionButton" tooltip={actionTooltip} tooltipPlacement="left" icon={icon} onClick={() => onSubmit(value)} type={type}>
         {actionLabel}
       </IconButton>
       {children}

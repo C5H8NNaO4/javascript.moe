@@ -4,6 +4,7 @@ import {
   drops2ml,
   getGCD,
   getVH,
+  lngLnk,
   round,
   toDrops,
 } from "@/lib/util";
@@ -14,7 +15,18 @@ import { BackgroundImage, FadingImage } from "@/components/BackgroundImage";
 import { Parallax } from "@/components/anim/Parallax";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ArrowBack from "@/assets/arrowback.svg?react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "rctx-contextmenu";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import {
   useContext,
   useEffect,
@@ -53,11 +65,22 @@ import {
   LabelList,
 } from "recharts";
 
-import { InventoryList } from "../components/Inventory";
+import { IngredientDetail, InventoryList } from "../components/Inventory";
+
 import { inventory } from "@/static/inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { useCurrentBreakpoint } from "@/hooks/useBreakpoint";
-import { FragrancePlanner } from "@/components/FragrancePlanner";
+import {
+  FormulaIngredientProps,
+  FragrancePlanner,
+} from "@/components/FragrancePlanner";
+import { FormulaPublisher } from "@/components/FormulaPublisher";
+import { Formula, FormulaCards, FormulaList } from "@/components/FormulaList";
+import { useListFormulasQuery } from "@/apollo/queries/generated/graphql";
+import { ActionInput } from "@/components/Input";
+import { IdentifyOverlay } from "@/components/IdentifyOverlay";
+import { IdentifyItem } from "@/components/Items";
+import { adaptIndexedDBFormula } from "@/utils/dataStructure";
 
 const Images: Record<string, string[]> = {
   "Vetiveryl Acetat": [
@@ -434,8 +457,8 @@ export const FragrancePage = () => {
       </div>
       <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/80 text-white h-full ">
         <div className="backdrop-blur-sm h-screen w-full flex flex-col overflow-y-hidden">
-          <FragrancePlanner 
-          inventories={{
+          <FragrancePlanner
+            inventories={{
               remote: {
                 All: perfumersApprenticeInventory,
                 Moe: inventory || [],
@@ -443,7 +466,400 @@ export const FragrancePage = () => {
               local: {
                 Local: [],
               },
-            }}></FragrancePlanner>
+            }}
+          ></FragrancePlanner>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FormulaPage = () => {
+  const params = useParams();
+  const { data } = useListFormulasQuery();
+  const formulas = data?.listFormulas;
+
+  const { title: paramsTitle, author } = params;
+  const selected = formulas?.find(
+    (itm) =>
+      itm?.title === paramsTitle && (itm?.author === author || author === "*")
+  );
+
+  const { hash } = useLocation();
+  const selectedItems = selected?.items || [];
+  const selectedItem = selectedItems?.find(
+    (itm) => itm?.title === decodeURIComponent(hash.slice(1))
+  );
+  console.log("SELECTED ITM", selectedItem);
+  const navigate = useNavigate();
+
+  const [expanded, setExpanded] = useState(true);
+  const [showIdentifyOverlay, setShowIdentifyOverlay] = useState(false);
+  return (
+    <div className="h-full w-full relative flex justify-center">
+      {ReactDOM.createPortal(
+        <>
+          <div></div>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${params.language}/formula/compose`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/de/formula/compose`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/en/formula/compose`}
+          />
+
+          <link
+            rel="icon"
+            type="image/png"
+            href="/icons/inventory/favicon-96x96.png"
+            sizes="96x96"
+          />
+          <link
+            rel="icon"
+            type="image/svg+xml"
+            href="/icons/inventory/favicon.svg"
+          />
+          <link rel="shortcut icon" href="/icons/inventory/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/icons/inventory/apple-touch-icon.png"
+          />
+          <link rel="manifest" href="/icons/inventory/site.webmanifest" />
+          <meta
+            name="description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:title"
+            content="Perfumery Ingredients Inventory"
+            data-react-helmet="true"
+          />
+          <meta
+            property="og:description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:image"
+            content="https://javascript.moe/images/inventory.png"
+          />
+          <meta
+            property="og:url"
+            content="https://javascript.moe/en/inventory"
+          />
+          <title>Perfumery Ingredients | Formula Builder</title>
+        </>,
+        document.head
+      )}
+      <EnsureLanguage path="/formula/compose" />
+
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+        <img
+          src="/images/wallpaper/ingredients.jpg"
+          className="w-full saturate-0"
+        />
+      </div>
+      <div className="m-4 flex flex-col absolute z-0 w-full px-4 h-full">
+        <ActionInput placeholder="Search..."></ActionInput>
+        <FormulaCards
+          search=""
+          onSelect={(frmla: any) => {
+            navigate(lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`);
+            setExpanded(true);
+          }}
+          inventories={{
+            remote: { All: perfumersApprenticeInventory, Moe: inventory },
+            local: {},
+          }}
+        ></FormulaCards>
+      </div>
+      <div
+        className={clsx("recent overlay h-full", {
+          expanded,
+        })}
+      >
+        <ContextMenuTrigger id="my-context-menu-1" className="h-full">
+          <div className="blackoverlay flex flex-col gap-4 w-[100vw]  mx-auto lg:p-4 bg-black/80 text-white h-full ">
+            <div className="formulacontainer backdrop-blur-sm h-full overflow-hidden w-full flex gap-1">
+              <FormulaList
+                inventories={{
+                  remote: {
+                    All: perfumersApprenticeInventory,
+                    Moe: inventory || [],
+                  },
+                  local: {
+                    Local: [],
+                  },
+                }}
+                onSelect={(frmla: any) => {
+                  navigate(
+                    lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`
+                  );
+                }}
+              ></FormulaList>
+              {selected && (
+                <Formula
+                  formula={adaptIndexedDBFormula(selected as any)}
+                  inventories={{
+                    remote: {
+                      All: perfumersApprenticeInventory,
+                      Moe: inventory || [],
+                    },
+                    local: {
+                      Local: [],
+                    },
+                  }}
+                  onSelect={(ing: FormulaIngredientProps) => {
+                    navigate("#" + ing.title);
+                  }}
+                  selected={selectedItem}
+                  onToggle={() => setExpanded(!expanded)}
+                ></Formula>
+              )}
+              {selectedItem && (
+                <IngredientDetail
+                  selected={selectedItem as any}
+                  setSelected={(sel) => navigate("#" + (sel?.title || ""))}
+                  invRemote="Moe"
+                  list={selected?.items || ([] as any)}
+                  sorted={selected?.items || ([] as any)}
+                  upd={() => {}}
+                  del={() => {}}
+                ></IngredientDetail>
+              )}
+            </div>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenu id="my-context-menu-1" appendTo="body">
+          <ContextMenuItem
+            className="group"
+            onClick={() => {
+              setShowIdentifyOverlay(true);
+            }}
+          >
+            <IdentifyItem></IdentifyItem>
+          </ContextMenuItem>
+          <ContextMenuItem>Menu Item 2</ContextMenuItem>
+          <ContextMenuItem>Menu Item 3</ContextMenuItem>
+          <ContextMenuItem>Menu Item 4</ContextMenuItem>
+        </ContextMenu>
+        <IdentifyOverlay
+          open={showIdentifyOverlay}
+          onClose={() => {
+            setShowIdentifyOverlay(false);
+          }}
+        ></IdentifyOverlay>
+      </div>
+    </div>
+  );
+};
+
+export const DiscoverPage = () => {
+  const params = useParams();
+
+  const navigate = useNavigate();
+
+  const [, setExpanded] = useState(true);
+  const [search, setSearch] = useState("");
+  return (
+    <div className="h-full w-full relative flex justify-center">
+      {ReactDOM.createPortal(
+        <>
+          <div></div>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${params.language}/formula/compose`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/de/formula/compose`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/en/formula/compose`}
+          />
+
+          <link
+            rel="icon"
+            type="image/png"
+            href="/icons/inventory/favicon-96x96.png"
+            sizes="96x96"
+          />
+          <link
+            rel="icon"
+            type="image/svg+xml"
+            href="/icons/inventory/favicon.svg"
+          />
+          <link rel="shortcut icon" href="/icons/inventory/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/icons/inventory/apple-touch-icon.png"
+          />
+          <link rel="manifest" href="/icons/inventory/site.webmanifest" />
+          <meta
+            name="description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:title"
+            content="Perfumery Ingredients Inventory"
+            data-react-helmet="true"
+          />
+          <meta
+            property="og:description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:image"
+            content="https://javascript.moe/images/inventory.png"
+          />
+          <meta
+            property="og:url"
+            content="https://javascript.moe/en/inventory"
+          />
+          <title>Perfumery Ingredients | Formula Builder</title>
+        </>,
+        document.head
+      )}
+      <EnsureLanguage path="/formula/compose" />
+
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+        <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
+      </div>
+
+      <ContextMenuTrigger id="my-context-menu-1" className="h-full w-full">
+        <div className="m-4 flex flex-col h-full">
+          <ActionInput
+            placeholder="Search..."
+            onChange={(e: any) => {
+              setSearch(e.target.value);
+            }}
+            icon="FaPlus"
+            onSubmit={() => {
+              navigate(lngLnk`/formula/compose`);
+            }}
+            actionTooltip="Compose New Formula"
+          ></ActionInput>
+          <FormulaCards
+            onSelect={(frmla: any) => {
+              if (frmla.title)
+                navigate(
+                  lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`
+                );
+              setExpanded(true);
+            }}
+            inventories={{
+              remote: { All: perfumersApprenticeInventory, Moe: inventory },
+              local: {},
+            }}
+            search={search}
+          ></FormulaCards>
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenu id="my-context-menu-1" appendTo="body">
+        <ContextMenuItem>Menu Item 1</ContextMenuItem>
+        <ContextMenuItem>Menu Item 2</ContextMenuItem>
+        <ContextMenuItem>Menu Item 3</ContextMenuItem>
+        <ContextMenuItem>Menu Item 4</ContextMenuItem>
+      </ContextMenu>
+    </div>
+  );
+};
+
+export const PublishPage = () => {
+  const params = useParams();
+
+  return (
+    <div className="h-full w-full relative flex justify-center">
+      {ReactDOM.createPortal(
+        <>
+          <div></div>
+          <link
+            rel="canonical"
+            href={`https://javscript.moe/${params.language}/formula/compose`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="de"
+            href={`https://javscript.moe/de/formula/compose`}
+          />
+          <link
+            rel="alternate"
+            hrefLang="en"
+            href={`https://javscript.moe/en/formula/compose`}
+          />
+
+          <link
+            rel="icon"
+            type="image/png"
+            href="/icons/inventory/favicon-96x96.png"
+            sizes="96x96"
+          />
+          <link
+            rel="icon"
+            type="image/svg+xml"
+            href="/icons/inventory/favicon.svg"
+          />
+          <link rel="shortcut icon" href="/icons/inventory/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/icons/inventory/apple-touch-icon.png"
+          />
+          <link rel="manifest" href="/icons/inventory/site.webmanifest" />
+          <meta
+            name="description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:title"
+            content="Perfumery Ingredients Inventory"
+            data-react-helmet="true"
+          />
+          <meta
+            property="og:description"
+            content="A free inventory web app for perfumery ingredients. Inventorize your ingredient collection and keep track of what you have."
+          />
+          <meta
+            property="og:image"
+            content="https://javascript.moe/images/inventory.png"
+          />
+          <meta
+            property="og:url"
+            content="https://javascript.moe/en/inventory"
+          />
+          <title>Perfumery Ingredients | Formula Builder</title>
+        </>,
+        document.head
+      )}
+      <EnsureLanguage path="/formula/compose" />
+
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+        <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
+      </div>
+      <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/40 text-white h-full ">
+        <div className="backdrop-blur-sm h-screen w-[320px] mx-auto bg-black/20 flex flex-col overflow-y-auto p-4">
+          <FormulaPublisher
+            inventories={{
+              remote: {
+                All: perfumersApprenticeInventory,
+                Moe: inventory || [],
+              },
+              local: {
+                Local: [],
+              },
+            }}
+          ></FormulaPublisher>
         </div>
       </div>
     </div>
@@ -932,7 +1348,7 @@ export const Recipe = ({ ingredients }: { ingredients: Ingredient[] }) => {
   const [visible, setVisible] = useState<string | null>(null);
   const [part, setPart] = useState<keyof Explanation | null>(null);
   const [params] = useSearchParams();
-  const to = useRef(0);
+  const to = useRef<NodeJS.Timeout>(0 as any);
   const hide = () => {
     clearTimeout(to.current);
     to.current = setTimeout(() => {

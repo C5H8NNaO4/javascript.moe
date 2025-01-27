@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import clsx from "clsx";
-import { Confirm, usePrompt } from "../hooks/usePrompt";
 import { Icon } from "./Icon";
 import ReactDOM from "react-dom";
 import { useRef, useState } from "react";
 import useOnClickOutside from "../hooks/useOnClickOutside";
+import { PlacesType, Tooltip } from "react-tooltip";
 
 export type ButtonProps = {
   tooltip?: string;
   variant?: string;
+  allowDisabledClick?: boolean;
+  onDisabledClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  tooltipPlacement?: PlacesType;
 };
 export type ReactButton = React.ButtonHTMLAttributes<HTMLButtonElement> &
-  ButtonProps;
+  ButtonProps 
 
 export const Button = ({
   className,
@@ -19,40 +22,73 @@ export const Button = ({
   onClick,
   tooltip,
   variant,
+  allowDisabledClick,
+  onDisabledClick,
+  disabled,
+  id,
+  tooltipPlacement,
   ...rest
 }: ReactButton) => {
   return (
-    <button
-      title={tooltip}
-      onClick={onClick}
-      className={clsx(
-        "select-none p-1 rounded-sm shadow-sm text-white flex items-center w-max h-max leading-[1rem]",
-        "bg-black/20 hover:bg-white/40",
-        "backdrop-blur-[2px]",
-        "disabled:bg-gray-500 disabled:hover:!bg-gray-500 disabled:hover:!brightness-100 disabled:text-black-400",
-        className,
-        "hover:border-[1.5px]",
-        {
-          "border-[1.5px]": true,
-          "border-black": variant === "noborder",
-          "border-white/50": 1,
-          "hover:border-white/70": 1,
-        }
+    <>
+      <button
+        id={id}
+        title={rest.title}
+        onClick={(e) => {
+          if (disabled && allowDisabledClick) {
+            onDisabledClick?.(e);
+          } else {
+            onClick?.(e);
+          }
+        }}
+        className={clsx(
+          "select-none p-1 rounded-sm shadow-sm text-white flex items-center w-max h-max leading-[1rem]",
+          "bg-black/20 hover:bg-white/40",
+          "backdrop-blur-[2px]",
+          "disabled:bg-gray-500 disabled:hover:!bg-gray-500 disabled:hover:!brightness-100 disabled:text-black-400",
+          className,
+          "hover:border-[1.5px]",
+          {
+            "bg-gray-500 cursor-default": disabled && allowDisabledClick,
+            "border-[1.5px]": true,
+            "border-black": variant === "noborder",
+            "border-white/50": 1,
+            "hover:border-white/70": 1,
+          }
+        )}
+        {...rest}
+        disabled={!allowDisabledClick && disabled}
+      >
+        {children}
+      </button>
+      {ReactDOM.createPortal(
+        <Tooltip
+          anchorSelect={"#" + id}
+          place={tooltipPlacement}
+          className="z-[10000]"
+        >
+          {tooltip}
+        </Tooltip>,
+        document.querySelector("dialog[open]") || document.body
       )}
-      {...rest}
-    >
-      {children}
-    </button>
+    </>
   );
 };
 
-export type IconButtonProps = ReactButton & { round?: boolean; icon?: string, iconClsn?: string};
+export type IconButtonProps = ReactButton & {
+  round?: boolean;
+  icon?: string;
+  iconClsn?: string;
+  allowDisabledClick?: boolean;
+};
 export const IconButton = ({
   className,
   iconClsn = "p-[4px]",
   round,
   tooltip,
   icon,
+  allowDisabledClick,
+  onDisabledClick,
   ...rest
 }: IconButtonProps) => {
   return (
@@ -62,12 +98,16 @@ export const IconButton = ({
         " flex items-center justify-center w-full  disabled:text-gray-400",
         className,
         {
+          "text-gray-400": rest.disabled,
           "!rounded-[200px]": round,
         }
         // "!m-0"
       )}
       tooltip={tooltip}
       {...rest}
+      disabled={rest.disabled}
+      allowDisabledClick={allowDisabledClick}
+      onDisabledClick={onDisabledClick}
     >
       {icon && <Icon className={clsx(iconClsn, " w-fit h-fit")} icon={icon} />}
       {rest.children}
@@ -123,63 +163,6 @@ export const MenuButton = ({
         </div>,
         document.body
       )}
-    </div>
-  );
-};
-
-export type DestructiveButtonProps = ReactButton &
-  IconButtonProps & {
-    promptTitle?: string;
-    promptText?: string;
-    renderPrompt?: any;
-    round?: boolean;
-    onDestruct?: (confirmed: boolean, props: any) => void;
-    level?: number;
-    params?: any;
-  };
-export const DestructiveButton = ({
-  className,
-  round,
-  promptTitle,
-  promptText,
-  renderPrompt = Confirm,
-  onDestruct,
-  level = 1,
-  params,
-  icon,
-  ...rest
-}: DestructiveButtonProps) => {
-  const Cmp = icon ? IconButton : Button;
-
-  const { prompt, overlay } = usePrompt(
-    { title: promptTitle, text: promptText, Component: renderPrompt },
-    onDestruct
-  );
-  return (
-    <div>
-      {ReactDOM.createPortal(
-        overlay,
-        document.getElementById("root") || document.body
-      )}
-      <Cmp
-        {...rest}
-        round={round}
-        onClick={() => {
-          level === 1
-            ? onDestruct?.(true, params)
-            : level > 1
-            ? prompt(params)
-            : null;
-        }}
-        icon={icon ? icon : undefined}
-        className={clsx(
-          {
-            "bg-red-400/70 hover:!bg-red-600/70": level === 1,
-            "bg-red-500/70 hover:!bg-red-700/70": level === 2,
-          },
-          className
-        )}
-      ></Cmp>
     </div>
   );
 };

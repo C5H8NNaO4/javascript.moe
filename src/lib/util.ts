@@ -1,5 +1,12 @@
-import { FormulaItem, getPricePerMl } from "@/components/Inventory";
+import lvs from "fast-levenshtein";
+import {
+  FormulaItem,
+  getPricePerMl,
+  getRawPricePerMl,
+  Item,
+} from "@/components/Inventory";
 import { perfumeIngredientsOdours } from "@/static/descriptions";
+import i18next from "i18next";
 
 export const getHeight = (container: HTMLElement | null) => {
   if (container === null) return 0;
@@ -79,7 +86,23 @@ export const totalUsedIngredientAmount =
   };
 
 export const totalIngredientCost = (acc: number, cur: FormulaItem) => {
-  return acc + getPricePerMl(cur) * Number(cur.usedAmount);
+  return (
+    acc +
+    getRawPricePerMl(cur) *
+      (convert(Number(cur.usedAmount || 0), cur.unit || "g", "ml") || NaN)
+  );
+};
+export const totalIngredientCostPerMl = (items: FormulaItem[]) => {
+  return (
+    items.reduce(totalIngredientCost, 0) /
+    items.reduce(totalUsedIngredientAmount("g"), 0)
+  );
+};
+
+export const findCheapestByTitle = (title: string, inventory: Item[]) => {
+  return inventory
+    .filter((invItm) => title === invItm.title)
+    .sort((a, b) => getPricePerMl(b) - getPricePerMl(a))[0];
 };
 
 export const similarity = (a: FormulaItem, ingredients: FormulaItem[]) => {
@@ -94,3 +117,36 @@ export const similarity = (a: FormulaItem, ingredients: FormulaItem[]) => {
 };
 
 export const trim = (str: string) => str.trim();
+
+export const unique = (arr: string[]) => {
+  return [...new Set(arr)];
+};
+
+export const randItm = <T>(arr: T[]): T => {
+  return arr.at(getRandomInt(0, arr.length - 1))!;
+};
+
+export function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+export const formatCurrency = (val: number, currency: string = "USD") => {
+  return new Intl.NumberFormat(i18next.language, {
+    currency,
+    style: "currency",
+  }).format(val);
+};
+
+export const lngLnk = (strs: TemplateStringsArray, ...vals: string[]) => {
+  return (
+    "/" +
+    i18next.language +
+    strs.reduce((acc, node, i) => {
+      return acc + node + (vals[i] || "");
+    }, "")
+  );
+};
+
+export const dist = (query: string, target: string) => {
+  return lvs.get(query, target.slice(0, query.length));
+};
