@@ -1,5 +1,5 @@
-mutation Identify($provider: Providers!, $providerToken: OAuthCode!) {
-  identify(provider: $provider, providerToken: $providerToken) {
+mutation Identify($provider: Providers!, $providerToken: OAuthCode!, $redirectUri: String!) {
+  identify(provider: $provider, providerToken: $providerToken, redirectUri: $redirectUri) {
     exp
     signed
     GOOGLE {

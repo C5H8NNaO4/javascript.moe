@@ -114,6 +114,7 @@ export type MutationApproveListArgs = {
 export type MutationIdentifyArgs = {
   provider?: InputMaybe<Providers>;
   providerToken: OAuthCode;
+  redirectUri: Scalars['String']['input'];
 };
 
 
@@ -137,6 +138,7 @@ export type MutationStarListArgs = {
 export type MutationSwapTokenArgs = {
   provider?: InputMaybe<Providers>;
   providerToken: OAuthCode;
+  redirectUri: Scalars['String']['input'];
   webGPTToken?: InputMaybe<WebGptTokenInput>;
 };
 
@@ -364,11 +366,11 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   approveList?: Resolver<Maybe<ResolversTypes['Success']>, ParentType, ContextType, RequireFields<MutationApproveListArgs, 'listId'>>;
-  identify?: Resolver<Maybe<ResolversTypes['WebGPTToken']>, ParentType, ContextType, RequireFields<MutationIdentifyArgs, 'providerToken'>>;
+  identify?: Resolver<Maybe<ResolversTypes['WebGPTToken']>, ParentType, ContextType, RequireFields<MutationIdentifyArgs, 'providerToken' | 'redirectUri'>>;
   publishList?: Resolver<Maybe<ResolversTypes['IngredientListHandle']>, ParentType, ContextType, Partial<MutationPublishListArgs>>;
   refreshToken?: Resolver<Maybe<ResolversTypes['WebGPTToken']>, ParentType, ContextType, Partial<MutationRefreshTokenArgs>>;
   starList?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationStarListArgs, 'identity' | 'listId'>>;
-  swapToken?: Resolver<Maybe<ResolversTypes['WebGPTToken']>, ParentType, ContextType, RequireFields<MutationSwapTokenArgs, 'providerToken'>>;
+  swapToken?: Resolver<Maybe<ResolversTypes['WebGPTToken']>, ParentType, ContextType, RequireFields<MutationSwapTokenArgs, 'providerToken' | 'redirectUri'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -430,6 +432,7 @@ export type GetStarsQuery = { __typename?: 'Query', getStars: number };
 export type IdentifyMutationVariables = Exact<{
   provider: Providers;
   providerToken: OAuthCode;
+  redirectUri: Scalars['String']['input'];
 }>;
 
 
@@ -468,6 +471,7 @@ export type StarListMutation = { __typename?: 'Mutation', starList: number };
 export type SwapTokenMutationVariables = Exact<{
   provider: Providers;
   providerToken: OAuthCode;
+  redirectUri: Scalars['String']['input'];
 }>;
 
 
@@ -547,8 +551,12 @@ export type GetStarsLazyQueryHookResult = ReturnType<typeof useGetStarsLazyQuery
 export type GetStarsSuspenseQueryHookResult = ReturnType<typeof useGetStarsSuspenseQuery>;
 export type GetStarsQueryResult = Apollo.QueryResult<GetStarsQuery, GetStarsQueryVariables>;
 export const IdentifyDocument = gql`
-    mutation Identify($provider: Providers!, $providerToken: OAuthCode!) {
-  identify(provider: $provider, providerToken: $providerToken) {
+    mutation Identify($provider: Providers!, $providerToken: OAuthCode!, $redirectUri: String!) {
+  identify(
+    provider: $provider
+    providerToken: $providerToken
+    redirectUri: $redirectUri
+  ) {
     exp
     signed
     GOOGLE {
@@ -574,6 +582,7 @@ export type IdentifyMutationFn = Apollo.MutationFunction<IdentifyMutation, Ident
  *   variables: {
  *      provider: // value for 'provider'
  *      providerToken: // value for 'providerToken'
+ *      redirectUri: // value for 'redirectUri'
  *   },
  * });
  */
@@ -760,8 +769,12 @@ export type StarListMutationHookResult = ReturnType<typeof useStarListMutation>;
 export type StarListMutationResult = Apollo.MutationResult<StarListMutation>;
 export type StarListMutationOptions = Apollo.BaseMutationOptions<StarListMutation, StarListMutationVariables>;
 export const SwapTokenDocument = gql`
-    mutation swapToken($provider: Providers!, $providerToken: OAuthCode!) {
-  swapToken(provider: $provider, providerToken: $providerToken) {
+    mutation swapToken($provider: Providers!, $providerToken: OAuthCode!, $redirectUri: String!) {
+  swapToken(
+    provider: $provider
+    providerToken: $providerToken
+    redirectUri: $redirectUri
+  ) {
     signed
   }
 }
@@ -783,6 +796,7 @@ export type SwapTokenMutationFn = Apollo.MutationFunction<SwapTokenMutation, Swa
  *   variables: {
  *      provider: // value for 'provider'
  *      providerToken: // value for 'providerToken'
+ *      redirectUri: // value for 'redirectUri'
  *   },
  * });
  */

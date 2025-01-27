@@ -106,6 +106,7 @@ export type MutationApproveListArgs = {
 export type MutationIdentifyArgs = {
   provider?: InputMaybe<Providers>;
   providerToken: OAuthCode;
+  redirectUri: Scalars['String']['input'];
 };
 
 
@@ -129,6 +130,7 @@ export type MutationStarListArgs = {
 export type MutationSwapTokenArgs = {
   provider?: InputMaybe<Providers>;
   providerToken: OAuthCode;
+  redirectUri: Scalars['String']['input'];
   webGPTToken?: InputMaybe<WebGptTokenInput>;
 };
 

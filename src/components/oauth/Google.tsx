@@ -18,6 +18,7 @@ const swapToken = async (code: string) => {
       providerToken: {
         code,
       },
+      redirectUri: window.location.protocol + '//' + window.location.host
     },
   });
   return token;
@@ -52,7 +53,8 @@ export const GoogleLoginButton = ({ className, scheme, id, tooltip }: any) => {
       tooltip={tooltip}
       className={clsx(
         {
-          "bg-green-700/80": identity?.GOOGLE?.id_token,
+          "bg-green-700/80": !identity?.GOOGLE?.id_token,
+          "bg-yellow-700/80": identity?.GOOGLE?.id_token,
           "bg-white/80 border-0 shadow-md": scheme === "white",
         },
         className

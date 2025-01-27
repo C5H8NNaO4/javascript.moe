@@ -1,5 +1,5 @@
-mutation swapToken($provider: Providers!, $providerToken: OAuthCode!) {
-  swapToken(provider: $provider, providerToken: $providerToken) {
+mutation swapToken($provider: Providers!, $providerToken: OAuthCode!, $redirectUri: String!) {
+  swapToken(provider: $provider, providerToken: $providerToken, redirectUri: $redirectUri) {
     signed
   }
 }
