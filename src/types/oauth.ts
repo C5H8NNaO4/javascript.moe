@@ -16,6 +16,7 @@ export type RedditAuthToken = {
 export type AuthTokens = Partial<{
   GOOGLE: Maybe<GoogleAccessToken & GoogleIdentityToken>;
   REDDIT: Maybe<RedditAuthToken>;
+  signed: string;
 }>;
 
 export type OAuthToken = AuthTokens[AuthProvider];

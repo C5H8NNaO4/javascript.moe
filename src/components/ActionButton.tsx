@@ -3,8 +3,11 @@ import { Button, IconButton, IconButtonProps, ReactButton } from "./Button";
 import { Confirm } from "@/hooks/usePrompt";
 import ReactDOM from "react-dom";
 import { Tooltip } from "react-tooltip";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
+import { Icon } from "./Icon";
+import { useIdentity } from "@/lib/hooks/useIdentity";
+import { GoogleLoginButton } from "./oauth/Google";
 
 export type ActionButtonProps = ReactButton &
   IconButtonProps & {
@@ -12,6 +15,7 @@ export type ActionButtonProps = ReactButton &
     promptText?: string;
     renderPrompt?: any;
     round?: boolean;
+    needsLogin?: boolean;
     onDestruct?: (confirmed: boolean, props: any) => void;
     onConstruct?: (confirmed: boolean, props: any) => void;
     level?: number;
@@ -24,6 +28,7 @@ export const ActionButton = ({
   promptTitle,
   promptText,
   renderPrompt = Confirm,
+  needsLogin,
   onDestruct,
   onConstruct,
   level = 1,
@@ -31,6 +36,7 @@ export const ActionButton = ({
   icon,
   constructive,
   tooltipPlacement = "left",
+  id,
   ...rest
 }: ActionButtonProps) => {
   const Cmp = icon ? IconButton : Button;
@@ -43,6 +49,10 @@ export const ActionButton = ({
   useOnClickOutside(ref, () => {
     setConirm(false);
   });
+  const { trackUse, active } = useIdentity();
+  const identity = useMemo(() => {
+    return trackUse();
+  }, [active]);
   const [confirm, setConirm] = useState(false);
   return (
     <>
@@ -69,10 +79,23 @@ export const ActionButton = ({
               level === 2 && constructive,
             "blur-sm": confirm,
           },
+          "relative",
+          "overflow-hidden group",
           className
         )}
         id="confirmButton"
-      ></Cmp>
+      >
+        {rest.children}
+        {needsLogin &&
+        !identity?.active?.GOOGLE?.id_token && (
+          <div
+            className="hidden pointer-events-none group-hover:flex absolute w-full h-full bg-red-500/40 -ml-1  items-center justify-center "
+            id={id + "lock"}
+          >
+            <Icon icon="FaLock" className="ml-2 !mr-3 h-fit w-fit "></Icon>
+          </div>
+        )}
+      </Cmp>
       {ReactDOM.createPortal(
         <Tooltip
           anchorSelect="#confirmButton"
@@ -90,6 +113,18 @@ export const ActionButton = ({
         </Tooltip>,
         document.body
       )}
+
+      {needsLogin &&
+        !identity?.active?.GOOGLE?.id_token &&
+        ReactDOM.createPortal(
+          <Tooltip anchorSelect="#confirmButton" place="right" clickable>
+            <span className="flex gap-2 items-center font-bold text-base">
+              <GoogleLoginButton  className="h-4 w-4"></GoogleLoginButton>
+              Login Required
+            </span>
+          </Tooltip>,
+          document.body
+        )}
     </>
   );
 };

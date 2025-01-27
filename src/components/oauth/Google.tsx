@@ -28,6 +28,10 @@ export const GoogleLoginButton = ({ className, scheme, id, tooltip }: any) => {
     null,
     "identity"
   );
+  const [, setActiveIdentity] = useLocalStorage<AuthTokens | null>(
+    null,
+    "activeIdentity"
+  );
   const startLogin = useGoogleLogin({
     flow: "auth-code",
     scope: ["email", "profile"].join(" "),
@@ -40,6 +44,7 @@ export const GoogleLoginButton = ({ className, scheme, id, tooltip }: any) => {
 
       if (response.data?.identify) {
         setIdentity(response.data?.identify);
+        setActiveIdentity(response.data?.identify);
       }
       console.log("GOOGLE RESPONSE SWAPPED", response.data?.identify);
     },

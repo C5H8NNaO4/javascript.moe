@@ -22,7 +22,7 @@ import { perfumeIngredientsOdours } from "@/static/descriptions";
 import { formulas } from "@/static/assets";
 import { toText } from "@/lib/app";
 import { FormulaIngredient, FormulaIngredientProps } from "./FragrancePlanner";
-import { Button, IconButton } from "./Button";
+import { IconButton } from "./Button";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -37,6 +37,7 @@ import copy from "copy-to-clipboard";
 import { NavButton } from "./NavButton";
 import { useIdentity } from "@/lib/hooks/useIdentity";
 import { Tooltip } from "react-tooltip";
+import { ActionButton } from "./ActionButton";
 
 export const FormulaList = ({
   inventories,
@@ -168,8 +169,10 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
     ...frmItm,
   }));
 
-  const { trackUse } = useIdentity();
-  const identity = useMemo(() => trackUse(), []);
+  const { trackUse, active } = useIdentity();
+  useEffect(() => {
+    trackUse();
+  }, [active]);
   const { data } = useGetStarsQuery({
     variables: {
       listId: formula.remoteId!,
@@ -178,7 +181,12 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
   const { data: userData } = useGetStarsQuery({
     variables: {
       listId: formula.remoteId!,
-      identity: getSubFromGoogleIDToken(identity?.GOOGLE?.id_token) || "!",
+      identity: getSubFromGoogleIDToken(active?.GOOGLE?.id_token) || "!",
+    },
+    context: {
+      headers: {
+        authorization: active?.signed,
+      },
     },
   });
   const [approveList] = useApproveListMutation();
@@ -318,12 +326,14 @@ export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
         getSubFromGoogleIDToken(activeIdentity?.GOOGLE?.id_token) || "!",
     },
   });
-  const { trackUse, trackSent } = useIdentity();
-  const cachedId = useMemo(() => trackUse(), []);
+  const { trackUse, trackSent, active } = useIdentity();
+  useEffect(() => {
+    trackUse();
+  }, []);
   const [starList] = useStarListMutation({
     context: {
       headers: {
-        authorization: cachedId?.active?.signed,
+        authorization: active?.signed,
       },
     },
   });
@@ -361,22 +371,26 @@ export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
         </div>
         <div className="flex gap-1 justify-between mr-1">
           <div className="relative flex flex-row gap-1">
-            <Button
+            <ActionButton
+              id="starbutton"
+              needsLogin
               disabled={!activeIdentity}
-              onClick={async () => {
+              constructive
+              onConstruct={async () => {
                 trackSent();
                 await starList({
                   variables: {
                     listId: remoteId,
-                    identity: getSubFromGoogleIDToken(
-                      activeIdentity?.GOOGLE?.id_token
-                    ) || "",
+                    identity:
+                      getSubFromGoogleIDToken(
+                        activeIdentity?.GOOGLE?.id_token
+                      ) || "",
                   },
                 });
                 await refetch();
                 await refetchStarred();
               }}
-              className="!rounded-r-full !pr-2 border-yellow-400"
+              className="!rounded-r-full !pr-4 border-yellow-400 !h-8 !w-9"
               style={{
                 filter:
                   Number(userStarsData?.getStars) > 0
@@ -386,7 +400,7 @@ export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
             >
               <Icon
                 icon="FaStar"
-                className={clsx("!h-6 w-6", {
+                className={clsx("!h-6 !w-6", {
                   "!text-yellow-500": Number(userStarsData?.getStars) > 0,
                 })}
               >
@@ -399,7 +413,7 @@ export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
                   {data?.getStars}
                 </div>
               </Icon>
-            </Button>
+            </ActionButton>
           </div>
           <div className="relative flex flex-row gap-1">
             {!remoteId && (

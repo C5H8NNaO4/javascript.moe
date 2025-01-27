@@ -1,14 +1,15 @@
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { AuthTokens } from "@/types/oauth";
 import { atom, useAtom } from "jotai";
 import { useEffect } from "react";
 
 const idtAtm = atom<string | null>(null);
 export const useIdentity = () => {
-  const [identity] = useLocalStorage(null, "identity");
-  const [active] = useLocalStorage(null, "activeIdentity");
+  const [identity] = useLocalStorage<AuthTokens | null>(null, "identity");
+  const [active] = useLocalStorage<AuthTokens | null>(null, "activeIdentity");
 
   const [used, setUsed] = useAtom(idtAtm);
-  const Use = (msg: string, res: any) => {
+  const Use = <T>(msg: string, res: T) => {
     return () => {
       setUsed(msg);
       return res;
@@ -23,7 +24,10 @@ export const useIdentity = () => {
       local: [identity],
       active,
     }),
-    trackSent: Use("Send", null),
+    trackSent: Use("Send", {
+      active,
+    }),
     used,
+    active,
   };
 };
