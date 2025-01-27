@@ -253,7 +253,7 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
                       },
                       context: {
                         headers: {
-                          authorization: identity?.active?.signed,
+                          authorization: active?.signed,
                         },
                       },
                     });
