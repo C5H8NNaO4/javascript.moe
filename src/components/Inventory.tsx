@@ -903,7 +903,7 @@ export const InventoryList = ({
                 Local: [],
               },
             }}
-            invRemote={invRemote || "Moe"}
+            invRemote={''}
             invLocal={invLocal || "Local"}
             selected={selected!}
             setSelected={setSelected}
@@ -1231,7 +1231,7 @@ export const IngredientDetail = ({
               </div>
               <LocalListChips
                 showButtons={false}
-                toInventory
+                toInventory={!window.location.pathname.includes("/inventory/")}
                 listNames={localLists}
                 // onAdd={ing => ing && add(ing)}
                 // onDelete={(id) => del(id)}
@@ -1240,11 +1240,21 @@ export const IngredientDetail = ({
                 onChange={(library) => {
                   const search = new URLSearchParams(window.location.search);
                   search.set("library", library || "Local");
-                  navigate(
-                    lngLnk`/formula/${params.author!}/${params.title!}/?` +
-                      search.toString() +
-                      window.location.hash
-                  );
+                  if (window.location.pathname.includes("/inventory/")) {
+                    navigate(
+                      lngLnk`/inventory/${params.list!}/${encodeURIComponent(
+                        params.title!
+                      )}${params.amount ? "/" + params.amount! : ""}?` +
+                        search.toString() +
+                        window.location.hash
+                    );
+                  } else {
+                    navigate(
+                      lngLnk`/formula/${params.author!}/${params.title!}/?` +
+                        search.toString() +
+                        window.location.hash
+                    );
+                  }
                 }}
               ></LocalListChips>
 
@@ -1252,13 +1262,15 @@ export const IngredientDetail = ({
                 {inventories?.remote?.Moe.filter(
                   (i) => i.title === selected.title
                 ).map((selected) => {
-                  const inLib = inventory.some(
+                  const local = inventory.find(
                     (i) =>
                       i.title === selected?.title &&
                       i.amount == selected?.amount
                   );
+                  const inLib = !!local?.id;
                   return (
                     <Chip
+                      id={"amount" + selected?.amount}
                       className={clsx(
                         {
                           "bg-yellow-500/70": !inLib,
@@ -1266,6 +1278,11 @@ export const IngredientDetail = ({
                         },
                         "w-fit"
                       )}
+                      tooltip={
+                        inLib
+                          ? `This item is in your library.`
+                          : `This item is *not* your library.`
+                      }
                       onClick={async () => {
                         const local = inventory?.find(
                           (i) =>
@@ -1800,7 +1817,13 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           return (
             <div className="h-fit">
               <Chip
-                icon={key === value ? "FaDownload" : undefined}
+                icon={
+                  key === value
+                    ? !showButtons
+                      ? "IoLibrary"
+                      : "FaDownload"
+                    : undefined
+                }
                 label={listAliases[key] ? listAliases[key] : key}
                 onRemove={
                   items?.length === 0 && value === key
