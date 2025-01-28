@@ -1787,7 +1787,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
   );
   const [showEdit, setShowEdit] = useState(false);
   const navigate = useNavigate();
-  const params = useParams();
+  
   return (
     <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
       <NavButton
