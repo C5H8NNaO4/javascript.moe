@@ -498,6 +498,10 @@ export const FormulaPage = () => {
   const [expanded, setExpanded] = useState(!isMobile);
   const [showIdentifyOverlay, setShowIdentifyOverlay] = useState(false);
 
+  const [searchParams] = useSearchParams();
+  const library = searchParams.get("library");
+  const isRemote = searchParams.get("remote");
+
   return (
     <div className="h-full w-full relative flex justify-center">
       {ReactDOM.createPortal(
@@ -557,7 +561,7 @@ export const FormulaPage = () => {
             property="og:url"
             content="https://javascript.moe/en/inventory"
           />
-          <title>Perfumery Ingredients | Formula Builder</title>
+          <title>Perfumery Ingredients | Fragrance Composer</title>
         </>,
         document.head
       )}
@@ -574,7 +578,11 @@ export const FormulaPage = () => {
         <FormulaCards
           search=""
           onSelect={(frmla: any) => {
-            navigate(lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`);
+            navigate(
+              lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/?library=${
+                library || "Local"
+              }&${isRemote ? "&remote=1" : ""}`
+            );
             setExpanded(true);
           }}
           inventories={{
@@ -620,7 +628,7 @@ export const FormulaPage = () => {
                     },
                   }}
                   onSelect={(ing: FormulaIngredientProps) => {
-                    navigate("#" + ing.title);
+                    navigate(window.location.search + "#" + ing.title);
                   }}
                   selected={selectedItem}
                   onToggle={() => {
@@ -635,16 +643,23 @@ export const FormulaPage = () => {
               )}
               {selectedItem && (
                 <IngredientDetail
+                  inventories={{
+                    remote: {
+                      All: perfumersApprenticeInventory,
+                      Moe: inventory,
+                    },
+                    local: {},
+                  }}
                   selected={selectedItem as any}
                   setSelected={(sel) => {
-                    navigate("#" + (sel?.title || ""));
+                    navigate(window.location.search + "#" + (sel?.title || ""));
                     if (isMobile) setExpanded(false);
                   }}
-                  invRemote="Moe"
+                  invRemote={isRemote ? library || "Moe" : ""}
+                  invLocal={!isRemote ? library || "Local" : ""}
                   list={selected?.items || ([] as any)}
                   sorted={selected?.items || ([] as any)}
                   upd={() => {}}
-                  del={() => {}}
                   expanded={expanded}
                 ></IngredientDetail>
               )}
@@ -685,6 +700,10 @@ export const DiscoverPage = () => {
 
   const bp = useCurrentBreakpoint();
   const isMobile = isSmallerEq(bp, "sm");
+  const [searchParams] = useSearchParams();
+  const library = searchParams.get("library") || "Local";
+  const isRemote = !!searchParams.get("remote");
+
   return (
     <div className="h-full w-full relative flex justify-center">
       {ReactDOM.createPortal(
@@ -771,7 +790,9 @@ export const DiscoverPage = () => {
             onSelect={(frmla: any) => {
               if (frmla.title)
                 navigate(
-                  lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`
+                  lngLnk`/formula/${frmla.author || "*"}/${
+                    frmla.title
+                  }/?library=${library}${isRemote ? "&remote=1" : ""}`
                 );
               setExpanded(!isMobile);
             }}

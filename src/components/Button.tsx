@@ -109,7 +109,7 @@ export const IconButton = ({
       allowDisabledClick={allowDisabledClick}
       onDisabledClick={onDisabledClick}
     >
-      {icon && <Icon className={clsx(iconClsn, " w-fit h-fit")} icon={icon} />}
+      {icon && <Icon className={clsx(iconClsn, " w-fit h-fit pointer-events-none cursor-grab")} icon={icon} />}
       {rest.children}
     </Button>
   );

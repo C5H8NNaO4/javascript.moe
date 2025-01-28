@@ -80,6 +80,7 @@ export const ActionButton = ({
           className
         )}
         id={id + "confirmButton"}
+        tooltipPlacement={tooltipPlacement}
       >
         {rest.children}
         {needsLogin && !identity?.active?.GOOGLE?.id_token && (
@@ -91,32 +92,34 @@ export const ActionButton = ({
           </div>
         )}
       </Cmp>
-      {ReactDOM.createPortal(
-        <Tooltip
-          anchorSelect={`#${id}confirmButton`}
-          isOpen={confirm}
-          clickable
-          place={tooltipPlacement}
-        >
-          <span
-            ref={ref}
-            className="flex gap-2 items-center font-bold text-base"
+      {level === 2 &&
+        confirm &&
+        ReactDOM.createPortal(
+          <Tooltip
+            anchorSelect={`#${id}confirmButton`}
+            isOpen={level === 2 && confirm}
+            clickable
+            place={tooltipPlacement}
           >
-            Confirm
-            <IconButton
-              icon="FaCheck"
-              className="bg-green-400"
-              onClick={async () => {
-                console.log("CLICK CONFIRM", constructive,id, onDestruct);
-                const fn = constructive ? onConstruct : onDestruct;
-                fn?.(true, params);
-                setConfirm(false);
-              }}
-            ></IconButton>
-          </span>
-        </Tooltip>,
-        document.body
-      )}
+            <span
+              ref={ref}
+              className="flex gap-2 items-center font-bold text-base"
+            >
+              Confirm
+              <IconButton
+                icon="FaCheck"
+                className="bg-green-400"
+                onClick={async () => {
+                  console.log("CLICK CONFIRM", constructive, id, onDestruct);
+                  const fn = constructive ? onConstruct : onDestruct;
+                  fn?.(true, params);
+                  setConfirm(false);
+                }}
+              ></IconButton>
+            </span>
+          </Tooltip>,
+          document.body
+        )}
 
       {needsLogin &&
         !identity?.active?.GOOGLE?.id_token &&

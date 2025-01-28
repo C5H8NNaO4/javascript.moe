@@ -22,13 +22,16 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import { toggle, trim } from "@/lib/util";
+import { lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
+import { NavButton } from "./NavButton";
+import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
+import { inventory } from "@/static/inventory";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -197,9 +200,9 @@ export const InventoryList = ({
   };
 }) => {
   const db = useIndexedDB("inventory");
-  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>({
-    Local: [],
-  });
+  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>(
+    inventories?.local || {}
+  );
 
   const params = useParams<{
     list: string;
@@ -213,13 +216,19 @@ export const InventoryList = ({
   const [invRemote, setInvRemote] = useState<string | null>(
     params?.list || "Moe"
   );
-  const [invLocal, setInvLocal] = useState<string | null>("Local");
+  const [invLocal, setInvLocal] = useState<string | null>(
+    searchParams.get("library") || "Local"
+  );
+
+  useEffect(() => {
+    setInvLocal(searchParams.get("library"));
+  }, [searchParams.get("library")]);
   const [sort, setSort] = useState<string>("+AZ");
   const [notification, setNotification] = useState<string>("");
 
   const storedList = storedListLkp[invLocal || "Local"] || [];
   const [localLists, setLocalLists] = useLocalStorage(
-    Object.keys(inventories.local),
+    Object.keys(inventories?.local || {}),
     "localLists"
   );
 
@@ -452,8 +461,7 @@ export const InventoryList = ({
           "inventory/" +
           invRemote +
           "/" +
-          "?" +
-          new URLSearchParams(searchParams).toString()
+          window.location.search
       );
     }
     // setTimeout(() => setSearchParams((prev) => prev), 0);
@@ -796,17 +804,28 @@ export const InventoryList = ({
                     </div>
                   );
                 })}
-                <Link
+                <NavButton
                   className="ml-auto text-blue-500"
-                  to={`/${i18next.language}/formula/compose?library=${invRemote}`}
-                  replace={false}
-                >
-                  <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
-                </Link>
+                  icon="FaFlask"
+                  internal
+                  onClick={() =>
+                    navigate(
+                      `/${i18next.language}/formula/compose?library=${invRemote}`
+                    )
+                  }
+                ></NavButton>
               </div>
               <LocalListChips
                 listNames={localLists}
-                onChange={(k: string | null) => setInvLocal(k || "Local")}
+                onChange={(library) => {
+                  const search = new URLSearchParams(window.location.search);
+                  search.set("library", library || "Local");
+                  navigate(
+                    lngLnk`/inventory/${invRemote!}/?` +
+                      search.toString() +
+                      window.location.hash
+                  );
+                }}
                 onDelete={deleteList}
                 setNotification={setNotification}
                 onRemove={(key) => {
@@ -875,7 +894,17 @@ export const InventoryList = ({
         )}
         {!!selected && (isMobile ? !!selected?.amount : true) && (
           <IngredientDetail
-            invRemote="Moe"
+            inventories={{
+              remote: {
+                All: perfumersApprenticeInventory,
+                Moe: inventory || [],
+              },
+              local: {
+                Local: [],
+              },
+            }}
+            invRemote={invRemote || "Moe"}
+            invLocal={invLocal || "Local"}
             selected={selected!}
             setSelected={setSelected}
             list={list}
@@ -884,7 +913,6 @@ export const InventoryList = ({
             listAliases={listAliases}
             storedList={storedList}
             upd={upd}
-            del={del}
           ></IngredientDetail>
         )}
       </div>
@@ -897,6 +925,7 @@ export type IngredientDetailProps = {
   setSelected: (itm: Partial<Item> | null) => void;
   invRemote: string;
   invLocal?: string;
+  inventories: { remote: Inventories; local: Inventories };
   filter?: string[] | null;
   list: Item[];
   sorted: Item[];
@@ -904,7 +933,6 @@ export type IngredientDetailProps = {
   storedList?: any;
   listAliases?: Record<string, string>;
   upd: any;
-  del: any;
   expanded?: boolean;
 };
 export const IngredientDetail = ({
@@ -914,16 +942,53 @@ export const IngredientDetail = ({
   expanded,
   list,
   sorted,
-  invLocal,
+  invLocal = "Local",
+  inventories,
   listAliases,
   filter = null,
   emptyStock,
   storedList,
   upd,
-  del,
 }: IngredientDetailProps) => {
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
+
+  const db = useIndexedDB("inventory");
+  const [storedLkp, setStoredLkp] = useState<Record<string, Item[]>>({});
+  const [localLists, setLocalLists] = useLocalStorage(
+    Object.keys(inventories?.local || {}),
+    "localLists"
+  );
+  const loadLocalLists = async () => {
+    const res = (await db.getAll()) || [];
+    setLocalLists(
+      [
+        ...new Set([
+          ...Object.keys(inventories?.local),
+          ...localLists,
+          ...res.map((itm) => {
+            return itm.list;
+          }),
+        ]),
+      ].filter(Boolean)
+    );
+    console.log("LOAD INV", res);
+    setStoredLkp({
+      ...storedLkp,
+      ...res.reduce((acc, itm) => {
+        return { ...acc, [itm.list]: [...(acc[itm.list] || []), itm] };
+      }, {}),
+    });
+  };
+
+  useEffect(() => {
+    loadLocalLists();
+  }, [invLocal]);
+
+  const inventory =
+    (invRemote
+      ? inventories?.remote[invRemote]
+      : storedLkp?.[invLocal.trim()]) || [];
 
   const uniqueIngredientsOnStock = [
     ...new Set(
@@ -943,6 +1008,38 @@ export const IngredientDetail = ({
     .reduce((total, itm) => {
       return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
     }, 0);
+
+  const add = async ({ id, ...props }: Partial<Item>) => {
+    await db.add({ ...props, list: invLocal });
+
+    // setStoredLkp((list) => ({
+    //   ...list,
+    //   [invLocal || "Local"]: [...list[invLocal || "Local"], toAdd],
+    // }));
+
+    if (inventories.local[invLocal]) await loadLocalLists();
+    else {
+      setLocalLists([...localLists, invLocal]);
+    }
+  };
+
+  const del = async (id: number, noUpdate?: boolean) => {
+    await db.deleteRecord(id);
+    if (noUpdate) return;
+    const index = list.findIndex((itm) => {
+      return Number(itm.id) === id;
+    });
+
+    setStoredLkp((list) => {
+      const newList = { ...list };
+      newList[invLocal || "Local"] = newList[invLocal || "Local"] || [];
+      newList[invLocal || "Local"].splice(index, 1);
+      return newList;
+    });
+  };
+
+  const navigate = useNavigate();
+  const params = useParams();
 
   return (
     <div
@@ -1132,17 +1229,72 @@ export const IngredientDetail = ({
                   );
                 })}
               </div>
-              {selected?.amount && !selected?.remote && (
-                <ActionButton
-                  className="m-1 !h-7 !w-7 "
-                  level={1}
-                  onDestruct={() => {
-                    if (selected?.id) del(selected?.id);
-                    setSelected({ title: selected?.title } as Item);
-                  }}
-                  icon="FaTrash"
-                ></ActionButton>
-              )}
+              <LocalListChips
+                showButtons={false}
+                toInventory
+                listNames={localLists}
+                // onAdd={ing => ing && add(ing)}
+                // onDelete={(id) => del(id)}
+                value={invLocal}
+                items={inventory}
+                onChange={(library) => {
+                  const search = new URLSearchParams(window.location.search);
+                  search.set("library", library || "Local");
+                  navigate(
+                    lngLnk`/formula/${params.author!}/${params.title!}/?` +
+                      search.toString() +
+                      window.location.hash
+                  );
+                }}
+              ></LocalListChips>
+
+              <div className="flex gap-1 flex-wrap">
+                {inventories?.remote?.Moe.filter(
+                  (i) => i.title === selected.title
+                ).map((selected) => {
+                  const inLib = inventory.some(
+                    (i) =>
+                      i.title === selected?.title &&
+                      i.amount == selected?.amount
+                  );
+                  return (
+                    <Chip
+                      className={clsx(
+                        {
+                          "bg-yellow-500/70": !inLib,
+                          "bg-green-600/70": inLib,
+                        },
+                        "w-fit"
+                      )}
+                      onClick={async () => {
+                        const local = inventory?.find(
+                          (i) =>
+                            i.title === selected?.title &&
+                            i.amount == selected?.amount
+                        )?.id;
+                        console.log("SELECTED", selected, local, inventory);
+                        if (local) await del(Number(local));
+                        if (!local) await add(selected);
+                        setSelected({
+                          title: selected?.title,
+                          amount: selected?.amount,
+                        } as Item);
+                        await loadLocalLists();
+                      }}
+                      icon={
+                        inventory.some(
+                          (i) =>
+                            i.title === selected?.title &&
+                            i.amount == selected?.amount
+                        )
+                          ? "FaCheck"
+                          : "FaPlus"
+                      }
+                      label={selected?.amount}
+                    ></Chip>
+                  );
+                })}
+              </div>
               {selected?.title?.match(/[$€]$/) && (
                 <ActionButton
                   className="m-1"
@@ -1588,11 +1740,13 @@ export type LocalListChipsProps = Component<{
   items: Item[];
   value: string | null;
   hasAll?: boolean;
-  onChange: (activeKey: string | null) => void;
-  onDelete: (activeKey: string | null) => void;
-  onRemove: (activeKey: string | null) => void;
-  onAdd: (activeKey: string | null) => void;
-  setNotification: (v: string) => void;
+  onChange?: (activeKey: string | null) => void;
+  onDelete?: (activeKey: string | null) => void;
+  onRemove?: (activeKey: string | null) => void;
+  onAdd?: (activeKey: string | null) => void;
+  setNotification?: (v: string) => void;
+  showButtons?: boolean;
+  toInventory?: boolean;
 }>;
 export const LocalListChips = (props: LocalListChipsProps) => {
   const {
@@ -1606,6 +1760,8 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     onAdd,
     items,
     setNotification,
+    showButtons = true,
+    toInventory = false,
   } = props;
 
   const [listAliases, setAliases] = useLocalStorage<Record<string, string>>(
@@ -1613,8 +1769,21 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     "listNames"
   );
   const [showEdit, setShowEdit] = useState(false);
+  const navigate = useNavigate();
   return (
     <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
+      <NavButton
+        internal
+        className="text-blue-500  !mr-2"
+        icon={toInventory ? "IoLibrary" : "FaFlask"}
+        onClick={() =>
+          navigate(
+            !toInventory
+              ? `/${i18next.language}/formula/compose?library=${value}`
+              : `/${i18next.language}/inventory/?library=${value}&source=local`
+          )
+        }
+      ></NavButton>
       {showEdit && (
         <Input
           placeholder={value || ""}
@@ -1625,12 +1794,13 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           }}
         ></Input>
       )}
+
       {!showEdit &&
         listNames.map((key) => {
           return (
             <div className="h-fit">
               <Chip
-                icon={key === value ? "FaArrowRight" : undefined}
+                icon={key === value ? "FaDownload" : undefined}
                 label={listAliases[key] ? listAliases[key] : key}
                 onRemove={
                   items?.length === 0 && value === key
@@ -1644,26 +1814,26 @@ export const LocalListChips = (props: LocalListChipsProps) => {
                   "border-green-500 border-2",
                   {
                     "cursor-default": value === key && value === "Local",
-                    "bg-yellow-500/70": value === key,
-                    "hover:bg-yellow-300/30":
+                    "bg-purple-500/70": value === key,
+                    "hover:bg-purple-300/30":
                       value === key && value !== "Local",
-                    "hover:bg-yellow-500/70": value !== key,
+                    "hover:bg-purple-500/70": value !== key,
                     "bg-white/30": value !== key,
                   },
                   className
                 )}
                 iconClsn={clsx("w-auto h-auto", {
-                  "!text-green-600 ": hasAll,
+                  "!text-white ": hasAll,
                 })}
                 onClick={() => {
-                  onChange(key === value ? null : key);
+                  onChange?.(key === value ? null : key);
                 }}
               ></Chip>
             </div>
           );
         })}
 
-      <div className="flex gap-1 ml-auto">
+      <div className={clsx("flex gap-1 ml-auto", { hidden: !showButtons })}>
         {!!items?.length && (
           <IconButton
             className="h-7 w-7"
@@ -1678,7 +1848,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
               }, "# " + (listAliases[value || ""] || value || "Local") + ":\n");
 
               copy(plain);
-              setNotification("Copied List!");
+              setNotification?.("Copied List!");
             }}
           ></IconButton>
         )}
@@ -1687,12 +1857,12 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           icon="FaPlus"
           round
           onClick={() => {
-            onAdd("List " + listNames?.length);
+            onAdd?.("List " + listNames?.length);
           }}
         ></IconButton>
         {items?.length > 0 && (
           <ActionButton
-            className="h-7 w-7"
+            className={clsx("h-7 w-7", {})}
             level={2}
             icon="FaTrash"
             round
@@ -1714,12 +1884,6 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           ></IconButton>
         )}
       </div>
-      <Link
-        className="text-blue-500"
-        to={`/${i18next.language}/formula/compose?library=${value}&source=local `}
-      >
-        <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
-      </Link>
     </div>
   );
 };

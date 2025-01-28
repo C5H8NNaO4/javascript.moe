@@ -71,8 +71,9 @@ export const PublishListButton = ({
     });
 
     // console.log("UPDATE INDEXEDDB", upd, response);
-
-    navigate(lngLnk`/formula/${meta?.author || "*"}/${list?.title}`);
+    navigate(
+      lngLnk`/formula/${meta.author || "*"}/${list.title}/?library=Moe&remote=1`
+    );
   };
   const isInValid =
     formula === null || disabled || !identity || data!.author.length! < 3;

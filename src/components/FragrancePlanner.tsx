@@ -240,7 +240,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     if (id === null || id === undefined) return;
     await fragranceDb.deleteRecord(id);
     if (Number(dnFormula?.id) === Number(id))
-      setFormula(fragrances[fragrances.findIndex((f) => f.id === id) - 1] || null);
+      setFormula(
+        fragrances[fragrances.findIndex((f) => f.id === id) - 1] || null
+      );
   };
 
   const navigate = useNavigate();
