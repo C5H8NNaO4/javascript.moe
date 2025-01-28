@@ -1019,7 +1019,7 @@ export const IngredientDetail = ({
 
     if (inventories.local[invLocal]) await loadLocalLists();
     else {
-      setLocalLists([...localLists, invLocal]);
+      setLocalLists([...new Set([...localLists, invLocal])]);
     }
   };
 
