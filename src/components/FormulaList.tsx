@@ -38,6 +38,7 @@ import { NavButton } from "./NavButton";
 import { useIdentity } from "@/lib/hooks/useIdentity";
 import { Tooltip } from "react-tooltip";
 import { ActionButton } from "./ActionButton";
+import { ToggleButton } from "./ToggleButton";
 
 export const FormulaList = ({
   inventories,
@@ -104,7 +105,12 @@ export const FormulaList = ({
   }, [JSON.stringify(recent), selected?.title]);
   return (
     <ul
-      className="formulas flex flex-col gap-0 flex-shrink-0 pr-2 bg-white/40 "
+      className={clsx(
+        "formulas flex flex-col gap-0 flex-shrink-0 pr-2 bg-white/40 ",
+        {
+          "hidden md:flex": !!selected,
+        }
+      )}
       style={{
         boxShadow: "1px 0px 4px 0px rgba(255,255,255,0.7)",
       }}
@@ -305,7 +311,13 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
   );
 };
 
-export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
+export const Formula = ({
+  formula,
+  onSelect,
+  selected,
+  onToggle,
+  expanded,
+}: any) => {
   const { title: formulaTitle, items, remoteId } = formula;
 
   const formulaDb = useFormulaDb();
@@ -349,7 +361,17 @@ export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
     }
   };
   return (
-    <div className="formula flex  justify-center bg-white/20 rounded-r-lg h-full flex-shrink-0">
+    <div
+      className={clsx(
+        "formula flex  justify-center bg-white/20 rounded-r-lg h-full flex-shrink-0",
+
+        {
+          " sm:relative !translate-x-[calc(-100%+48px)]   sm:!translate-x-0 ":
+            expanded,
+          "!min-w-[calc(100vw-48px)] sm:!min-w-0": !expanded,
+        }
+      )}
+    >
       <div className="h-full flex flex-col gap-1 ">
         <div className="flex justify-between items-center gap-0 flex-col">
           <h1
@@ -469,21 +491,37 @@ export const Formula = ({ formula, onSelect, selected, onToggle }: any) => {
               }}
             />
           </div>
-
-          <IconButton
-            icon="FaChevronLeft"
-            round
-            id="collapseButton"
-            tooltipPlacement="left"
-            tooltip="Collapse"
-            className="bg-transparent  !rounded-l-full"
-            onClick={() => {
-              onToggle?.();
-              setTimeout(() => {
-                navigate(lngLnk`/formulas/`);
-              }, 1000);
-            }}
-          ></IconButton>
+          <div className="flex gap-1">
+            <ToggleButton
+              active={!!expanded}
+              disabled={!selected?.title}
+              icon="FaChevronLeft"
+              id="collapseButton"
+              tooltipPlacement="left"
+              tooltip="Collapse"
+              className={clsx(" !rounded-l-full !rounded-r-none", {
+                "block sm:hidden": expanded,
+              })}
+              iconClsn={clsx({ "rotate-180 sm:rotate-0": expanded }, "p-1")}
+              onClick={() => {
+                onToggle?.();
+              }}
+            ></ToggleButton>
+            <ActionButton
+              icon="FaX"
+              level={1}
+              className={clsx(
+                {
+                  "hidden sm:block": expanded,
+                },
+                "!ml-0"
+              )}
+              onDestruct={() => {
+                onToggle?.();
+                navigate(lngLnk`/formulas`);
+              }}
+            ></ActionButton>
+          </div>
         </div>
         <div className="overflow-y-scroll overflow-x-hidden ">
           <ul>

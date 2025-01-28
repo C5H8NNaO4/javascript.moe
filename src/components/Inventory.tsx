@@ -28,6 +28,7 @@ import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
 import { Link, useSearchParams } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
+import { ToggleButton } from "./ToggleButton";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -396,7 +397,9 @@ export const InventoryList = ({
   const [filterType, setFilterType] = useState(
     searchParams.get("filter") || "OR"
   );
-  const [selected, setSelected] = useState<Item | null | undefined>(undefined);
+  const [selected, setSelected] = useState<Partial<Item> | null | undefined>(
+    undefined
+  );
   const [showAdd, setShowAdd] = useState<boolean>(false);
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
@@ -870,10 +873,10 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {selected && (isMobile ? !!selected?.amount : true) && (
+        {!!selected && (isMobile ? !!selected?.amount : true) && (
           <IngredientDetail
             invRemote="Moe"
-            selected={selected}
+            selected={selected!}
             setSelected={setSelected}
             list={list}
             sorted={sorted}
@@ -890,8 +893,8 @@ export const InventoryList = ({
 };
 
 export type IngredientDetailProps = {
-  selected: Item;
-  setSelected: (itm: Item) => void;
+  selected: Partial<Item> | null;
+  setSelected: (itm: Partial<Item> | null) => void;
   invRemote: string;
   invLocal?: string;
   filter?: string[] | null;
@@ -902,11 +905,13 @@ export type IngredientDetailProps = {
   listAliases?: Record<string, string>;
   upd: any;
   del: any;
+  expanded?: boolean;
 };
 export const IngredientDetail = ({
   selected,
   setSelected,
   invRemote,
+  expanded,
   list,
   sorted,
   invLocal,
@@ -940,7 +945,16 @@ export const IngredientDetail = ({
     }, 0);
 
   return (
-    <div className="detail flex flex-col w-full md:max-w-[66%] md:flex-shrink pb-0 gap-0">
+    <div
+      className={clsx(
+        "detail flex flex-col  md:max-w-[66%] md:flex-shrink pb-0 gap-0 bg-black/70 sm:bg-black/0 relative",
+        {
+          "!-translate-x-[calc(292px)] !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0":
+            expanded,
+          "!w-full": !expanded,
+        }
+      )}
+    >
       <div
         className="
       flex gap-1 flex-col lg:flex-row 
@@ -997,17 +1011,34 @@ export const IngredientDetail = ({
             iconClsn="!h-5 !w-5"
             className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
           ></Chip>
-          {selected && (
-            <IconButton
-              round
-              icon="FaX"
-              onClick={() => {
-                setSelected(
-                  isMobile ? ({ title: selected?.title } as any) : null
-                );
-              }}
-            ></IconButton>
-          )}
+          {selected &&
+            (!isMobile ? (
+              <ActionButton
+                level={1}
+                icon={isMobile ? "FaChevronRight" : "FaX"}
+                className="!rounded-l-full sm:!rounded-l-none"
+                onDestruct={() => {
+                  setSelected(
+                    isMobile
+                      ? { title: selected?.title, amount: selected?.amount }
+                      : null
+                  );
+                }}
+              ></ActionButton>
+            ) : (
+              <ToggleButton
+                active={!!expanded}
+                icon={isMobile ? "FaChevronRight" : "FaX"}
+                className="!rounded-l-full sm:!rounded-l-none"
+                onClick={() => {
+                  setSelected(
+                    isMobile
+                      ? { title: selected?.title, amount: selected?.amount }
+                      : null
+                  );
+                }}
+              ></ToggleButton>
+            ))}
         </div>
       </div>
       {!!selected?.title && (
@@ -1119,8 +1150,8 @@ export const IngredientDetail = ({
                   onDestruct={() => {
                     if (selected?.id)
                       upd(selected?.id, {
-                        title: selected?.title
-                          .replace(/\s\d+[%]/, "")
+                        title: selected
+                          ?.title!.replace(/\s\d+[%]/, "")
                           .replace(/\d+[$€]$/, ""),
                       });
                   }}
@@ -1132,7 +1163,8 @@ export const IngredientDetail = ({
               <div className="flex gap-1">
                 {selected?.amount && (
                   <b className="flex">
-                    {amountToNumber(selected?.amount) * selected?.quantity}
+                    {amountToNumber(selected?.amount) *
+                      (selected?.quantity || 1)}
                     {getAmountUnit(selected?.amount)}
                   </b>
                 )}
@@ -1143,7 +1175,7 @@ export const IngredientDetail = ({
 
                     <span>
                       ({selected?.price?.slice(-1)}
-                      {getRawPricePerMl(selected)}/
+                      {getRawPricePerMl(selected as Item)}/
                       {getAmountUnit(selected?.amount)})
                     </span>
                   </div>

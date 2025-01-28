@@ -69,7 +69,7 @@ import { IngredientDetail, InventoryList } from "../components/Inventory";
 
 import { inventory } from "@/static/inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
-import { useCurrentBreakpoint } from "@/hooks/useBreakpoint";
+import { isSmallerEq, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
 import {
   FormulaIngredientProps,
   FragrancePlanner,
@@ -492,8 +492,12 @@ export const FormulaPage = () => {
   console.log("SELECTED ITM", selectedItem);
   const navigate = useNavigate();
 
-  const [expanded, setExpanded] = useState(true);
+  const bp = useCurrentBreakpoint();
+  const isMobile = isSmallerEq(bp, "sm");
+
+  const [expanded, setExpanded] = useState(!isMobile);
   const [showIdentifyOverlay, setShowIdentifyOverlay] = useState(false);
+
   return (
     <div className="h-full w-full relative flex justify-center">
       {ReactDOM.createPortal(
@@ -581,12 +585,12 @@ export const FormulaPage = () => {
       </div>
       <div
         className={clsx("recent overlay h-full", {
-          expanded,
+          expanded: isMobile || expanded,
         })}
       >
         <ContextMenuTrigger id="my-context-menu-1" className="h-full">
           <div className="blackoverlay flex flex-col gap-4 w-[100vw]  mx-auto lg:p-4 bg-black/80 text-white h-full ">
-            <div className="formulacontainer backdrop-blur-sm h-full overflow-hidden w-full flex gap-1">
+            <div className="formulacontainer backdrop-blur-sm h-full overflow-hidden w-full flex gap-1 relative">
               <FormulaList
                 inventories={{
                   remote: {
@@ -605,7 +609,7 @@ export const FormulaPage = () => {
               ></FormulaList>
               {selected && (
                 <Formula
-                  formula={selected }
+                  formula={selected}
                   inventories={{
                     remote: {
                       All: perfumersApprenticeInventory,
@@ -619,18 +623,29 @@ export const FormulaPage = () => {
                     navigate("#" + ing.title);
                   }}
                   selected={selectedItem}
-                  onToggle={() => setExpanded(!expanded)}
+                  onToggle={() => {
+                    setExpanded(!expanded);
+                    if (!isMobile)
+                      setTimeout(() => {
+                        navigate(lngLnk`/formulas/`);
+                      }, 1000);
+                  }}
+                  expanded={expanded}
                 ></Formula>
               )}
               {selectedItem && (
                 <IngredientDetail
                   selected={selectedItem as any}
-                  setSelected={(sel) => navigate("#" + (sel?.title || ""))}
+                  setSelected={(sel) => {
+                    navigate("#" + (sel?.title || ""));
+                    if (isMobile) setExpanded(false);
+                  }}
                   invRemote="Moe"
                   list={selected?.items || ([] as any)}
                   sorted={selected?.items || ([] as any)}
                   upd={() => {}}
                   del={() => {}}
+                  expanded={expanded}
                 ></IngredientDetail>
               )}
             </div>
@@ -667,6 +682,9 @@ export const DiscoverPage = () => {
 
   const [, setExpanded] = useState(true);
   const [search, setSearch] = useState("");
+
+  const bp = useCurrentBreakpoint();
+  const isMobile = isSmallerEq(bp, "sm");
   return (
     <div className="h-full w-full relative flex justify-center">
       {ReactDOM.createPortal(
@@ -755,7 +773,7 @@ export const DiscoverPage = () => {
                 navigate(
                   lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`
                 );
-              setExpanded(true);
+              setExpanded(!isMobile);
             }}
             inventories={{
               remote: { All: perfumersApprenticeInventory, Moe: inventory },
