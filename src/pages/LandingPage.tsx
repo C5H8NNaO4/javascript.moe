@@ -32,6 +32,8 @@ import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
 import { Overlay } from "@/components/BurnOverlay";
+import { Icon } from "@/components/Icon";
+import { lngLnk } from "@/lib/util";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -300,7 +302,30 @@ export const LandingPage = () => {
               distance={window.innerHeight * -0.25}
               offset={0}
             >
-              <PerfumeLink range={[0.75, 1]} />
+              <PerfumeLink range={[0.75, 0.85]} />
+              <Parallax distance={32} offset={-48}>
+                <Bullets
+                  range={[0.57, 0.88]}
+                  data={[
+                    {
+                      text: t("texts.ingredients"),
+                      logo: () => <Icon icon="FaFlask" />,
+                      href: lngLnk`/inventory`,
+                    },
+                    {
+                      text: t("texts.formulas"),
+                      logo: () => (
+                        <Icon icon="FaBook" />
+                      ),
+                      href: lngLnk`/formulas`,
+                    },
+                  ]}
+                  reverse
+                  offset={0.73}
+
+                  // offset={0.55}
+                ></Bullets>
+              </Parallax>
             </Parallax>
             {/* <Parallax trans={[0, 0.25]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={64} offset={-64}>
                             <Bullets range={[0, 0.25]} data={[
@@ -407,6 +432,27 @@ export const PerfumeLink = ({ range }: { range: number[] }) => {
       className="underline text-[#EEEEEE]"
     >
       <motion.h2 style={{ opacity: trans }}>{t("texts.discover")}</motion.h2>
+    </Link>
+  );
+};
+
+export const FormulaLink = ({ range }: { range: number[] }) => {
+  const { ref } = useContext(sectionCtx);
+
+  const { scrollYProgress } = useScroll({
+    layoutEffect: false,
+    target: ref || undefined,
+    offset: ["start start", "end end"],
+  });
+  const trans = useTransform(scrollYProgress, range, [0, 1]);
+  const { t } = useTranslation();
+
+  return (
+    <Link
+      to={"/" + i18n.language + "/perfumes"}
+      className="underline text-[#EEEEEE]"
+    >
+      <motion.h2 style={{ opacity: trans }}>{t("texts.formulas")}</motion.h2>
     </Link>
   );
 };

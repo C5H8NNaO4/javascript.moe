@@ -112,7 +112,9 @@ export const Explanations = {
 
 export const texts = {
   "texts.senior": "Suchst du einen Senior TypeScript-Entwickler?",
-  "texts.discover": "Entdecke meine Düfte.",
+  "texts.discover": "Entdecke eine Welt der Düfte",
+  "texts.ingredients": "Zutaten",
+  "texts.formulas": "Formeln",
   "texts.lead": "Suchst du einen Lead-Entwickler?",
   "texts.contact": "Kontaktiere mich",
   ingredients: "Zutaten",

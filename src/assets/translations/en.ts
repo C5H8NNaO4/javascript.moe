@@ -121,7 +121,9 @@ export const Explanations = {
 
 export const texts = {
   "texts.senior": "Looking for a senior TypeScript dev?",
-  "texts.discover": "Discover my fragrances.",
+  "texts.discover": "Discover a world of scents.",
+  "texts.formulas": "Formulas",
+  "texts.ingredients": "Ingredients",
   "texts.lead": "Looking for a lead developer?",
   "texts.contact": "Contact me",
   ingredients: "ingredients",

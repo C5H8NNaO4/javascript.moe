@@ -388,7 +388,7 @@ export const Bullets = ({
               y: 8,
             }}
           >
-            <motion.div className="flex flex-grow-0">
+            <motion.div className="flex flex-grow-0 items-center">
               <e.logo width="36px" height="36px" />
               <motion.h2
                 style={{
