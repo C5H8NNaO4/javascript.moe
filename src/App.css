@@ -1,0 +1,105 @@
+[type="checkbox"] {
+  -webkit-appearance: none;
+}
+
+label {
+  position: relative;
+}
+
+label input {
+  display: inline-flex;
+  gap: 8px;
+}
+label span {
+  position: absolute;
+  top: -1px;
+  right: 20px;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ffffff77;
+  border-radius: 20px;
+  border: 1px dashed whitesmoke;
+}
+
+:focus-within::-webkit-scrollbar-thumb {
+  background-color: #ffffff77;
+  border-radius: 20px;
+  border: 1px dashed gold;
+}
+
+.fadingImage img {
+  max-height: 100%;
+}
+
+label {
+  @apply font-semibold;
+}
+
+fieldset {
+  width: 100%;
+}
+
+/* Formulas Overlay */
+.recent .formulas {
+  @apply -translate-x-full;
+  @apply transition-transform;
+}
+.recent .formula {
+  @apply -translate-x-full;
+  @apply transition-transform;
+}
+
+.recent.expanded .formulas,
+.recent.expanded .formula {
+  @apply translate-x-0;
+  @apply transition-transform;
+}
+
+.recent.expanded .detail {
+  @apply translate-x-0;
+  @apply transition-transform;
+}
+
+.recent .detail {
+  @apply translate-x-full;
+  @apply transition-transform delay-300;
+}
+
+.recent.expanded .formulacontainer {
+  @apply translate-x-0;
+  @apply transition-transform;
+}
+
+.recent .formulacontainer {
+  @apply translate-x-full;
+  @apply transition-transform delay-200;
+}
+
+.recent.expanded .blackoverlay {
+  @apply opacity-100;
+  @apply transition-opacity;
+}
+
+.recent .blackoverlay {
+  @apply opacity-0;
+  @apply transition-opacity delay-700;
+}
+
+dialog {
+  overflow: visible;
+}
+dialog::backdrop {
+  z-index: -1;
+  backdrop-filter: saturate(0);
+}
+
+dialog .shadow {
+  box-shadow: 0px 0px 4px 0px #FFF;
+}

@@ -10,9 +10,10 @@ import {
   Item,
 } from "./Inventory";
 import { ingredients as imgs } from "@/static/assets";
-import { Button, DestructiveButton, IconButton, MenuButton } from "./Button";
+import { Button, IconButton, MenuButton } from "./Button";
 import { Icon } from "./Icon";
 import {
+  lngLnk,
   similarity,
   totalIngredientCost,
   totalUsedIngredientAmount,
@@ -22,20 +23,47 @@ import { utilities } from "@/static/categories";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { Input } from "./Input";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { Link, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import i18next from "i18next";
 import { isSmaller, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
+import { useLocalFormulas } from "@/hooks/dbs/useFormulaDb";
+import { ToggleButton } from "./ToggleButton";
+import { NavButton } from "./NavButton";
+import { ActionButton } from "./ActionButton";
+import { idbToFormula } from "@/utils/types";
+import { IDBFormula } from "@/utils/dataStructure";
 export type FragrancePlannerProps = Component<{
   className?: string;
   inventories: {
     remote: Inventories;
     local: Inventories;
   };
+  formula?: Formula;
 }>;
 export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const { className, inventories } = props;
   const db = useIndexedDB("inventory");
   const [search, setSearch] = useSearchParams();
+  const [fragrances, { refetch }] = useLocalFormulas() as [IDBFormula[], any];
+  const { listId } = useParams();
+  useEffect(() => {
+    if (!fragrances?.length) return;
+    if (!listId) {
+      setFormula(null);
+      setIngredients([]);
+      setTitle("");
+    } else {
+      const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
+      console.log("SELECT", frmla);
+      setFormula(formula);
+    }
+  }, [listId, fragrances?.length]);
   const source = search.get("source") || "remote";
   const library = search.get("library") || "Moe";
 
@@ -85,11 +113,12 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [baseUnit, setBaseUnit] = useState("g");
   const [step, setStep] = useState(0.1);
   const [probeAmount, setProbeAmount] = useState(0.1);
-  const [fragrances, setFragrances] = useState<Formula[]>([]);
-  const [formula, setFormula] = useLocalStorage<Formula | null>(
+
+  const [dnFormula, setFormula] = useLocalStorage<IDBFormula | null>(
     null,
     "formulas.selectedFormula"
   );
+  const formula = dnFormula;
   const fragranceDb = useIndexedDB("formulas");
 
   const bp = useCurrentBreakpoint();
@@ -98,15 +127,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [edit, setEdit] = useState(false);
   const isMobile = isSmaller(bp, "lg");
   const [showList, setShowList] = useState(!isMobile);
-  const [showSuggestions, setShowSuggestions] = useState(!isMobile);
-
-  const load = async () => {
-    const list = await fragranceDb.getAll();
-    setFragrances(list);
-  };
-  useEffect(() => {
-    load();
-  }, []);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const toText = (ings = ingredients) => {
     return ings?.reduce((txt, ing) => {
@@ -117,6 +138,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   };
 
   useEffect(() => {
+    console.log("FORMULA CHANGE", formula);
     if (formula?.ingredients?.length) setIngredients(formula?.ingredients);
     if (formula?.title) setTitle(formula?.title);
   }, [formula]);
@@ -199,24 +221,44 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
 
   const save = async () => {
     if (!formula?.id) {
-      await fragranceDb.add({
+      const id = await fragranceDb.add({
         title: title || new Date().toDateString(),
         ingredients,
       });
+      return id;
     } else {
       await fragranceDb.update({
         id: formula?.id,
         title: title || new Date().toDateString(),
         ingredients,
       });
+      return formula?.id;
     }
   };
 
-  const remove = async (id: string) => {
-    if (!id) return;
+  const remove = async (id: number) => {
+    if (id === null || id === undefined) return;
     await fragranceDb.deleteRecord(id);
+    if (Number(dnFormula?.id) === Number(id))
+      setFormula(
+        fragrances[fragrances.findIndex((f) => f.id === id) - 1] || null
+      );
   };
 
+  const navigate = useNavigate();
+  const selectFormula = (frmla: IDBFormula | null) => {
+    setFormula(frmla);
+    if (frmla === null) {
+      setIngredients([]);
+      setTitle("");
+      navigate(lngLnk`/formula/compose/`);
+    }
+    if (frmla?.id) {
+      navigate(lngLnk`/formula/compose/${frmla?.id.toString()}`, {
+        replace: true,
+      });
+    }
+  };
   return (
     <div
       className={clsx(
@@ -225,41 +267,72 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
         className
       )}
     >
-      <div className="flex flex-col lg:flex-row gap-2 mb-2 items-center">
-        <div className="flex gap-1">
-          <IconButton
-            disabled={!formula}
-            icon="FaPlus"
-            onClick={() => {
-              setFormula(null);
-              setIngredients([]);
-              setTitle("");
-            }}
-          ></IconButton>
-          <IconButton
-            className={clsx({
-              "bg-green-500/40 hover:bg-green-500/30": showList,
-              "hover:bg-green-500/20": !showList,
-            })}
+      <div className="flex flex-row flex-wrap gap-4 mb-2 items-center justify-between align-middle flex-grow">
+        <div className="flex gap-1 mr-auto">
+          <ToggleButton
+            active={showList}
             icon="FaList"
             onClick={() => setShowList(!showList)}
-          ></IconButton>
-          <IconButton
-            className={clsx({
-              "bg-green-500/40 hover:bg-green-500/30 text-yellow-500":
-                showSuggestions,
-              "hover:bg-green-500/20": !showSuggestions,
-            })}
-            icon="FaLightbulb"
-            onClick={() => setShowSuggestions(!showSuggestions)}
-          ></IconButton>
-          <div className="relative">
+          ></ToggleButton>
+          <NavButton
+            internal
+            tooltip="Inventory"
+            tooltipPlacement="left"
+            id="inventoryNavButton"
+            // className="!h-8 !w-8 "
+
+            icon="MdOutlineInventory"
+            onClick={() => {
+              navigate(lngLnk`/inventory`);
+            }}
+          >
+            <Icon icon="MdInventory" className="!h-8 !w-8"></Icon>
+          </NavButton>
+          <ActionButton
+            icon="FaRedo"
+            level={1}
+            disabled={(!title && !ingredients?.length) || formula === null}
+            onDestruct={() => {
+              selectFormula(null);
+            }}
+            id="buttonRestart"
+            tooltip="Reset!"
+            className="!mr-auto"
+          ></ActionButton>
+        </div>
+        <ReactSearchAutocomplete
+          placeholder="Add Ingredients"
+          className={`z-[100000] !w-full max-w-screen-sm mx-auto flex-grow -order-1 lg:order-none`}
+          inputSearchString={value}
+          onSearch={(s) => setValue(s)}
+          items={inventory
+            .filter((ing, i, arr) => {
+              return !arr.slice(0, i).some((inv) => inv.title === ing.title);
+            })
+            .map(({ title }) => ({ name: title }))}
+          // onSearch={handleOnSearch}
+          // onHover={handleOnHover}
+          onSelect={(ing) => onAdd(ing.name)}
+          // onFocus={handleOnFocus}
+          // autoFocus
+          showIcon={false}
+          formatResult={(itm: AutoSuggestItem) => {
+            return (
+              <div className="flex gap-2">
+                <img src={imgs[itm.name.trim()]} className="h-8 w-8"></img>
+                {itm.name}
+              </div>
+            );
+          }}
+        />
+        <div className=" flex gap-2 items-center flex-shrink ml-auto w-fit justify-end md:justify-between">
+          <div className="relative w-fit">
             <MenuButton
               className={clsx(
                 {
                   "hover:bg-orange-500/30": true,
                 },
-                "!h-9 !w-9"
+                "!h-9 !w-9 relative"
               )}
               icon="IoLibrary"
             >
@@ -309,44 +382,32 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
               {library} [{inventory?.length}]
             </span>
           </div>
+          <ToggleButton
+            active={showSuggestions}
+            icon="FaLightbulb"
+            onClick={() => setShowSuggestions(!showSuggestions)}
+          ></ToggleButton>
         </div>
-        <ReactSearchAutocomplete
-          placeholder="Add Ingredients"
-          className="z-[100000] w-full"
-          inputSearchString={value}
-          onSearch={(s) => setValue(s)}
-          items={inventory
-            .filter((ing, i, arr) => {
-              return !arr.slice(0, i).some((inv) => inv.title === ing.title);
-            })
-            .map(({ title }) => ({ name: title }))}
-          // onSearch={handleOnSearch}
-          // onHover={handleOnHover}
-          onSelect={(ing) => onAdd(ing.name)}
-          // onFocus={handleOnFocus}
-          // autoFocus
-          showIcon={false}
-          formatResult={(itm: AutoSuggestItem) => {
-            return (
-              <div className="flex gap-2">
-                <img src={imgs[itm.name.trim()]} className="h-8 w-8"></img>
-                {itm.name}
-              </div>
-            );
-          }}
-        />
       </div>
       <div className="flex gap-4 w-full h-full relative -z-10">
         {showList && (
           <div className="shrink-1 min-w-[200px] shadow-sm bg-white/20 h-full">
-            <div className="text-gray-200 bg-black/20 p-2 font-semibold border-white flex justify-between items-center text-xl">
-              Formulas
-              <Link
-                to={"/" + i18next.language + "/inventory"}
-                className="text-blue-500"
+            <div className="text-gray-200 bg-black/20 p-2 gap-1 font-semibold border-white flex justify-between items-center text-xl">
+              <h2>Formulas</h2>
+
+              <NavButton
+                internal
+                tooltip="Discover"
+                tooltipPlacement="left"
+                id="discoverNavButton"
+                className="!h-8 !w-8 !rounded-tr-md"
+                icon="FaSearch"
+                onClick={() => {
+                  navigate(lngLnk`/formulas`);
+                }}
               >
                 <Icon icon="MdInventory" className="!h-8 !w-8"></Icon>
-              </Link>
+              </NavButton>
             </div>
             {!fragrances?.length && (
               <em className="p-2">Saved formulas show up here.</em>
@@ -357,29 +418,59 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                   <li
                     className={clsx(
                       {
-                        "bg-white/40": frmla?.id === formula?.id,
+                        "bg-white/40":
+                          Number(frmla?.id) === Number(formula?.id),
                       },
-                      "flex justify-between p-1 gap-2 items-center"
+                      "flex justify-between p-1 gap-2 items-center group w-full"
                     )}
                   >
                     <button
+                      className="w-full text-start"
                       onClick={() => {
-                        if (formula?.id === frmla.id) setFormula(null);
-                        else setFormula(frmla);
+                        selectFormula(frmla);
                       }}
                     >
-                      {frmla?.title} ({frmla?.ingredients?.length})
+                      {frmla?.title} ({idbToFormula(frmla)?.items?.length})
                     </button>
-                    <DestructiveButton
-                      icon="FaTrash"
-                      className="!h-5 !w-5"
-                      iconClsn=""
-                      onDestruct={(confirm) => {
-                        if (confirm && frmla?.id) remove(frmla?.id);
-                        load();
-                      }}
-                      level={2}
-                    ></DestructiveButton>
+                    <div className="flex opacity-0 gap-1 group-hover:opacity-100 ">
+                      {frmla.id && (
+                        <NavLink
+                          to={lngLnk`/formula/publish/${frmla.id.toString()}`}
+                          className="!h-5 !w-5"
+                        >
+                          <NavButton
+                            tooltip="Publish"
+                            tooltipPlacement="left"
+                            id="publishButton"
+                            icon="MdPublish"
+                            className=" !p-0"
+                            iconClsn="!h-5 !w-5 !m-0"
+                          ></NavButton>
+                        </NavLink>
+                      )}
+                      <ActionButton
+                        tooltip="Delete"
+                        tooltipPlacement="left"
+                        id="deleteButton"
+                        icon="FaTrash"
+                        className=""
+                        iconClsn="!h-3 !w-3 !p-0"
+                        onDestruct={(confirm) => {
+                          console.log("ON DESTRUCT", confirm, frmla.id);
+                          if (confirm && frmla?.id) remove(frmla?.id);
+                          refetch();
+                          // if (formula?.id === frmla?.id)
+                          //   setFormula(
+                          //     fragrances[
+                          //       fragrances.findIndex((f) => f.id === frmla.id) -
+                          //         1
+                          //     ] || null
+                          //   );
+                          // selectActiveList();
+                        }}
+                        level={2}
+                      ></ActionButton>
+                    </div>
                   </li>
                 );
               })}
@@ -429,6 +520,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
             <div className="flex flex-col md:flex-row w-full pr-1">
               <div className="w-full flex gap-2 ">
                 <Input
+                  id="titleInput"
                   placeholder="Title"
                   className="bg-black/40 w-full"
                   value={title}
@@ -439,12 +531,16 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                 <div className="flex gap-1">
                   <IconButton
                     icon="GiPouringChalice"
+                    tooltip="Probe / Remove Liquid"
+                    id="pourButton"
                     onClick={() => {
                       removeProbe(0.2);
                     }}
                   ></IconButton>
                   <IconButton
                     icon="FaPencil"
+                    tooltip="Edit as Text"
+                    id="editButton"
                     onClick={() => {
                       if (!edit) {
                         setEdit(true);
@@ -461,17 +557,24 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                         toText(formula?.ingredients) !== toText(ingredients),
                     })}
                     disabled={!title}
-                    title={
+                    allowDisabledClick
+                    tooltip={
                       !title
-                        ? "Set a title to save."
+                        ? "Set a title to enable saving."
                         : formula?.id
-                        ? "Update this formula."
-                        : "Save a new formula."
+                        ? "Save this formula."
+                        : "Create a new formula."
                     }
-                    icon={!formula?.id ? "FaPlus" : "FaSave"}
-                    onClick={() => {
-                      save();
-                      load();
+                    id="createButton"
+                    tooltipPlacement="left"
+                    icon={!formula?.id ? "IoIosCreate" : "FaSave"}
+                    onClick={async () => {
+                      const id = await save();
+                      await refetch();
+                      navigate(lngLnk`/formula/compose/${id.toString()}`);
+                    }}
+                    onDisabledClick={() => {
+                      (document?.querySelector("#titleInput") as any)?.focus();
                     }}
                   ></IconButton>
                 </div>
@@ -607,102 +710,162 @@ export type FormulaIngredientProps = Component<{
   inventory: FormulaItem[];
   update?: (itm: Partial<FormulaItem>) => void;
   remove?: () => void;
+  readonly?: boolean;
 }> &
   FormulaItem;
 export const FormulaIngredient = (props: FormulaIngredientProps) => {
-  const { title, usedAmount, unit, update, remove, step, library, inventory } =
-    props;
+  const {
+    title,
+    usedAmount,
+    unit,
+    update,
+    remove,
+    step,
+    library,
+    inventory,
+    readonly,
+  } = props;
   return (
-    <li
-      tabIndex={0}
-      className="flex gap-2 group hover:bg-white/20 items-center"
-    >
-      <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
-      <Link
-      
-        aria-disabled={
-          !props.remoteList && !inventory?.some((inv) => inv.title === title)
-        }
-        to={
-          !props.remoteList && !inventory?.some((inv) => inv.title === title)
-            ? window.location.href
-            : "/" +
-              i18next.language +
-              "/inventory/" +
-              (props.remoteList || library) +
-              "/" +
-              encodeURIComponent(title)
-        }
-        className={clsx("mr-2 items-center gap-2 hidden group-hover:flex group-focus-within:flex", {
-          "text-blue-300 hover:text-blue-400":
-            props.remoteList || inventory?.some((inv) => inv.title === title),
-          "!text-gray-300 cursor-default":
-            !props.remoteList && !inventory?.some((inv) => inv.title === title),
-        })}
-      >
-        <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
-        <div className="group-focus-within:font-semibold ">{title}</div>
-      </Link>
-      <div className="block group-focus-within:hidden group-hover:hidden ">{title}</div>
-      <div>
-        {usedAmount}
-        {unit}
-      </div>
-      <Chip
-        className="bg-blue-500 text-yellow-400 hidden group-hover:block group-focus-within:block"
-        // icon="FaPercentage"
-        label={
-          <span className="flex">
-            <input
-              className="w-[3ch] bg-blue-600"
-              value={props.dilution?.replace("%", "")}
-              onChange={(e) => {
-                const dil = Math.min(
-                  100,
-                  Number(e.target.value?.replace(/\.$/, ""))
-                );
-                update?.({
-                  dilution: /\.$/.test(e.target.value) ? dil + "." : +dil + "%",
-                });
-              }}
-            ></input>
-            %
-          </span>
-        }
-      ></Chip>
-      <div className="block group-hover:hidden group-focus-within:hidden">
-        {props.dilution}
-      </div>
-      <div className="ml-auto absolute right-0 md:relative hidden gap-1 items-center group-focus-within:flex group-hover:flex">
-        <IconButton
-          icon="FaMinus"
-          className="!h-7 !w-7"
-          onClick={() => {
-            update?.({
-              usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
-              remoteList: props.remoteList || library,
-            });
+    <li tabIndex={0}>
+      <button className="flex gap-2 group hover:bg-white/20 items-center w-full">
+        <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
+        <Link
+          aria-disabled={
+            !props.remoteList && !inventory?.some((inv) => inv.title === title)
+          }
+          to={
+            !props.remoteList && !inventory?.some((inv) => inv.title === title)
+              ? window.location.href
+              : "/" +
+                i18next.language +
+                "/inventory/" +
+                (props.remoteList || library) +
+                "/" +
+                encodeURIComponent(title)
+          }
+          className={clsx(
+            "items-center gap-2 hidden group-hover:flex group-focus-within:flex absolute left-0 bg-black/40 p-2 z-50",
+            {
+              "text-blue-300 hover:text-blue-400":
+                props.remoteList ||
+                inventory?.some((inv) => inv.title === title),
+              "!text-gray-300 cursor-default":
+                !props.remoteList &&
+                !inventory?.some((inv) => inv.title === title),
+            }
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
           }}
-        ></IconButton>
-        <IconButton
-          icon="FaPlus"
-          className="!h-7 !w-7"
-          onClick={() => {
-            update?.({
-              usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
-              remoteList: props.remoteList || library,
-            });
-          }}
-        ></IconButton>
-        <DestructiveButton
-          icon="FaTrash"
-          className="!h-7 !w-7"
-          level={1}
-          onDestruct={() => {
-            remove?.();
-          }}
-        ></DestructiveButton>
-      </div>
+        >
+          <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
+        </Link>
+
+        <div className="block">{title}</div>
+        <div>
+          {usedAmount}
+          {unit}
+        </div>
+        <Chip
+          className={clsx("bg-blue-500 text-yellow-400 hidden", {
+            "group-hover:block group-focus-within:block": !readonly,
+          })}
+          // icon="FaPercentage"
+          label={
+            <span className="flex gap-[1px]">
+              <IconButton
+                round
+                icon="FaMinus"
+                onClick={() => {
+                  const value = Number(props.dilution?.replace("%", ""));
+                  const dec =
+                    value > 5 ? 5 : value <= 1 ? 0.1 : value <= 5 ? 1 : 5;
+                  let nxt = Math.round(10 * ((100 + value - dec) % 100)) / 10;
+                  if (nxt === 0) nxt = 100;
+                  update?.({
+                    dilution: nxt + "%",
+                  });
+                }}
+                className="-ml-2 mr-0"
+                iconClsn="!h-4 !w-4 "
+              ></IconButton>
+              <input
+                className="w-[3ch] bg-blue-600"
+                value={props.dilution?.replace("%", "")}
+                onChange={(e) => {
+                  const dil = Math.min(
+                    100,
+                    Number(e.target.value?.replace(/\.$/, ""))
+                  );
+                  update?.({
+                    dilution: /\.$/.test(e.target.value)
+                      ? dil + "."
+                      : +dil + "%",
+                  });
+                }}
+              ></input>
+              <IconButton
+                round
+                icon="FaPlus"
+                onClick={() => {
+                  const value = Number(props.dilution?.replace("%", ""));
+                  const nxt = (value + 5) % 100;
+
+                  update?.({
+                    dilution: nxt + "%",
+                  });
+                }}
+                className="-mr-2 "
+                iconClsn="!h-4 !w-4 "
+              ></IconButton>
+            </span>
+          }
+        ></Chip>
+        <div
+          className={clsx("block", {
+            "group-hover:hidden group-focus-within:hidden": !readonly,
+          })}
+        >
+          {props.dilution}
+        </div>
+        <div
+          className={clsx(
+            "ml-auto absolute right-0 md:relative hidden gap-1 items-center",
+            {
+              "group-focus-within:flex group-hover:flex": !readonly,
+            }
+          )}
+        >
+          <IconButton
+            icon="FaMinus"
+            className="!h-7 !w-7"
+            onClick={() => {
+              update?.({
+                usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
+                remoteList: props.remoteList || library,
+              });
+            }}
+          ></IconButton>
+          <IconButton
+            icon="FaPlus"
+            className="!h-7 !w-7"
+            onClick={() => {
+              update?.({
+                usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
+                remoteList: props.remoteList || library,
+              });
+            }}
+          ></IconButton>
+          <ActionButton
+            icon="FaTrash"
+            className="!h-7 !w-7"
+            level={1}
+            onDestruct={() => {
+              remove?.();
+            }}
+          ></ActionButton>
+        </div>
+      </button>
     </li>
   );
 };
@@ -714,10 +877,14 @@ export const SuggestedIngredient = (props: {
   const { title, onAdd } = props;
   return (
     <li tabIndex={0} className="flex gap-2 group">
-      <img src={imgs[title || ""]} className="h-8 w-8"></img>
+      <img src={imgs[title || ""]} className="h-8 w-8 -z-10 opacity-55"></img>
       <div className="group-focus-within:font-semibold">{title}</div>
 
-      <div className="ml-auto hidden group-focus-within:flex lg:group-hover:flex gap-1 items-center">
+      <div
+        className={clsx(
+          "ml-auto hidden group-focus-within:flex lg:group-hover:flex gap-1 items-center"
+        )}
+      >
         <IconButton
           icon="FaPlus"
           className="!h-7 !w-7"

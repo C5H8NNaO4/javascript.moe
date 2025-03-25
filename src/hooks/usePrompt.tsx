@@ -45,7 +45,7 @@ export const usePrompt = ({ title,text, Component, props = {} }: any, callback: 
   const overlay = (
     <div
       className={clsx(
-        "prompt fixed top-0 h-[100vh] w-[100vw] flex justify-center bg-black/80 items-center z-[100000] backdrop-blur-sm",
+        "prompt fixed top-0 h-[100vh] w-[100vw] flex justify-center bg-black/10 items-center z-[100000] backdrop-blur-lg",
         {
           hidden: !isOpen,
         }

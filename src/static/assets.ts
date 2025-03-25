@@ -139,16 +139,17 @@ export const ingredients = {
   "Violet Leaf Absolute": "/images/ingredients/VioletLeafAbsolute.jpeg",
   "Z11 10 MIP": "/images/ingredients/Z1110MIP.jpeg",
   "1,3 Propanediol": "/images/ingredients/13Propanediol.jpeg",
-  "5-Methyl-2-Phenyl-2-Hexenal": "/images/ingredients/5-Methyl-2-Phenyl-2-Hexenal.jpeg",
+  "5-Methyl-2-Phenyl-2-Hexenal":
+    "/images/ingredients/5-Methyl-2-Phenyl-2-Hexenal.jpeg",
   Acetal: "/images/ingredients/Acetal.jpeg",
-  "Acetaldehyde ethyl linalyl acetal": "/images/ingredients/AcetaldehydeEthylLinalylAcetal.jpeg",
+  "Acetaldehyde ethyl linalyl acetal":
+    "/images/ingredients/AcetaldehydeEthylLinalylAcetal.jpeg",
   "Acetanisole Crystals": "/images/ingredients/AcetanisoleCrystals.jpeg",
   "Acetate C-8": "/images/ingredients/AcetateC8.jpeg",
   "Acetate C9": "/images/ingredients/AcetateC9.jpeg",
   "Acetic Acid": "/images/ingredients/AceticAcid.jpeg",
-  "Acetophenone": "/images/ingredients/Acetophenone.jpeg",
-  "Adoxal": "/images/ingredients/Adoxal.jpeg",
-
+  Acetophenone: "/images/ingredients/Acetophenone.jpeg",
+  Adoxal: "/images/ingredients/Adoxal.jpeg",
 } as Record<string, string>;
 
 export const thumbnails = {
@@ -203,3 +204,16 @@ export const thumbnails = {
   "Methyl Laitone": "/images/ingredients/MethylLaitone.tn.jpeg",
   "Mimosa Olessence": "/images/ingredients/MimosaOlessence.tn.jpeg",
 } as Record<string, string>;
+
+export const formulas = {
+  "Orange Woods": [
+    "/images/perfumes/orangewoods.jpg",
+    "/images/perfumes/orangewoods-1.jpg",
+    "/images/perfumes/orangewoods-2.jpg",
+    "/images/perfumes/orangewoods-3.jpg",
+    "/images/perfumes/orangewoods-4.jpg",
+    "/images/perfumes/orangewoods-5.jpg",
+    "/images/perfumes/orangewoods-6.jpg",
+    "/images/perfumes/orangewoods-7.jpg",
+  ],
+} as Record<string, string[]>;

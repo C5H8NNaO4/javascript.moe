@@ -1,5 +1,5 @@
 import { useIndexedDB } from "react-indexed-db-hook";
-import { DestructiveButton, IconButton } from "./Button";
+import { IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
 import { useEffect, useRef, useState } from "react";
@@ -22,11 +22,16 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import { toggle, trim } from "@/lib/util";
+import { lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { ActionButton } from "./ActionButton";
+import { ToggleButton } from "./ToggleButton";
+import { NavButton } from "./NavButton";
+import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
+import { inventory } from "@/static/inventory";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -167,12 +172,20 @@ export type AutoSuggestItem = Item & {
 export type FormulaItem = Item & {
   usedAmount?: number;
   unit?: string;
+  token?: string;
+  remoteId?: string;
 };
 
 export type Formula = {
-  id?: string;
+  published?: boolean;
+  author?: string;
+  id?: number;
+  remoteId?: string;
+  token?: string;
+  stars?: number;
+  identityStars?: number;
   title?: string;
-  ingredients: FormulaItem[];
+  items: FormulaItem[];
 };
 
 export type Inventories = Record<string, Item[]>;
@@ -187,9 +200,9 @@ export const InventoryList = ({
   };
 }) => {
   const db = useIndexedDB("inventory");
-  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>({
-    Local: [],
-  });
+  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>(
+    inventories?.local || {}
+  );
 
   const params = useParams<{
     list: string;
@@ -203,13 +216,19 @@ export const InventoryList = ({
   const [invRemote, setInvRemote] = useState<string | null>(
     params?.list || "Moe"
   );
-  const [invLocal, setInvLocal] = useState<string | null>("Local");
+  const [invLocal, setInvLocal] = useState<string | null>(
+    searchParams.get("library") || "Local"
+  );
+
+  useEffect(() => {
+    setInvLocal(searchParams.get("library"));
+  }, [searchParams.get("library")]);
   const [sort, setSort] = useState<string>("+AZ");
   const [notification, setNotification] = useState<string>("");
 
   const storedList = storedListLkp[invLocal || "Local"] || [];
   const [localLists, setLocalLists] = useLocalStorage(
-    Object.keys(inventories.local),
+    Object.keys(inventories?.local || {}),
     "localLists"
   );
 
@@ -387,7 +406,9 @@ export const InventoryList = ({
   const [filterType, setFilterType] = useState(
     searchParams.get("filter") || "OR"
   );
-  const [selected, setSelected] = useState<Item | null | undefined>(undefined);
+  const [selected, setSelected] = useState<Partial<Item> | null | undefined>(
+    undefined
+  );
   const [showAdd, setShowAdd] = useState<boolean>(false);
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
@@ -440,8 +461,7 @@ export const InventoryList = ({
           "inventory/" +
           invRemote +
           "/" +
-          "?" +
-          new URLSearchParams(searchParams).toString()
+          window.location.search
       );
     }
     // setTimeout(() => setSearchParams((prev) => prev), 0);
@@ -514,24 +534,6 @@ export const InventoryList = ({
 
     return 0;
   });
-  const uniqueIngredientsOnStock = [
-    ...new Set(
-      list
-        .filter((itm) => {
-          return itm.onStock;
-        })
-        .map((itm) => {
-          return itm.title;
-        })
-    ),
-  ];
-  const totalValue = list
-    .filter((itm) => {
-      return itm.onStock;
-    })
-    .reduce((total, itm) => {
-      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
-    }, 0);
 
   useEffect(() => {
     if (!params?.title) return;
@@ -802,17 +804,28 @@ export const InventoryList = ({
                     </div>
                   );
                 })}
-                <Link
+                <NavButton
                   className="ml-auto text-blue-500"
-                  to={`/${i18next.language}/formula/compose?library=${invRemote}`}
-                  replace={false}
-                >
-                  <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
-                </Link>
+                  icon="FaFlask"
+                  internal
+                  onClick={() =>
+                    navigate(
+                      `/${i18next.language}/formula/compose?library=${invRemote}`
+                    )
+                  }
+                ></NavButton>
               </div>
               <LocalListChips
                 listNames={localLists}
-                onChange={(k: string | null) => setInvLocal(k || "Local")}
+                onChange={(library) => {
+                  const search = new URLSearchParams(window.location.search);
+                  search.set("library", library || "Local");
+                  navigate(
+                    lngLnk`/inventory/${invRemote!}/?` +
+                      search.toString() +
+                      window.location.hash
+                  );
+                }}
                 onDelete={deleteList}
                 setNotification={setNotification}
                 onRemove={(key) => {
@@ -879,400 +892,593 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {(isMobile ? !!selected?.amount : true) && (
-          <div className="border-white flex flex-col w-full md:max-w-[66%] md:flex-shrink pb-0">
-            <div className="flex gap-1 flex-col lg:flex-row lg:flex-wrap justify-between bg-yellow-500/20 p-2 rounded-md items-center mb-2 h-fit">
-              <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full min-w-max">
-                {selected?.title ? (
-                  <h2 className="line-clamp-1">{selected?.title}</h2>
-                ) : (
-                  <h2 className="line-clamp-1">{invRemote}</h2>
-                )}
-                {selected?.aliases?.length && (
-                  <em>{selected?.aliases?.join(", ")}</em>
-                )}
-              </div>
-              <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
-                <IconButton
-                  className=""
-                  round
-                  icon="FaChevronLeft"
-                  onClick={() => {
-                    const sel = sorted
-                      ?.filter((itm) => itm.title === selected?.title)
-                      .at(-1);
-                    const index = sel ? sorted?.indexOf(sel) : -1;
-                    setSelected(
-                      sorted[(sorted?.length + index - 1) % sorted?.length]
-                    );
-                  }}
-                ></IconButton>
-                <IconButton
-                  className="mr-auto lg:mr-0"
-                  round
-                  icon="FaChevronRight"
-                  onClick={() => {
-                    const sel = sorted
-                      ?.filter((itm) => itm.title === selected?.title)
-                      .at(-1);
-                    const index = sel ? sorted?.indexOf(sel) : -1;
-                    setSelected(sorted[(index + 1) % sorted?.length]);
-                  }}
-                ></IconButton>
-                <Chip
-                  label={uniqueIngredientsOnStock?.length.toString()}
-                  icon="FaBottleDroplet"
-                  iconClsn="!h-5 !w-5"
-                  className="ml-auto md:ml-0 bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
-                ></Chip>
-                <Chip
-                  label={totalValue.toString()}
-                  icon="FaDollarSign"
-                  iconClsn="!h-5 !w-5"
-                  className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
-                ></Chip>
-                {selected && (
-                  <IconButton
-                    round
-                    icon="FaX"
-                    onClick={() => {
-                      setSelected(
-                        isMobile ? ({ title: selected?.title } as any) : null
-                      );
-                    }}
-                  ></IconButton>
-                )}
-              </div>
-            </div>
-            {!!selected?.title && (
-              <div
-                className={clsx(
-                  "border-white border-[1px] max-w-full overflow-y-auto p-2 pb-2 rounded-md",
-                  {
-                    "border-yellow-500": between(
-                      getRawPricePerMl(selected as Item),
-                      30,
-                      1000
-                    ),
-                    "bg-yellow-500/55": between(
-                      getRawPricePerMl(selected as Item),
-                      100,
-                      1000
-                    ),
-                    "bg-orange-500/55": between(
-                      getRawPricePerMl(selected as Item),
-                      1,
-                      100
-                    ),
-
-                    "bg-green-500/55": between(
-                      getRawPricePerMl(selected as Item),
-                      0.2,
-                      1
-                    ),
-                    "bg-gray-400/55": between(
-                      getRawPricePerMl(selected as Item),
-                      0.1,
-                      0.2
-                    ),
-
-                    "bg-gray-200/55": between(
-                      getRawPricePerMl(selected as Item),
-                      0,
-                      0.1
-                    ),
-                  }
-                )}
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                }}
-                // onDrop={(event) => {
-                //   event.preventDefault(); // Prevent default browser behavior
-                //   const file = event.dataTransfer.files[0];
-
-                //   // Ensure the dropped file is an image
-                //   if (file && file.type.startsWith("image/")) {
-                //     const reader = new FileReader();
-
-                //     reader.onload = (e) => {
-                //       const imageDataUrl = e.target?.result;
-                //       if (selected) upd(selected?.id, { imgUrl: imageDataUrl }); // Call function to store the image
-                //     };
-
-                //     reader.readAsDataURL(file); // Read file as Data URL
-                //   }
-                // }}
-              >
-                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 p-1 ">
-                  <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
-                    {<img src={ingredients[selected?.title?.trim()]} />}
-                    <div className="flex flex-wrap gap-1 h-fit">
-                      {selected?.remote && selected?.onStock && (
-                        <Chip
-                          icon="FaShoppingCart"
-                          className="bg-yellow-500 w-fit"
-                          label="Available"
-                        ></Chip>
-                      )}
-                      {(selected?.local?.onStock ||
-                        (!selected?.remote && selected?.onStock)) && (
-                        <Chip
-                          onClick={() =>
-                            setInvLocal(selected?.local?.list || "Local")
-                          }
-                          icon="FaCheck"
-                          className={clsx("w-fit", {
-                            "bg-green-600":
-                              invLocal === selected?.local?.list ||
-                              invLocal === selected?.list,
-                            "bg-yellow-500":
-                              invLocal !== selected?.local?.list &&
-                              invLocal !== selected?.list,
-                          })}
-                          label={
-                            listAliases[
-                              selected?.list || selected?.local?.list || "Local"
-                            ] ||
-                            selected?.list ||
-                            selected?.local?.list ||
-                            "In collection"
-                          }
-                        ></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        10,
-                        20
-                      ) && (
-                        <Chip className="bg-yellow-300 w-fit" label="$"></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        20,
-                        30
-                      ) && (
-                        <Chip className="bg-yellow-400 w-fit" label="$$"></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        30,
-                        100
-                      ) && (
-                        <Chip
-                          className="bg-yellow-500 w-fit"
-                          label="$$$"
-                        ></Chip>
-                      )}
-                      {between(
-                        getRawPricePerMl?.(selected as Item),
-                        100,
-                        1000
-                      ) && (
-                        <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-1 h-fit">
-                      {selected?.tags?.map((tag) => {
-                        return (
-                          <Chip
-                            label={tag}
-                            icon={TagIcons[tag]}
-                            style={{
-                              backgroundColor: TagColors[tag],
-                            }}
-                          ></Chip>
-                        );
-                      })}
-                    </div>
-                    {selected?.amount && !selected?.remote && (
-                      <DestructiveButton
-                        className="m-1 !h-7 !w-7 "
-                        level={1}
-                        onDestruct={() => {
-                          if (selected?.id) del(selected?.id);
-                          setSelected({ title: selected?.title } as Item);
-                        }}
-                        icon="FaTrash"
-                      ></DestructiveButton>
-                    )}
-                    {selected?.title?.match(/[$€]$/) && (
-                      <DestructiveButton
-                        className="m-1"
-                        level={1}
-                        onDestruct={() => {
-                          if (selected?.id)
-                            upd(selected?.id, {
-                              title: selected?.title
-                                .replace(/\s\d+[%]/, "")
-                                .replace(/\d+[$€]$/, ""),
-                            });
-                        }}
-                        icon="FaHammer"
-                      ></DestructiveButton>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%]">
-                    <div className="flex gap-1">
-                      {selected?.amount && (
-                        <b className="flex">
-                          {amountToNumber(selected?.amount) *
-                            selected?.quantity}
-                          {getAmountUnit(selected?.amount)}
-                        </b>
-                      )}
-                      {/* <h2 className="line-clamp-1 w-fit">{selected?.title}</h2> */}
-                      {selected?.price && (
-                        <div className="flex gap-1 ml-auto">
-                          <span>{selected?.price}</span>
-
-                          <span>
-                            ({selected?.price?.slice(-1)}
-                            {getRawPricePerMl(selected)}/
-                            {getAmountUnit(selected?.amount)})
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    {perfumeIngredientsOdours[selected?.title] && (
-                      <div className="flex gap-1 flex-wrap">
-                        {perfumeIngredientsOdours[selected?.title].map(
-                          (odor) => {
-                            return (
-                              <OdorChip
-                                filter={filter}
-                                odor={odor}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFilter(toggle(filter, odor));
-                                }}
-                              ></OdorChip>
-                            );
-                          }
-                        )}
-                      </div>
-                    )}
-                    {perfumeIngredientsDesc[selected?.title] && (
-                      <p className="mb-0 overflow-y-auto h-full w-full p-2 text-base bg-white/20 rounded-md">
-                        {perfumeIngredientsDesc[selected?.title]}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {!selected && (
-              <div className="flex flex-col gap-1">
-                <div className="bg-yellow-500/55 rounded-md p-2 flex gap-1 w-full">
-                  {getMostExpensive(emptyStock ? storedList : list || []).map(
-                    (entry, i) => {
-                      return (
-                        <button
-                          onClick={() => {
-                            setSelected(entry);
-                          }}
-                          className={clsx(
-                            "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
-                            "transition-all",
-                            {
-                              ["border-yellow-" + (7 - i) + "00"]: true,
-                            }
-                          )}
-                        >
-                          {ingredients[entry?.title?.trim()] && (
-                            <img
-                              className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
-                              src={ingredients[entry?.title?.trim()]}
-                            />
-                          )}
-                          <p
-                            className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
-                            style={{
-                              textShadow:
-                                "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
-                            }}
-                          >
-                            {entry.title}
-                          </p>
-                          <div className="absolute bottom-1 right-1 flex gap-1 ">
-                            <AmountChip
-                              className="h-fit"
-                              amount={entry.amount}
-                              dilution={
-                                entry.dilution === "100%"
-                                  ? undefined
-                                  : entry.dilution
-                              }
-                            ></AmountChip>
-                          </div>
-                        </button>
-                      );
-                    }
-                  )}
-                  <div className="bg-black/20 flex-1 rounded-r-md ml-1 -mr-2 -my-2"></div>
-                </div>
-                <div className="bg-green-500/55 rounded-md p-2 flex gap-1 w-full overflow-hidden">
-                  <div className="rounded-md overflow-hidden flex flex-wrap gap-1 w-full max-w-[600px]">
-                    {getMostOnStock(emptyStock ? storedList : list || []).map(
-                      (entry, i) => {
-                        return (
-                          <button
-                            onClick={() => {
-                              setSelected(entry);
-                            }}
-                            className={clsx(
-                              "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
-                              "transition-all",
-                              {
-                                ["border-yellow-" + (7 - i) + "00"]: true,
-                              }
-                            )}
-                          >
-                            {ingredients[entry?.title?.trim()] && (
-                              <img
-                                className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
-                                src={ingredients[entry?.title?.trim()]}
-                              />
-                            )}
-                            <p
-                              className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
-                              style={{
-                                textShadow:
-                                  "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
-                              }}
-                            >
-                              {entry.title}
-                            </p>
-                            <div className="absolute bottom-1 right-1 flex gap-1 ">
-                              <AmountChip
-                                className="h-fit"
-                                amount={entry.amount}
-                                dilution={
-                                  entry.dilution === "100%"
-                                    ? undefined
-                                    : entry.dilution || undefined
-                                }
-                              ></AmountChip>
-                            </div>
-                          </button>
-                        );
-                      }
-                    )}
-                  </div>
-                  <div className="bg-black/20 flex-1 rounded-r-md  -mr-2 -my-2"></div>
-                </div>
-              </div>
-            )}
-          </div>
+        {!!selected && (isMobile ? !!selected?.amount : true) && (
+          <IngredientDetail
+            inventories={{
+              remote: {
+                All: perfumersApprenticeInventory,
+                Moe: inventory || [],
+              },
+              local: {
+                Local: [],
+              },
+            }}
+            invRemote={""}
+            invLocal={invLocal || "Local"}
+            selected={selected!}
+            setSelected={setSelected}
+            list={list}
+            sorted={sorted}
+            emptyStock={emptyStock}
+            listAliases={listAliases}
+            storedList={storedList}
+            upd={upd}
+          ></IngredientDetail>
         )}
       </div>
     </div>
   );
 };
 
+export type IngredientDetailProps = {
+  selected: Partial<Item> | null;
+  setSelected: (itm: Partial<Item> | null) => void;
+  invRemote: string;
+  invLocal?: string;
+  inventories: { remote: Inventories; local: Inventories };
+  filter?: string[] | null;
+  list: Item[];
+  sorted: Item[];
+  emptyStock?: boolean;
+  storedList?: any;
+  listAliases?: Record<string, string>;
+  upd: any;
+  expanded?: boolean;
+};
+export const IngredientDetail = ({
+  selected,
+  setSelected,
+  invRemote,
+  expanded,
+  list,
+  sorted,
+  invLocal = "Local",
+  inventories,
+  listAliases,
+  filter = null,
+  emptyStock,
+  storedList,
+  upd,
+}: IngredientDetailProps) => {
+  const bp = useCurrentBreakpoint({ current: document.body });
+  const isMobile = isSmaller(bp, "md");
+
+  const db = useIndexedDB("inventory");
+  const [storedLkp, setStoredLkp] = useState<Record<string, Item[]>>({});
+  const [localLists, setLocalLists] = useLocalStorage(
+    Object.keys(inventories?.local || {}),
+    "localLists"
+  );
+  const loadLocalLists = async () => {
+    const res = (await db.getAll()) || [];
+    setLocalLists(
+      [
+        ...new Set([
+          ...Object.keys(inventories?.local),
+          ...localLists,
+          ...res.map((itm) => {
+            return itm.list;
+          }),
+        ]),
+      ].filter(Boolean)
+    );
+    console.log("LOAD INV", res);
+    setStoredLkp({
+      ...storedLkp,
+      ...res.reduce((acc, itm) => {
+        return { ...acc, [itm.list]: [...(acc[itm.list] || []), itm] };
+      }, {}),
+    });
+  };
+
+  useEffect(() => {
+    loadLocalLists();
+  }, [invLocal]);
+
+  const inventory =
+    (invRemote
+      ? inventories?.remote[invRemote]
+      : storedLkp?.[invLocal.trim()]) || [];
+
+  const uniqueIngredientsOnStock = [
+    ...new Set(
+      list
+        .filter((itm) => {
+          return itm.onStock;
+        })
+        .map((itm) => {
+          return itm.title;
+        })
+    ),
+  ];
+  const totalValue = list
+    .filter((itm) => {
+      return itm.onStock;
+    })
+    .reduce((total, itm) => {
+      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
+    }, 0);
+
+  const add = async ({ id, ...props }: Partial<Item>) => {
+    await db.add({ ...props, list: invLocal });
+
+    // setStoredLkp((list) => ({
+    //   ...list,
+    //   [invLocal || "Local"]: [...list[invLocal || "Local"], toAdd],
+    // }));
+
+    if (inventories.local[invLocal]) await loadLocalLists();
+    else {
+      setLocalLists([...new Set([...localLists, invLocal])]);
+    }
+  };
+
+  const del = async (id: number, noUpdate?: boolean) => {
+    await db.deleteRecord(id);
+    if (noUpdate) return;
+    const index = list.findIndex((itm) => {
+      return Number(itm.id) === id;
+    });
+
+    setStoredLkp((list) => {
+      const newList = { ...list };
+      newList[invLocal || "Local"] = newList[invLocal || "Local"] || [];
+      newList[invLocal || "Local"].splice(index, 1);
+      return newList;
+    });
+  };
+
+  const navigate = useNavigate();
+  const params = useParams();
+
+  return (
+    <div
+      className={clsx(
+        "detail flex flex-col  md:max-w-[66%] md:flex-shrink pb-0 gap-0 bg-black/70 sm:bg-black/0 relative",
+        {
+          "!-translate-x-[calc(292px)] !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0":
+            expanded,
+          "!w-full": !expanded,
+        }
+      )}
+    >
+      <div
+        className="
+      flex gap-1 flex-col lg:flex-row 
+      lg:flex-wrap justify-between bg-white/20
+      p-2 rounded-t-md items-center h-fit"
+      >
+        <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full ">
+          {selected?.title ? (
+            <h2 className="line-clamp-1">{selected?.title}</h2>
+          ) : (
+            <h2 className="line-clamp-1">{invRemote}</h2>
+          )}
+          {selected?.aliases?.length && (
+            <em>{selected?.aliases?.join(", ")}</em>
+          )}
+        </div>
+        <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
+          <IconButton
+            className=""
+            round
+            icon="FaChevronLeft"
+            onClick={() => {
+              const sel = sorted
+                ?.filter((itm) => itm.title === selected?.title)
+                .at(-1);
+              const index = sel ? sorted?.indexOf(sel) : -1;
+              console.log("SEL", sorted, sel, index);
+              setSelected(
+                sorted[(sorted?.length + index - 1) % sorted?.length]
+              );
+            }}
+          ></IconButton>
+          <IconButton
+            className="mr-auto lg:mr-0"
+            round
+            icon="FaChevronRight"
+            onClick={() => {
+              const sel = sorted
+                ?.filter((itm) => itm.title === selected?.title)
+                .at(-1);
+              const index = sel ? sorted?.indexOf(sel) : -1;
+              setSelected(sorted[(index + 1) % sorted?.length]);
+            }}
+          ></IconButton>
+          <Chip
+            label={uniqueIngredientsOnStock?.length.toString()}
+            icon="FaBottleDroplet"
+            iconClsn="!h-5 !w-5"
+            className="ml-auto md:ml-0 bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
+          ></Chip>
+          <Chip
+            label={totalValue.toString()}
+            icon="FaDollarSign"
+            iconClsn="!h-5 !w-5"
+            className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
+          ></Chip>
+          {selected &&
+            (!isMobile ? (
+              <ActionButton
+                level={1}
+                icon={isMobile ? "FaChevronRight" : "FaX"}
+                className="!rounded-l-full sm:!rounded-l-none"
+                onDestruct={() => {
+                  setSelected(
+                    isMobile
+                      ? { title: selected?.title, amount: selected?.amount }
+                      : null
+                  );
+                }}
+              ></ActionButton>
+            ) : (
+              <ToggleButton
+                active={!!expanded}
+                icon={isMobile ? "FaChevronRight" : "FaX"}
+                className="!rounded-l-full sm:!rounded-l-none"
+                onClick={() => {
+                  setSelected(
+                    isMobile
+                      ? { title: selected?.title, amount: selected?.amount }
+                      : null
+                  );
+                }}
+              ></ToggleButton>
+            ))}
+        </div>
+      </div>
+      {!!selected?.title && (
+        <div
+          className={clsx(
+            "max-w-full overflow-y-auto  h-full rounded-b-md bg-white/10",
+            {}
+          )}
+          onDragEnter={(e) => {
+            e.preventDefault();
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+          }}
+          // onDrop={(event) => {
+          //   event.preventDefault(); // Prevent default browser behavior
+          //   const file = event.dataTransfer.files[0];
+
+          //   // Ensure the dropped file is an image
+          //   if (file && file.type.startsWith("image/")) {
+          //     const reader = new FileReader();
+
+          //     reader.onload = (e) => {
+          //       const imageDataUrl = e.target?.result;
+          //       if (selected) upd(selected?.id, { imgUrl: imageDataUrl }); // Call function to store the image
+          //     };
+
+          //     reader.readAsDataURL(file); // Read file as Data URL
+          //   }
+          // }}
+        >
+          <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 p-1 ">
+            <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
+              {<img src={ingredients[selected?.title?.trim()]} />}
+              <div className="flex flex-wrap gap-1 h-fit">
+                {selected?.remote && selected?.onStock && (
+                  <Chip
+                    icon="FaShoppingCart"
+                    className="bg-yellow-500 w-fit"
+                    label="Available"
+                  ></Chip>
+                )}
+                {(selected?.local?.onStock ||
+                  (!selected?.remote && selected?.onStock)) && (
+                  <Chip
+                    // onClick={() =>
+                    //   // setInvLocal(selected?.local?.list || "Local")
+                    // }
+                    icon="FaCheck"
+                    className={clsx("w-fit", {
+                      "bg-green-600":
+                        invLocal === selected?.local?.list ||
+                        invLocal === selected?.list,
+                      "bg-yellow-500":
+                        invLocal !== selected?.local?.list &&
+                        invLocal !== selected?.list,
+                    })}
+                    label={
+                      listAliases?.[
+                        selected?.list || selected?.local?.list || "Local"
+                      ] ||
+                      selected?.list ||
+                      selected?.local?.list ||
+                      "In collection"
+                    }
+                  ></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 10, 20) && (
+                  <Chip className="bg-yellow-300 w-fit" label="$"></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 20, 30) && (
+                  <Chip className="bg-yellow-400 w-fit" label="$$"></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 30, 100) && (
+                  <Chip className="bg-yellow-500 w-fit" label="$$$"></Chip>
+                )}
+                {between(getRawPricePerMl?.(selected as Item), 100, 1000) && (
+                  <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1 h-fit">
+                {selected?.tags?.map((tag) => {
+                  return (
+                    <Chip
+                      label={tag}
+                      icon={TagIcons[tag]}
+                      style={{
+                        backgroundColor: TagColors[tag],
+                      }}
+                    ></Chip>
+                  );
+                })}
+              </div>
+              <LocalListChips
+                showButtons={false}
+                toInventory={!window.location.pathname.includes("/inventory/")}
+                listNames={localLists}
+                // onAdd={ing => ing && add(ing)}
+                // onDelete={(id) => del(id)}
+                value={invLocal}
+                items={inventory}
+                onChange={(library) => {
+                  const search = new URLSearchParams(window.location.search);
+                  search.set("library", library || "Local");
+                  if (window.location.pathname.includes("/inventory/")) {
+                    navigate(
+                      lngLnk`/inventory/${params.list!}/${encodeURIComponent(
+                        params.title!
+                      )}${params.amount ? "/" + params.amount! : ""}?` +
+                        search.toString() +
+                        window.location.hash
+                    );
+                  } else {
+                    navigate(
+                      lngLnk`/formula/${params.author!}/${params.title!}/?` +
+                        search.toString() +
+                        window.location.hash
+                    );
+                  }
+                }}
+              ></LocalListChips>
+
+              <div className="flex gap-1 flex-wrap">
+                {inventories?.remote?.Moe.filter(
+                  (i) => i.title === selected.title
+                ).map((selected) => {
+                  const local = inventory.find(
+                    (i) =>
+                      i.title === selected?.title &&
+                      i.amount == selected?.amount
+                  );
+                  const inLib = !!local?.id;
+                  return (
+                    <Chip
+                      id={"amount" + selected?.amount}
+                      className={clsx(
+                        {
+                          "bg-yellow-500/70": !inLib,
+                          "bg-green-600/70": inLib,
+                        },
+                        "w-fit"
+                      )}
+                      tooltip={
+                        inLib
+                          ? `This item is in your library.`
+                          : `This item is *not* your library.`
+                      }
+                      onClick={async () => {
+                        const local = inventory?.find(
+                          (i) =>
+                            i.title === selected?.title &&
+                            i.amount == selected?.amount
+                        )?.id;
+                        console.log("SELECTED", selected, local, inventory);
+                        if (local) await del(Number(local));
+                        if (!local) await add(selected);
+                        setSelected({
+                          title: selected?.title,
+                          amount: selected?.amount,
+                        } as Item);
+                        await loadLocalLists();
+                      }}
+                      icon={
+                        inventory.some(
+                          (i) =>
+                            i.title === selected?.title &&
+                            i.amount == selected?.amount
+                        )
+                          ? "FaCheck"
+                          : "FaPlus"
+                      }
+                      label={selected?.amount}
+                    ></Chip>
+                  );
+                })}
+              </div>
+              {selected?.title?.match(/[$€]$/) && (
+                <ActionButton
+                  className="m-1"
+                  level={1}
+                  onDestruct={() => {
+                    if (selected?.id)
+                      upd(selected?.id, {
+                        title: selected
+                          ?.title!.replace(/\s\d+[%]/, "")
+                          .replace(/\d+[$€]$/, ""),
+                      });
+                  }}
+                  icon="FaHammer"
+                ></ActionButton>
+              )}
+            </div>
+            <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%]">
+              <div className="flex gap-1">
+                {selected?.amount && (
+                  <b className="flex">
+                    {amountToNumber(selected?.amount) *
+                      (selected?.quantity || 1)}
+                    {getAmountUnit(selected?.amount)}
+                  </b>
+                )}
+                {/* <h2 className="line-clamp-1 w-fit">{selected?.title}</h2> */}
+                {selected?.price && (
+                  <div className="flex gap-1 ml-auto">
+                    <span>{selected?.price}</span>
+
+                    <span>
+                      ({selected?.price?.slice(-1)}
+                      {getRawPricePerMl(selected as Item)}/
+                      {getAmountUnit(selected?.amount)})
+                    </span>
+                  </div>
+                )}
+              </div>
+              {perfumeIngredientsOdours[selected?.title] && (
+                <div className="flex gap-2 flex-wrap">
+                  {perfumeIngredientsOdours[selected?.title].map((odor) => {
+                    return (
+                      <OdorChip
+                        filter={filter}
+                        odor={odor}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   setFilter(toggle(filter, odor));
+                        // }}
+                      ></OdorChip>
+                    );
+                  })}
+                </div>
+              )}
+              {perfumeIngredientsDesc[selected?.title] && (
+                <p className="mb-0 overflow-y-auto h-full w-full p-2 text-base bg-white/20 rounded-md">
+                  {perfumeIngredientsDesc[selected?.title]}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!selected && (
+        <div className="flex flex-col gap-1">
+          <div className="bg-yellow-500/55 rounded-md p-2 flex gap-1 w-full">
+            {getMostExpensive(emptyStock ? storedList : list || []).map(
+              (entry, i) => {
+                return (
+                  <button
+                    onClick={() => {
+                      setSelected(entry);
+                    }}
+                    className={clsx(
+                      "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
+                      "transition-all",
+                      {
+                        ["border-yellow-" + (7 - i) + "00"]: true,
+                      }
+                    )}
+                  >
+                    {ingredients[entry?.title?.trim()] && (
+                      <img
+                        className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
+                        src={ingredients[entry?.title?.trim()]}
+                      />
+                    )}
+                    <p
+                      className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
+                      style={{
+                        textShadow:
+                          "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
+                      }}
+                    >
+                      {entry.title}
+                    </p>
+                    <div className="absolute bottom-1 right-1 flex gap-1 ">
+                      <AmountChip
+                        className="h-fit"
+                        amount={entry.amount}
+                        dilution={
+                          entry.dilution === "100%" ? undefined : entry.dilution
+                        }
+                      ></AmountChip>
+                    </div>
+                  </button>
+                );
+              }
+            )}
+            <div className="bg-black/20 flex-1 rounded-r-md ml-1 -mr-2 -my-2"></div>
+          </div>
+          <div className="bg-green-500/55 rounded-md p-2 flex gap-1 w-full overflow-hidden">
+            <div className="rounded-md overflow-hidden flex flex-wrap gap-1 w-full max-w-[600px]">
+              {getMostOnStock(emptyStock ? storedList : list || []).map(
+                (entry, i) => {
+                  return (
+                    <button
+                      onClick={() => {
+                        setSelected(entry);
+                      }}
+                      className={clsx(
+                        "border-white  border-2 overflow-hidden bg-red-200 min-w-[116px] min-h-[116px] flex flex-col   items-center relative text-center border-[1.5px]  group max-w-[116px]",
+                        "transition-all",
+                        {
+                          ["border-yellow-" + (7 - i) + "00"]: true,
+                        }
+                      )}
+                    >
+                      {ingredients[entry?.title?.trim()] && (
+                        <img
+                          className="brightness-[0.7]  blur-[1.2px] scale-110 group-hover:scale-100 group-hover:brightness-[1] group-hover:blur-[0px] transition-all"
+                          src={ingredients[entry?.title?.trim()]}
+                        />
+                      )}
+                      <p
+                        className="backdrop-blur-[0.7px] shadow-md bg-black/40 w-full text-base absolute inline-flex flex-col top-[calc(50%-1rem)] group-hover:top-0 opacity-90 group-hover:opacity-100 transition-all"
+                        style={{
+                          textShadow:
+                            "0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 1px 0px 1px black, -1px 0px 1px black, 0px 1px 1px black, 0px -1px 1px black",
+                        }}
+                      >
+                        {entry.title}
+                      </p>
+                      <div className="absolute bottom-1 right-1 flex gap-1 ">
+                        <AmountChip
+                          className="h-fit"
+                          amount={entry.amount}
+                          dilution={
+                            entry.dilution === "100%"
+                              ? undefined
+                              : entry.dilution || undefined
+                          }
+                        ></AmountChip>
+                      </div>
+                    </button>
+                  );
+                }
+              )}
+            </div>
+            <div className="bg-black/20 flex-1 rounded-r-md  -mr-2 -my-2"></div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 export type AmountChipProps = Component<{
   className?: string;
   amount: string;
@@ -1329,11 +1535,9 @@ export const IngredientItem = (props: IngredientItemProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    let to: number;
-    console.log("SELECTED", selected?.title, title);
-    if (selected?.title === title) {
-      console.log("SELECTED!!", selected?.title, title);
+    let to: NodeJS.Timeout;
 
+    if (selected?.title === title) {
       to = setTimeout(() => {
         ref?.current?.scrollIntoView({
           behavior: "instant",
@@ -1553,11 +1757,13 @@ export type LocalListChipsProps = Component<{
   items: Item[];
   value: string | null;
   hasAll?: boolean;
-  onChange: (activeKey: string | null) => void;
-  onDelete: (activeKey: string | null) => void;
-  onRemove: (activeKey: string | null) => void;
-  onAdd: (activeKey: string | null) => void;
-  setNotification: (v: string) => void;
+  onChange?: (activeKey: string | null) => void;
+  onDelete?: (activeKey: string | null) => void;
+  onRemove?: (activeKey: string | null) => void;
+  onAdd?: (activeKey: string | null) => void;
+  setNotification?: (v: string) => void;
+  showButtons?: boolean;
+  toInventory?: boolean;
 }>;
 export const LocalListChips = (props: LocalListChipsProps) => {
   const {
@@ -1571,6 +1777,8 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     onAdd,
     items,
     setNotification,
+    showButtons = true,
+    toInventory = false,
   } = props;
 
   const [listAliases, setAliases] = useLocalStorage<Record<string, string>>(
@@ -1578,8 +1786,24 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     "listNames"
   );
   const [showEdit, setShowEdit] = useState(false);
+  const navigate = useNavigate();
+  
   return (
     <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
+      <NavButton
+        internal
+        className="text-blue-500  !mr-2"
+        icon={toInventory ? "IoLibrary" : "FaFlask"}
+        onClick={() =>
+          navigate(
+            !toInventory
+              ? `/${i18next.language}/formula/compose?library=${value}`
+              : `/${i18next.language}/inventory/Moe/${window.location.hash.slice(
+                  1
+                )}?library=${value}&source=local`
+          )
+        }
+      ></NavButton>
       {showEdit && (
         <Input
           placeholder={value || ""}
@@ -1590,12 +1814,19 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           }}
         ></Input>
       )}
+
       {!showEdit &&
         listNames.map((key) => {
           return (
             <div className="h-fit">
               <Chip
-                icon={key === value ? "FaArrowRight" : undefined}
+                icon={
+                  key === value
+                    ? !showButtons
+                      ? "IoLibrary"
+                      : "FaDownload"
+                    : undefined
+                }
                 label={listAliases[key] ? listAliases[key] : key}
                 onRemove={
                   items?.length === 0 && value === key
@@ -1609,26 +1840,26 @@ export const LocalListChips = (props: LocalListChipsProps) => {
                   "border-green-500 border-2",
                   {
                     "cursor-default": value === key && value === "Local",
-                    "bg-yellow-500/70": value === key,
-                    "hover:bg-yellow-300/30":
+                    "bg-purple-500/70": value === key,
+                    "hover:bg-purple-300/30":
                       value === key && value !== "Local",
-                    "hover:bg-yellow-500/70": value !== key,
+                    "hover:bg-purple-500/70": value !== key,
                     "bg-white/30": value !== key,
                   },
                   className
                 )}
                 iconClsn={clsx("w-auto h-auto", {
-                  "!text-green-600 ": hasAll,
+                  "!text-white ": hasAll,
                 })}
                 onClick={() => {
-                  onChange(key === value ? null : key);
+                  onChange?.(key === value ? null : key);
                 }}
               ></Chip>
             </div>
           );
         })}
 
-      <div className="flex gap-1 ml-auto">
+      <div className={clsx("flex gap-1 ml-auto", { hidden: !showButtons })}>
         {!!items?.length && (
           <IconButton
             className="h-7 w-7"
@@ -1643,7 +1874,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
               }, "# " + (listAliases[value || ""] || value || "Local") + ":\n");
 
               copy(plain);
-              setNotification("Copied List!");
+              setNotification?.("Copied List!");
             }}
           ></IconButton>
         )}
@@ -1652,12 +1883,12 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           icon="FaPlus"
           round
           onClick={() => {
-            onAdd("List " + listNames?.length);
+            onAdd?.("List " + listNames?.length);
           }}
         ></IconButton>
         {items?.length > 0 && (
-          <DestructiveButton
-            className="h-7 w-7"
+          <ActionButton
+            className={clsx("h-7 w-7", {})}
             level={2}
             icon="FaTrash"
             round
@@ -1666,7 +1897,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
             onDestruct={(confirmed: boolean) => {
               if (confirmed) onDelete?.(value);
             }}
-          ></DestructiveButton>
+          ></ActionButton>
         )}
         {value !== "Local" && (
           <IconButton
@@ -1679,12 +1910,6 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           ></IconButton>
         )}
       </div>
-      <Link
-        className="text-blue-500"
-        to={`/${i18next.language}/formula/compose?library=${value}&source=local `}
-      >
-        <Icon icon="FaFlask" className="!h-7 !w-7"></Icon>
-      </Link>
     </div>
   );
 };
@@ -1704,10 +1929,15 @@ export const Notification = (props: NotificationProps) => {
   });
 
   return (
-    <div className="fixed top-2 right-1/2 bg-blue-500/70 rounded-md font-semibold z-[1000] p-1 gap-2 flex items-center justify-between">
-      <div className="p-2 bg-black/30 rounded-md">{title}</div>
+    <div className="backdrop-blur-sm fixed top-2 right-1/2 translate-x-1/2 bg-blue-500/70 rounded-md font-semibold z-[1000] p-1 gap-0 flex items-center justify-between">
+      <Icon
+        icon="FaInfo"
+        className="!text-blue-200 h-8 w-8 p-2 rounded-md bg-black/20 mr-2"
+      ></Icon>
+      <div className="p-2 bg-black/30 rounded-md text-white ">{title}</div>
       <IconButton
-        round
+        // round
+        className="!rounded-md !ml-1"
         icon="FaX"
         onClick={() => setNotification("")}
       ></IconButton>

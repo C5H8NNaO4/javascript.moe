@@ -1,0 +1,6 @@
+mutation PublishList ($list: IngredientListInput, $meta: IngredientListMetaInput) {
+  publishList(list: $list, meta: $meta) {
+    remoteId: id
+    token
+  }
+}
