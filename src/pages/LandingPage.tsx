@@ -208,7 +208,7 @@ export const LandingPage = () => {
               texts={["Software Engineer", "Fullstack Dev"]}
             />
             <Parallax
-              trans={[0, 0.5]}
+              trans={[0, 0.7]}
               className="absolute w-full flex flex-col items-center gap-2 mt-[50lvh]"
               distance={64}
               offset={-64}
