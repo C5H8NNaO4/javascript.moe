@@ -1,8 +1,4 @@
-import {
-  useScroll,
-  motion,
-  useTransform,
-} from "framer-motion";
+import { useScroll, motion, useTransform } from "framer-motion";
 import { useContext } from "react";
 import { sectionCtx } from "./AnimatedSection";
 
@@ -11,15 +7,15 @@ export const Overlay = () => {
 
   const { scrollYProgress } = useScroll({
     layoutEffect: false,
-    target: ref || undefined,
+    // target: ref || undefined,
     offset: ["start start", "end end"],
   });
-  const trans = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
+  const trans = useTransform(scrollYProgress, [0.55, 0.7], [0, 1]);
 
   const x = useTransform(trans, [0, 0.75], ["100%", "0%"]);
   const y = useTransform(trans, [0, 0.25], ["100%", "0%"]);
   return (
-    <svg
+    <motion.svg
       className="absolute right-0 bottom-0"
       viewBox="0 0 300 300"
       style={{
@@ -28,6 +24,8 @@ export const Overlay = () => {
         stroke: "1px red",
         mixBlendMode: "multiply",
         filter: "drop-shadow(0px 0px 3px)",
+        x,
+        y
       }}
     >
       <motion.path
@@ -38,6 +36,6 @@ export const Overlay = () => {
           y,
         }}
       />
-    </svg>
+    </motion.svg>
   );
 };

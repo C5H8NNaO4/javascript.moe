@@ -133,7 +133,6 @@ export const LandingPage = () => {
           </FlyOut>
         </Parallax>
         <MyName />
-        <Overlay />
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
@@ -314,9 +313,7 @@ export const LandingPage = () => {
                     },
                     {
                       text: t("texts.formulas"),
-                      logo: () => (
-                        <Icon icon="FaBook" />
-                      ),
+                      logo: () => <Icon icon="FaBook" />,
                       href: lngLnk`/formulas`,
                     },
                   ]}
@@ -348,6 +345,7 @@ export const LandingPage = () => {
                                 ></Bullets>
                             </Parallax>
                         </Parallax> */}
+            <Overlay />
           </SwiperSlide>
         </Swiper>
       </StickySection>
