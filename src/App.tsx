@@ -1,22 +1,32 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import "@/App.css";
+
 import { routes } from "@/lib/routes";
 import ScrollToTop from "@/components/ScrollToTop";
 
 import { initDB } from "react-indexed-db-hook";
 import { DBConfig } from "./config/indexedDB";
+import { ApolloProvider } from "@apollo/client";
+import client from "./config/apolloClient";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+import "@/App.css";
+import "react-tooltip/dist/react-tooltip.css";
+import { IdentityActivity } from "./components/IdentityActivity";
 
 initDB(DBConfig);
 
 function App() {
   return (
-    <Router
-      future={{
-        v7_startTransition: true,
-      }}
-    >
-      <ScrollToTop />
-      {/* <img
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <ApolloProvider client={client}>
+        <Router
+          future={{
+            v7_startTransition: true,
+          }}
+        >
+          <ScrollToTop />
+          <IdentityActivity></IdentityActivity>
+          {/* <img
       alt="Moosweiher in Freiburg mit einer Ente am Ufer"
       src="/images/wallpaper/1.webp"
       style={{
@@ -29,8 +39,10 @@ function App() {
         filter: 'saturate(0%)'
       }}
     /> */}
-      {routes}
-    </Router>
+          {routes}
+        </Router>
+      </ApolloProvider>
+    </GoogleOAuthProvider>
   );
 }
 
