@@ -297,7 +297,7 @@ export const IngredientPage = () => {
 export const InventoryPage = () => {
   const params = useParams();
   return (
-    <div className="h-full w-full relative flex justify-center">
+    <div className="h-full w-full relative flex justify-center page">
       {ReactDOM.createPortal(
         <>
           <div></div>
@@ -361,7 +361,7 @@ export const InventoryPage = () => {
       )}
       <EnsureLanguage path="/inventory" />
 
-      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+      <div className="absolute top-0  max-w-[100vw] flex h-fit w-full">
         <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
       </div>
       <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/80 text-white">
@@ -387,7 +387,7 @@ export const FragrancePage = () => {
   const params = useParams();
 
   return (
-    <div className="h-full w-full relative flex justify-center">
+    <div className="h-full w-full relative flex justify-center page">
       {ReactDOM.createPortal(
         <>
           <div></div>
@@ -503,7 +503,7 @@ export const FormulaPage = () => {
   const isRemote = searchParams.get("remote");
 
   return (
-    <div className="h-full w-full relative flex justify-center">
+    <div className="h-full w-full relative flex justify-center page">
       {ReactDOM.createPortal(
         <>
           <div></div>
@@ -567,7 +567,7 @@ export const FormulaPage = () => {
       )}
       <EnsureLanguage path="/formula/compose" />
 
-      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
+      <div className="absolute top-0  max-w-[100vw] flex h-fit w-full">
         <img
           src="/images/wallpaper/ingredients.jpg"
           className="w-full saturate-0"
@@ -705,7 +705,7 @@ export const DiscoverPage = () => {
   const isRemote = !!searchParams.get("remote");
 
   return (
-    <div className="h-full w-full relative flex justify-center">
+    <div className="h-full w-full relative flex justify-center page">
       {ReactDOM.createPortal(
         <>
           <div></div>
@@ -769,11 +769,11 @@ export const DiscoverPage = () => {
       )}
       <EnsureLanguage path="/formula/compose" />
 
-      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
-        <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
+      <div className="absolute top-0  max-w-[100vw] flex h-fit w-full">
+        <img src="/images/wallpaper/ingredients.jpg" className="w-full h-screen" />
       </div>
 
-      <ContextMenuTrigger id="my-context-menu-1" className="h-full w-full">
+      <ContextMenuTrigger id="my-context-menu-1" className="h-fit w-full">
         <div className="m-4 flex flex-col h-full">
           <ActionInput
             placeholder="Search..."
@@ -818,7 +818,7 @@ export const PublishPage = () => {
   const params = useParams();
 
   return (
-    <div className="h-full w-full relative flex justify-center">
+    <div className="h-full w-full relative flex justify-center page">
       {ReactDOM.createPortal(
         <>
           <div></div>

@@ -13,6 +13,7 @@ export type ChipProps = Component<{
   icon?: string;
   iconClsn?: string;
   containerClsn?: string;
+  wrapperClsn?: string;
   containerStyle?: any;
   onRemove?: (ek: React.MouseEvent) => void;
   onClick?: React.MouseEventHandler;
@@ -28,6 +29,7 @@ export const Chip = (props: React.PropsWithChildren<ChipProps>) => {
     onRemove,
     iconClsn,
     containerClsn,
+    wrapperClsn,
     containerStyle,
     tooltip,
     id,
@@ -35,7 +37,7 @@ export const Chip = (props: React.PropsWithChildren<ChipProps>) => {
   } = props;
   const Cmp = typeof rest.onClick === "function" ? "button" : "div";
   return (
-    <div id={id + "chip"}>
+    <div id={id + "chip"} className={wrapperClsn}>
       <Cmp
         {...(rest as any)}
         className={clsx(

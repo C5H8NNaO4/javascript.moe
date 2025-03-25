@@ -9,7 +9,8 @@ export const IdentityActivity = () => {
     : ReactDOM.createPortal(
         <Chip
           icon="FaFingerprint"
-          className="bg-green-500 absolute right-2 top-2"
+          wrapperClsn="fixed right-2 top-2"
+          className="bg-green-500"
           label={used}
         ></Chip>,
         document.body
