@@ -16,7 +16,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webp}"],
-        globIgnores: ["index.html"]
+        // globIgnores: ["index.html"]s
       },
     }),
   ],
