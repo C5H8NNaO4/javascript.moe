@@ -1,9 +1,6 @@
 import { useScroll, motion, useTransform } from "framer-motion";
-import { useContext } from "react";
-import { sectionCtx } from "./AnimatedSection";
 
 export const Overlay = () => {
-  const { ref } = useContext(sectionCtx);
 
   const { scrollYProgress } = useScroll({
     layoutEffect: false,
