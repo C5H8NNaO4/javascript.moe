@@ -1,6 +1,4 @@
-import {
-  ListFormulasQuery,
-} from "@/apollo/queries/generated/graphql";
+import { ListFormulasQuery } from "@/apollo/queries/generated/graphql";
 import { Formula } from "@/components/Inventory";
 import { DB_FORMULA } from "@/const/indexedDBNames";
 import { adaptIndexedDBFormula, IDBFormula } from "@/utils/dataStructure";
@@ -31,8 +29,8 @@ export const useFormulaItemById = (id?: string) => {
 };
 
 export const useFormulas = (
-  remote?: ListFormulasQuery['listFormulas']
-) => {
+  remote?: ListFormulasQuery["listFormulas"]
+): [Formula[], () => void] => {
   const formulaDb = useFormulaDb();
   const [itms, setItms] = useState<Formula[] | null>([]);
 
@@ -49,12 +47,13 @@ export const useFormulas = (
     load();
   }, []);
 
-  return remote?.map((r) => {
+  const formulas = remote?.map((r) => {
     return {
       ...r,
       ...(itms?.find((itm) => r?.remoteId === itm.remoteId) || {}),
     } as Formula;
   });
+  return [formulas, load];
 };
 
 export const useLocalFormulas = (remote: Formula[] = []) => {
