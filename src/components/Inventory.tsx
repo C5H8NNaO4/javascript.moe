@@ -1225,10 +1225,9 @@ export const IngredientDetail = ({
                 })}
               </div>
               <div className="flex flex-wrap gap-1 h-fit">
-                <div className="bg-white/20 p-1 flex">
-                  <div className="bg-black/10 p-1">CAS</div>
-                  <div className="bg-white/10 p-1 w-full">
-                    {JSON.stringify(selected)}
+                <div className="bg-white/20 p-1 flex items-center">
+                  <div className="bg-black/10 p-1 bold">CAS</div>
+                  <div className="bg-white/10 p-1 font-semibold w-full">
                   </div>
                 </div>
               </div>
