@@ -441,36 +441,40 @@ export const Formula = ({
             </ActionButton>
           </div>
           <div className="relative flex flex-row gap-1">
-            {!remoteId && (
-              <IconButton
-                icon="FaDownload"
-                id="downloadButton"
-                tooltip="Save in local library"
-                tooltipPlacement="bottom"
-                disabled={!!remoteId}
-                onClick={() => {
-                  saveToDB();
-                }}
-              />
-            )}
+            {!!remoteId &&
+              !localFormulas?.some((f) => f.remoteId === remoteId) && (
+                <IconButton
+                  icon="FaDownload"
+                  id="downloadButton"
+                  tooltip="Save in local library"
+                  tooltipPlacement="bottom"
+                  disabled={!!remoteId}
+                  onClick={() => {
+                    saveToDB();
+                  }}
+                />
+              )}
 
-            {!!remoteId && (
-              <NavButton
-                internal
-                icon="IoLibrary"
-                id="libraryButton"
-                tooltip="Open in local library"
-                tooltipPlacement="bottom"
-                disabled={!localFormulas?.some((f) => f.remoteId === remoteId)}
-                onClick={() => {
-                  const localId = localFormulas?.find(
-                    (f) => f.remoteId === remoteId
-                  )?.id;
-                  if (localId)
-                    navigate(lngLnk`/formula/compose/${localId.toString()}`);
-                }}
-              />
-            )}
+            {!!remoteId &&
+              localFormulas?.some((f) => f.remoteId === remoteId) && (
+                <NavButton
+                  internal
+                  icon="IoLibrary"
+                  id="libraryButton"
+                  tooltip="Open in local library"
+                  tooltipPlacement="bottom"
+                  disabled={
+                    !localFormulas?.some((f) => f.remoteId === remoteId)
+                  }
+                  onClick={() => {
+                    const localId = localFormulas?.find(
+                      (f) => f.remoteId === remoteId
+                    )?.id;
+                    if (localId)
+                      navigate(lngLnk`/formula/compose/${localId.toString()}`);
+                  }}
+                />
+              )}
             <IconButton
               icon="FaCopy"
               id="copyButton"
