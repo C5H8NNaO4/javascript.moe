@@ -364,7 +364,7 @@ export const Formula = ({
   return (
     <div
       className={clsx(
-        "formula flex  justify-center bg-white/20 rounded-r-lg h-full flex-shrink-0",
+        "formula flex  justify-center bg-white/20 rounded-r-lg h-full flex-shrink-0 w-full",
 
         {
           " sm:relative !translate-x-[calc(-100%+48px)]   sm:!translate-x-0 ":
@@ -373,7 +373,7 @@ export const Formula = ({
         }
       )}
     >
-      <div className="h-full flex flex-col gap-1 ">
+      <div className="h-full flex flex-col gap-1 w-full">
         <div className="flex justify-between items-center gap-0 flex-col">
           <h1
             id="title"
