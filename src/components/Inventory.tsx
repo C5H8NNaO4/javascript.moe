@@ -826,7 +826,7 @@ export const InventoryList = ({
                 onDelete={deleteList}
                 setNotification={setNotification}
                 onRemove={(key) => {
-                    setLocalLists(localLists?.filter((k: string) => k !== key));
+                  setLocalLists(localLists?.filter((k: string) => k !== key));
 
                   if (invLocal === key) setInvLocal(localLists[0]);
                 }}
@@ -1043,7 +1043,7 @@ export const IngredientDetail = ({
         {
           "absolute sm:relative left-0 !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0 max-h-screen sm:max-h-[auto]":
             expanded,
-          "!w-full translate-x-[calc(100vw-48px)]": !expanded,
+          "!w-full translate-x-[calc(100vw-48px)] sm:translate-x-0": !expanded,
         }
       )}
     >
@@ -1210,6 +1210,7 @@ export const IngredientDetail = ({
                   <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
                 )}
               </div>
+
               <div className="flex flex-wrap gap-1 h-fit">
                 {selected?.tags?.map((tag) => {
                   return (
@@ -1223,6 +1224,15 @@ export const IngredientDetail = ({
                   );
                 })}
               </div>
+              <div className="flex flex-wrap gap-1 h-fit">
+                <div className="bg-white/20 p-1 flex">
+                  <div className="bg-black/10 p-1">CAS</div>
+                  <div className="bg-white/10 p-1 w-full">
+                    {JSON.stringify(selected)}
+                  </div>
+                </div>
+              </div>
+
               <LocalListChips
                 showButtons={false}
                 toInventory={!window.location.pathname.includes("/inventory/")}
