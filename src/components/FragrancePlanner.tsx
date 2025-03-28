@@ -820,7 +820,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
           }
         ></Chip>
       )}
-      (
       <div
         className={clsx("block", {
           "group-hover:hidden group-focus-within:hidden": !readonly,
