@@ -573,7 +573,7 @@ export const FormulaPage = () => {
           className="w-full saturate-0"
         />
       </div>
-      <div className="m-4 flex flex-col absolute z-0 w-full px-4 h-full">
+      <div className="p-4 flex flex-col absolute z-0 w-full px-4 h-full">
         <ActionInput placeholder="Search..."></ActionInput>
         <FormulaCards
           search=""
