@@ -2,6 +2,7 @@ import { ListFormulasQuery } from "@/apollo/queries/generated/graphql";
 import { Formula } from "@/components/Inventory";
 import { DB_FORMULA } from "@/const/indexedDBNames";
 import { adaptIndexedDBFormula, IDBFormula } from "@/utils/dataStructure";
+import { atom, useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { useIndexedDB } from "react-indexed-db-hook";
 
@@ -28,11 +29,12 @@ export const useFormulaItemById = (id?: string) => {
   return itm;
 };
 
+const itemsAtom = atom<Formula[] | null>([]);
 export const useFormulas = (
   remote?: ListFormulasQuery["listFormulas"]
 ): [Formula[], () => void] => {
   const formulaDb = useFormulaDb();
-  const [itms, setItms] = useState<Formula[] | null>([]);
+  const [itms, setItms] = useAtom<Formula[] | null>(itemsAtom);
 
   const load = useCallback(async () => {
     try {
