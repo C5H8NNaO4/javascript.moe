@@ -525,14 +525,14 @@ export const Formula = ({
           </div>
         </div>
         <div className="overflow-y-scroll overflow-x-hidden ">
-          <ul>
+          <ul className="min-w-max">
             {items.map((ing: FormulaIngredientProps) => {
               return (
                 <li
                   onClick={() => onSelect(ing)}
                   className={clsx({
                     "bg-white/20": selected?.title === ing?.title,
-                  })}
+                  }, "min-w-max pr-2")}
                 >
                   <FormulaIngredient
                     {...ing}

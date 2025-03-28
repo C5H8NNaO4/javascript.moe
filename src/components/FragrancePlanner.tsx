@@ -726,7 +726,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
     readonly,
   } = props;
   return (
-    <li tabIndex={0}>
       <button className="flex gap-2 group hover:bg-white/20 items-center w-full">
         <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
         <Link
@@ -866,7 +865,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
           ></ActionButton>
         </div>
       </button>
-    </li>
   );
 };
 
