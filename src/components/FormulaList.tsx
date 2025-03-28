@@ -292,8 +292,9 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
             </div>
             <div className="flex flex-wrap w-fit gap-1 items-center">
               {unique(
-                hydratedItems.flatMap((itm) =>
-                  perfumeIngredientsOdours[itm?.title].slice(0, 3)
+                hydratedItems.flatMap(
+                  (itm) =>
+                    perfumeIngredientsOdours[itm?.title]?.slice(0, 3) || []
                 )
               )
                 .sort((a, b) => {

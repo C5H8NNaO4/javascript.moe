@@ -347,8 +347,8 @@ export const Bullets = ({
   });
   const filter = useTransform(
     scrollYProgress,
-    [0.5,0.9, 1],
-    ["saturate(1)","saturate(1.3)", "saturate(0.2)"]
+    [0.5, 0.9, 1],
+    ["saturate(1)", "saturate(1.3)", "saturate(0.2)"]
   );
 
   const bg = useTransform(trans, [0.9, 1], ["#00000000", "#00000044"]);
@@ -367,9 +367,8 @@ export const Bullets = ({
       {data.map((e, i) => {
         const ele = reverse ? data.length - 1 - i : i;
         return (
-          <motion.a
+          <motion.span
             className="bullet"
-            href={e.href || "#"}
             tabIndex={-1}
             style={{
               display: "block",
@@ -388,17 +387,19 @@ export const Bullets = ({
               y: 8,
             }}
           >
-            <motion.div className="flex flex-grow-0 items-center">
-              <e.logo width="36px" height="36px" />
-              <motion.h2
-                style={{
-                  maxWidth: textWidth,
-                }}
-              >
-                <div style={{ marginLeft: "8px" }}>{e.text}</div>
-              </motion.h2>
-            </motion.div>
-          </motion.a>
+            <Link to={e.href || "#"}>
+              <motion.div className="flex flex-grow-0 items-center">
+                <e.logo width="36px" height="36px" />
+                <motion.h2
+                  style={{
+                    maxWidth: textWidth,
+                  }}
+                >
+                  <div style={{ marginLeft: "8px" }}>{e.text}</div>
+                </motion.h2>
+              </motion.div>
+            </Link>
+          </motion.span>
         );
       })}
     </motion.div>

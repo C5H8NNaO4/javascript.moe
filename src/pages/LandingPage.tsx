@@ -350,7 +350,7 @@ export const LandingPage = () => {
         </Swiper>
       </StickySection>
 
-      <StickySection height={h(400)}>
+      <StickySection height={h(400)} hash="contact">
         <DualImages
           images={["/images/wallpaper/16.jpg", "/images/wallpaper/17.jpg"]}
           alts={[
