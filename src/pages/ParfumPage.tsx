@@ -503,7 +503,7 @@ export const FormulaPage = () => {
   const isRemote = searchParams.get("remote");
 
   return (
-    <div className="h-full w-full relative flex justify-center page p-4">
+    <div className="h-full w-full relative flex justify-center page">
       {ReactDOM.createPortal(
         <>
           <div></div>
@@ -573,7 +573,7 @@ export const FormulaPage = () => {
           className="w-full saturate-0"
         />
       </div>
-      <div className="flex flex-col absolute z-0 w-full px-4 h-full">
+      <div className="p-4 flex flex-col absolute z-0 w-full px-4 h-full">
         <ActionInput placeholder="Search..."></ActionInput>
         <FormulaCards
           search=""
