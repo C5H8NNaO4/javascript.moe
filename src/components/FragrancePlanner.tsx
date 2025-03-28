@@ -50,7 +50,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const { className, inventories } = props;
   const db = useIndexedDB("inventory");
   const [search, setSearch] = useSearchParams();
-  const [fragrances, { refetch }] = useLocalFormulas() as [IDBFormula[], any];
+  const [fragrances, { refetch }] = useLocalFormulas();
   const { listId } = useParams();
   useEffect(() => {
     if (!fragrances?.length) return;

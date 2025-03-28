@@ -61,9 +61,9 @@ export const useFormulas = (
 
 export const useLocalFormulas = (
   remote: Formula[] = []
-): [Formula[], { refetch: () => void }] => {
+): [IDBFormula[], { refetch: () => void }] => {
   const formulaDb = useFormulaDb();
-  const [itms, setItms] = useState<Formula[] | null>([]);
+  const [itms, setItms] = useState<IDBFormula[] | null>([]);
 
   const load = useCallback(async () => {
     try {
@@ -84,7 +84,7 @@ export const useLocalFormulas = (
         ...r,
         ...(remote?.find((itm) => r.remoteId === itm.remoteId) || {}),
       };
-    }),
+    }) || [],
     {
       refetch: load,
     },

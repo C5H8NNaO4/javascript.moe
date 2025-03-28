@@ -4,6 +4,7 @@ export type IDBFormula = {
   title: string;
   id: number;
   ingredients: FormulaItem[];
+  remoteId?: string;
 };
 
 export const adaptIndexedDBFormula = (frmla: IDBFormula): Formula => {
