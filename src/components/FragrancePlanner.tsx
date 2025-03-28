@@ -821,50 +821,54 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
           }
         ></Chip>
       )}
-      <div
-        className={clsx("block", {
-          "group-hover:hidden group-focus-within:hidden": !readonly,
-        })}
-      >
-        {props.dilution}
-      </div>
-      <div
-        className={clsx(
-          "ml-auto absolute right-0 md:relative hidden gap-1 items-center",
-          {
-            "group-focus-within:flex group-hover:flex": !readonly,
-          }
-        )}
-      >
-        <IconButton
-          icon="FaMinus"
-          className="!h-7 !w-7"
-          onClick={() => {
-            update?.({
-              usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
-              remoteList: props.remoteList || library,
-            });
-          }}
-        ></IconButton>
-        <IconButton
-          icon="FaPlus"
-          className="!h-7 !w-7"
-          onClick={() => {
-            update?.({
-              usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
-              remoteList: props.remoteList || library,
-            });
-          }}
-        ></IconButton>
-        <ActionButton
-          icon="FaTrash"
-          className="!h-7 !w-7"
-          level={1}
-          onDestruct={() => {
-            remove?.();
-          }}
-        ></ActionButton>
-      </div>
+      {!readonly && (
+        <div
+          className={clsx("block", {
+            "group-hover:hidden group-focus-within:hidden": !readonly,
+          })}
+        >
+          {props.dilution}
+        </div>
+      )}
+      {!readonly && (
+        <div
+          className={clsx(
+            "ml-auto absolute right-0 md:relative hidden gap-1 items-center",
+            {
+              "group-focus-within:flex group-hover:flex": !readonly,
+            }
+          )}
+        >
+          <IconButton
+            icon="FaMinus"
+            className="!h-7 !w-7"
+            onClick={() => {
+              update?.({
+                usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
+                remoteList: props.remoteList || library,
+              });
+            }}
+          ></IconButton>
+          <IconButton
+            icon="FaPlus"
+            className="!h-7 !w-7"
+            onClick={() => {
+              update?.({
+                usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
+                remoteList: props.remoteList || library,
+              });
+            }}
+          ></IconButton>
+          <ActionButton
+            icon="FaTrash"
+            className="!h-7 !w-7"
+            level={1}
+            onDestruct={() => {
+              remove?.();
+            }}
+          ></ActionButton>
+        </div>
+      )}
     </button>
   );
 };
