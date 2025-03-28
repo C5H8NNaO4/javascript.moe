@@ -110,7 +110,6 @@ export const ActionButton = ({
                 icon="FaCheck"
                 className="bg-green-400"
                 onClick={async () => {
-                  console.log("CLICK CONFIRM", constructive, id, onDestruct);
                   const fn = constructive ? onConstruct : onDestruct;
                   fn?.(true, params);
                   setConfirm(false);

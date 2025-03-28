@@ -10,12 +10,12 @@ export const ScrollContainer = ({
   className?: string;
   forwardRef?: RefObject<HTMLDivElement>;
 }>) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const ref = forwardRef || useDiv();
   const focus = () => {
-    console.log("MOUSE OVER");
     if (
       !["INPUT", "TEXTAREA", "SELECT"].includes(
-        document.activeElement?.tagName!
+        document.activeElement?.tagName || ""
       )
     )
       ref.current?.focus();

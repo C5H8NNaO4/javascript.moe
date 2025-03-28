@@ -103,22 +103,30 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [step, setStep] = useState(0.1);
   const [probeAmount, setProbeAmount] = useState(0.1);
 
-  const [dnFormula, setFormula] = useState<IDBFormula | null>(null);
-  const formula = dnFormula;
+  const [formula, setFormula] = useState<IDBFormula | null>(null);
   const fragranceDb = useIndexedDB("formulas");
 
   useEffect(() => {
     if (!fragrances?.length) return;
+
     if (!listId) {
       setFormula(null);
       setIngredients([]);
       setTitle("");
     } else {
       const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
-      console.log("SELECT", frmla);
-      selectFormula(formula);
+      if (!frmla?.title) return;
+      setFormula({ ...frmla });
     }
-  }, [listId, fragrances]);
+  }, [listId, fragrances, setFormula]);
+
+  useEffect(() => {
+    if (formula?.ingredients?.length)
+      setIngredients(
+        formula?.ingredients || (formula as unknown as FormulaItem)?.items
+      );
+    if (formula?.title) setTitle(formula?.title);
+  }, [formula?.id, formula?.title]);
 
   const bp = useCurrentBreakpoint();
   const [text, setText] = useState("");
@@ -135,15 +143,6 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
       );
     }, "");
   };
-
-  useEffect(() => {
-    console.log("FORMULA CHANGE", formula);
-    if (formula?.ingredients?.length)
-      setIngredients(
-        formula?.ingredients || (formula as unknown as FormulaItem)?.items
-      );
-    if (formula?.title) setTitle(formula?.title);
-  }, [formula]);
 
   const fromText = (txt: string) => {
     const ings = txt
@@ -162,7 +161,6 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
         const ing = inventory?.find(
           (ing) => ing.title?.trim() === title?.trim()
         );
-        console.log("TITLE", "'" + title + "'", ing);
 
         return {
           ...ing,
@@ -458,7 +456,6 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
                         className=""
                         iconClsn="!h-3 !w-3 !p-0"
                         onDestruct={(confirm) => {
-                          console.log("ON DESTRUCT", confirm, frmla.id);
                           if (confirm && frmla?.id) remove(frmla?.id);
                           refetch();
                           // if (formula?.id === frmla?.id)

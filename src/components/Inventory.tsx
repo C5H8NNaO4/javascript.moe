@@ -430,8 +430,6 @@ export const InventoryList = ({
   };
   const navigate = useNavigate();
   useEffect(() => {
-    console.log("SEELECT", selected?.amount, params?.amount);
-
     if (selected?.title) {
       if (
         selected?.title !== decodeURIComponent(params.title || "") ||
@@ -790,7 +788,6 @@ export const InventoryList = ({
                           className="w-7 h-7 text-white  bg-green-700/70"
                           icon="FaArrowRightFromBracket"
                           onClick={async () => {
-                            console.log("COPY", available?.length);
                             const onStock =
                               available?.filter((itm) => {
                                 return itm.onStock;
@@ -829,8 +826,7 @@ export const InventoryList = ({
                 onDelete={deleteList}
                 setNotification={setNotification}
                 onRemove={(key) => {
-                  console.log("REMOVE", key, localLists);
-                  setLocalLists(localLists?.filter((k: string) => k !== key));
+                    setLocalLists(localLists?.filter((k: string) => k !== key));
 
                   if (invLocal === key) setInvLocal(localLists[0]);
                 }}
@@ -972,7 +968,6 @@ export const IngredientDetail = ({
         ]),
       ].filter(Boolean)
     );
-    console.log("LOAD INV", res);
     setStoredLkp({
       ...storedLkp,
       ...res.reduce((acc, itm) => {
@@ -1078,7 +1073,6 @@ export const IngredientDetail = ({
                 ?.filter((itm) => itm.title === selected?.title)
                 .at(-1);
               const index = sel ? sorted?.indexOf(sel) : -1;
-              console.log("SEL", sorted, sel, index);
               setSelected(
                 sorted[(sorted?.length + index - 1) % sorted?.length]
               );
@@ -1289,7 +1283,6 @@ export const IngredientDetail = ({
                             i.title === selected?.title &&
                             i.amount == selected?.amount
                         )?.id;
-                        console.log("SELECTED", selected, local, inventory);
                         if (local) await del(Number(local));
                         if (!local) await add(selected);
                         setSelected({

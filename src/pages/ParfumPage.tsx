@@ -489,7 +489,6 @@ export const FormulaPage = () => {
   const selectedItem = selectedItems?.find(
     (itm) => itm?.title === decodeURIComponent(hash.slice(1))
   );
-  console.log("SELECTED ITM", selectedItem);
   const navigate = useNavigate();
 
   const bp = useCurrentBreakpoint();

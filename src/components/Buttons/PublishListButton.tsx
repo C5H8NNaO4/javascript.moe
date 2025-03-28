@@ -39,7 +39,6 @@ export const PublishListButton = ({
   }, [fragranceDb, listId]);
 
   const publish = async () => {
-    console.log("PUBLISH ", formula);
     if (!formula || !formula?.title) return;
     if (!data || !data?.author?.length) return;
 

@@ -52,8 +52,6 @@ export const IntersectionAnchor = ({
   });
 
   const observer = useMemo(() => {
-    console.log("OBSERVER");
-
     const intersectionObserver = new IntersectionObserver(
       (e) => {
         const [entry] = e;
@@ -75,16 +73,13 @@ export const IntersectionAnchor = ({
   }, [hash, location.hash, hasScrolled, setHasScrolled]);
 
   useEffect(() => {
-    console.log("OBSERVER OBSERVE", hash, location.hash);
     if (!block && !rootMargin) return;
     if (ref.current) observer.observe(ref.current);
   }, [ref.current, observer]);
 
   useEffect(() => {
-    console.log("OBSERVER SCROLL");
     if (!ref.current) return;
     if (location.hash === "#" + hash && !hasScrolled && scroll) {
-      console.log("OBSERVER SCROLL!");
 
       ref.current?.scrollIntoView({
         behavior: "smooth",
