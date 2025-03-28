@@ -57,14 +57,14 @@ export const FormulaList = ({
     },
   });
 
-  const existingFormulas = useFormulas(data?.listFormulas || []);
+  const [existingFormulas] = useFormulas(data?.listFormulas || []);
 
   const [recent, setRecent] = useLocalStorage<Array<FormulaType | null>>(
     [],
     "recentFormulas"
   );
 
-  const formulas = useFormulas(
+  const [formulas] = useFormulas(
     recent
       ?.map((r) => {
         return (existingFormulas?.find(
@@ -73,7 +73,6 @@ export const FormulaList = ({
       })
       .filter(Boolean)
   );
-  console.log("RECENT ", recent, formulas);
 
   const params = useParams();
 
@@ -598,7 +597,7 @@ export const FormulaCards = ({
     },
   });
 
-  const formulas = useFormulas(
+  const [formulas] = useFormulas(
     (loading
       ? previousData?.searchFormulas?.items || []
       : data?.searchFormulas?.items || []) as any

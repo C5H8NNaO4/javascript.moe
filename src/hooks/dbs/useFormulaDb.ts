@@ -47,12 +47,13 @@ export const useFormulas = (
     load();
   }, []);
 
-  const formulas = remote?.map((r) => {
-    return {
-      ...r,
-      ...(itms?.find((itm) => r?.remoteId === itm.remoteId) || {}),
-    } as Formula;
-  });
+  const formulas =
+    remote?.map((r) => {
+      return {
+        ...r,
+        ...(itms?.find((itm) => r?.remoteId === itm.remoteId) || {}),
+      } as Formula;
+    }) || [];
   return [formulas, load];
 };
 
