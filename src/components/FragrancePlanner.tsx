@@ -116,7 +116,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     } else {
       const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
       console.log("SELECT", frmla);
-      setFormula(formula);
+      selectFormula(formula);
     }
   }, [listId, fragrances]);
 
