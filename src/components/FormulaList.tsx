@@ -448,7 +448,7 @@ export const Formula = ({
                   id="downloadButton"
                   tooltip="Save in local library"
                   tooltipPlacement="bottom"
-                  disabled={!!remoteId}
+                  disabled={!remoteId}
                   onClick={() => {
                     saveToDB();
                   }}
