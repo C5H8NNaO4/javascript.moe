@@ -12,10 +12,16 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "@/App.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { IdentityActivity } from "./components/IdentityActivity";
+import { useEffect } from "react";
 
 initDB(DBConfig);
 
 function App() {
+  useEffect(() => {
+    window.addEventListener("unload", () => {
+      document.documentElement.scrollTo(0, 0);
+    });
+  });
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <ApolloProvider client={client}>

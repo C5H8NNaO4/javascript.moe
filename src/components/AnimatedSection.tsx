@@ -1,19 +1,22 @@
 import clsx from "clsx";
 import { MutableRefObject, ReactElement, createContext, useRef } from "react";
-import { IntersectionAnchor } from "./IntersectionAnchor";
 
 export type AnimatedSectionProps = {
   height: string;
   children: ReactElement | ReactElement[];
   fullScreen?: boolean;
   hash?: string;
+  hashBlockEnd?: string;
+  block?: string;
 };
 
 export const sectionCtx = createContext<{
   ref: MutableRefObject<HTMLDivElement | null> | null;
 }>({ ref: null });
 export const StickySection = (props: AnimatedSectionProps) => {
-  const { height = "100lvh", hash = "#" } = props;
+  const {
+    height = "100lvh",
+  } = props;
   const ref = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -37,8 +40,6 @@ export const StickySection = (props: AnimatedSectionProps) => {
           {props.children}
         </div>
       </section>
-      <IntersectionAnchor hash={hash}>{hash}</IntersectionAnchor>
-
     </sectionCtx.Provider>
   );
 };

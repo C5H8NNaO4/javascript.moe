@@ -34,6 +34,7 @@ import ReactDOM from "react-dom";
 import { Overlay } from "@/components/BurnOverlay";
 import { Icon } from "@/components/Icon";
 import { lngLnk } from "@/lib/util";
+import { IntersectionAnchor } from "@/components/IntersectionAnchor";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -129,6 +130,10 @@ export const LandingPage = () => {
                   "Selfie of Moritz Roessler with sunglasses",
                 ]}
               />
+              <IntersectionAnchor
+                hash={"hello"}
+                rootMargin={"40%"}
+              ></IntersectionAnchor>
             </Container>
           </FlyOut>
         </Parallax>
@@ -136,6 +141,12 @@ export const LandingPage = () => {
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
+
+        <IntersectionAnchor
+          hash={"perfumery"}
+          scroll
+          scrollBy={window.innerHeight * 4}
+        ></IntersectionAnchor>
         <Swiper
           className="h-[120vh] w-[100vw] sticky top-0 "
           onSwiper={setSwiper}
@@ -190,6 +201,7 @@ export const LandingPage = () => {
                             </Parallax>
                         </Parallax> */}
           </SwiperSlide>
+
           <SwiperSlide className="h-full w-full flex justify-center">
             <DualImages
               key={activeIndex}
@@ -206,6 +218,7 @@ export const LandingPage = () => {
               range={[0, 0.5]}
               className="top-[50vh]"
               texts={["Software Engineer", "Fullstack Dev"]}
+              hash="about"
             />
             <Parallax
               trans={[0, 0.7]}
@@ -294,6 +307,7 @@ export const LandingPage = () => {
               range={[0.75, 1]}
               className="top-[50vh]"
               texts={["Hobby Perfumer", "Fine Fragrances"]}
+              hash="perfumery"
             />
             <Parallax
               trans={[1, 0.75]}
@@ -349,8 +363,7 @@ export const LandingPage = () => {
           </SwiperSlide>
         </Swiper>
       </StickySection>
-
-      <StickySection height={h(400)} hash="contact">
+      <StickySection height={h(400)} hash="contact" block="end">
         <DualImages
           images={["/images/wallpaper/16.jpg", "/images/wallpaper/17.jpg"]}
           alts={[
@@ -364,7 +377,9 @@ export const LandingPage = () => {
         <AppearingText
           texts={[t("texts.senior"), t("texts.lead"), t("texts.contact")]}
           slices={[0, 14, 0]}
+          hash="contact"
         />
+
         <Parallax
           className="w-full mt-[25lvh] flex flex-col justify-center"
           distance={100}
@@ -409,6 +424,11 @@ export const LandingPage = () => {
           </Parallax>
         </Parallax>
       </StickySection>
+      <IntersectionAnchor
+        hash={"contact"}
+        block={"end"}
+        scroll
+      ></IntersectionAnchor>
     </>
   );
 };

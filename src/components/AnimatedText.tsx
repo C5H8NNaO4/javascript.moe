@@ -12,6 +12,7 @@ import clsx from "clsx";
 import { getHeight } from "@/lib/util";
 import { Link } from "react-router-dom";
 import i18n from "i18next";
+import { IntersectionAnchor } from "./IntersectionAnchor";
 
 export const AnimatedText = () => {
   const { ref } = useContext(sectionCtx);
@@ -200,12 +201,14 @@ export const AppearingText = ({
   texts,
   slices,
   Component = motion.h1,
+  hash,
 }: {
   range?: number[];
   className?: string;
   texts: string[];
   slices?: number[];
   Component?: any;
+  hash?: string;
 }) => {
   const { ref } = useContext(sectionCtx);
   const { scrollYProgress } = useScroll({
@@ -276,6 +279,10 @@ export const AppearingText = ({
       })}
       style={{ y, zIndex: 100, textShadow: boxShadow }}
     >
+      {hash && (
+        <IntersectionAnchor hash={hash} block={"start"}></IntersectionAnchor>
+      )}
+
       <span>{text[0]}</span>
       <span style={{ color: "#FFFFFF33", textShadow: "0px 0px 7px white" }}>
         {text[1]}
