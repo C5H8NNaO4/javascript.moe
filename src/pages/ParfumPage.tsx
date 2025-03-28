@@ -361,7 +361,7 @@ export const InventoryPage = () => {
       )}
       <EnsureLanguage path="/inventory" />
 
-      <div className="absolute top-0  max-w-[100vw] flex h-fit w-full">
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
         <img src="/images/wallpaper/ingredients.jpg" className="w-full" />
       </div>
       <div className="flex flex-col gap-4 w-[100vw]  mx-auto p-1 lg:p-4 bg-black/80 text-white">
@@ -567,7 +567,7 @@ export const FormulaPage = () => {
       )}
       <EnsureLanguage path="/formula/compose" />
 
-      <div className="absolute top-0  max-w-[100vw] flex h-fit w-full">
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
         <img
           src="/images/wallpaper/ingredients.jpg"
           className="w-full saturate-0"
@@ -769,7 +769,7 @@ export const DiscoverPage = () => {
       )}
       <EnsureLanguage path="/formula/compose" />
 
-      <div className="absolute top-0  max-w-[100vw] flex h-fit w-full">
+      <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
         <img src="/images/wallpaper/ingredients.jpg" className="w-full h-screen" />
       </div>
 
