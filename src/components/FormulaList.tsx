@@ -381,7 +381,7 @@ export const Formula = ({
           >
             {formulaTitle}
           </h1>
-          <em className="nohover:block hidden">{formula.desc}</em>
+          <em className="nohover:block hidden m-1">{formula.desc}</em>
           {ReactDOM.createPortal(
             <Tooltip
               anchorSelect="#title"
