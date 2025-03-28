@@ -1046,7 +1046,7 @@ export const IngredientDetail = ({
       className={clsx(
         "detail flex flex-col  md:max-w-[66%] md:flex-shrink pb-0 gap-0 bg-black/70 sm:bg-black/0 ",
         {
-          "absolute sm:relative left-0 !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0":
+          "absolute sm:relative left-0 !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0 max-h-screen sm:max-h-[auto]":
             expanded,
           "!w-full translate-x-[calc(100vw-48px)]": !expanded,
         }
