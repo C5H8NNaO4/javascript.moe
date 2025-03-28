@@ -213,8 +213,8 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
       {formulas[formula.title!] && (
         <img className="h-[96px]" src={randItm(formulas[formula.title!])}></img>
       )}
-      <div className="flex flex-col gap-1 w-full ">
-        <div className={clsx("flex flex-col gap-2 items-start  w-full ")}>
+      <div className="flex flex-col gap-1 w-full md:w-fit">
+        <div className={clsx("flex flex-col gap-2 items-start  w-full md:w-fit")}>
           <div
             className={clsx("text-center p-1 rounded-full w-full ", {
               "bg-white/10": !hasBrightBg && !isSelected,
