@@ -593,9 +593,9 @@ export const FormulaCards = ({
   );
   return (
     <div className="flex flex-row flex-wrap gap-2 w-full justify-start items-start h-full">
-      <ul className="h-min flex flex-wrap gap-2">
+      <ul className="h-min flex flex-wrap gap-2 min-w-max">
         {formulas?.filter(Boolean)?.map((frmla) => (
-          <li>
+          <li className="min-w-max">
             <FormulaEntry
               hasBrightBg
               onClick={onSelect}
