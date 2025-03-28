@@ -357,11 +357,14 @@ export const Formula = ({
   const [localFormulas] = useLocalFormulas() as [FormulaType[]];
   const saveToDB = async () => {
     const exists = formulas?.some((f) => f?.remoteId === remoteId);
+    const { items, ingredients, ...rest } = formula;
+    const ings = items || ingredients;
     if (exists) {
-      await formulaDb?.update(formula);
+      await formulaDb?.update({ ...rest, ingredients: ings });
     } else {
-      await formulaDb.add(formula);
+      await formulaDb.add({ ...rest, ingredients: ings });
     }
+    await refetch();
   };
   return (
     <div

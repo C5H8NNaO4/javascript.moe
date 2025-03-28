@@ -139,7 +139,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
 
   useEffect(() => {
     console.log("FORMULA CHANGE", formula);
-    if (formula?.ingredients?.length) setIngredients(formula?.ingredients);
+    if (formula?.ingredients?.length)
+      setIngredients(
+        formula?.ingredients || (formula as unknown as FormulaItem)?.items
+      );
     if (formula?.title) setTitle(formula?.title);
   }, [formula]);
 
