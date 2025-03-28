@@ -239,7 +239,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const remove = async (id: number) => {
     if (id === null || id === undefined) return;
     await fragranceDb.deleteRecord(id);
-    if (Number(dnFormula?.id) === Number(id))
+    if (Number(formula?.id) === Number(id))
       setFormula(
         fragrances[fragrances.findIndex((f) => f.id === id) - 1] || null
       );
