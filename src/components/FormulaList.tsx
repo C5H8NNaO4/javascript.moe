@@ -364,7 +364,7 @@ export const Formula = ({
   return (
     <div
       className={clsx(
-        "formula flex  justify-center bg-white/20 rounded-r-lg h-full flex-shrink-0 w-full",
+        "formula flex  justify-center bg-white/20 rounded-r-lg h-full flex-shrink-1 w-full",
 
         {
           " sm:relative !translate-x-[calc(-100%+48px)]   sm:!translate-x-0 ":
