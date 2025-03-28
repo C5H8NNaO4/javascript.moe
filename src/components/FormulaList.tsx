@@ -352,8 +352,8 @@ export const Formula = ({
     },
   });
   const [notification, setNotification] = useState("");
-  const [formulas, reloadFormulas] = useFormulas();
-  const [localFormulas] = useLocalFormulas() as [FormulaType[]];
+  const [formulas] = useFormulas();
+  const [localFormulas, { refetch: refetchLocalFormulas }] = useLocalFormulas();
   const saveToDB = async () => {
     const exists = formulas?.some((f) => f?.remoteId === remoteId);
     const { items, ingredients, ...rest } = formula;
@@ -363,7 +363,7 @@ export const Formula = ({
     } else {
       await formulaDb.add({ ...rest, ingredients: ings });
     }
-    await reloadFormulas();
+    await refetchLocalFormulas();
   };
   return (
     <div

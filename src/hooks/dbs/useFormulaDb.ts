@@ -59,7 +59,9 @@ export const useFormulas = (
   return [formulas, load];
 };
 
-export const useLocalFormulas = (remote: Formula[] = []) => {
+export const useLocalFormulas = (
+  remote: Formula[] = []
+): [Formula[], { refetch: () => void }] => {
   const formulaDb = useFormulaDb();
   const [itms, setItms] = useState<Formula[] | null>([]);
 
