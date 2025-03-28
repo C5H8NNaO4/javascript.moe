@@ -214,7 +214,9 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
         <img className="h-[96px]" src={randItm(formulas[formula.title!])}></img>
       )}
       <div className="flex flex-col gap-1 w-full md:w-fit">
-        <div className={clsx("flex flex-col gap-2 items-start  w-full md:w-fit")}>
+        <div
+          className={clsx("flex flex-col gap-2 items-start  w-full md:w-fit")}
+        >
           <div
             className={clsx("text-center p-1 rounded-full w-full ", {
               "bg-white/10": !hasBrightBg && !isSelected,
@@ -530,9 +532,12 @@ export const Formula = ({
               return (
                 <li
                   onClick={() => onSelect(ing)}
-                  className={clsx({
-                    "bg-white/20": selected?.title === ing?.title,
-                  }, "min-w-max pr-2")}
+                  className={clsx(
+                    {
+                      "bg-white/20": selected?.title === ing?.title,
+                    },
+                    "min-w-max pr-2"
+                  )}
                 >
                   <FormulaIngredient
                     {...ing}
@@ -593,9 +598,9 @@ export const FormulaCards = ({
   );
   return (
     <div className="flex flex-row flex-wrap gap-2 w-full justify-start items-start h-full">
-      <ul className="h-min flex flex-wrap gap-2 min-w-max">
+      <ul className="h-min flex flex-wrap gap-2">
         {formulas?.filter(Boolean)?.map((frmla) => (
-          <li className="min-w-max">
+          <li>
             <FormulaEntry
               hasBrightBg
               onClick={onSelect}
