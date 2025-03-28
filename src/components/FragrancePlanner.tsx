@@ -726,45 +726,45 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
     readonly,
   } = props;
   return (
-      <button className="flex gap-2 group hover:bg-white/20 items-center w-full">
-        <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
-        <Link
-          aria-disabled={
-            !props.remoteList && !inventory?.some((inv) => inv.title === title)
+    <button className="flex gap-2 group hover:bg-white/20 items-center w-full">
+      <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
+      <Link
+        aria-disabled={
+          !props.remoteList && !inventory?.some((inv) => inv.title === title)
+        }
+        to={
+          !props.remoteList && !inventory?.some((inv) => inv.title === title)
+            ? window.location.href
+            : "/" +
+              i18next.language +
+              "/inventory/" +
+              (props.remoteList || library) +
+              "/" +
+              encodeURIComponent(title)
+        }
+        className={clsx(
+          "items-center gap-2 hidden group-hover:flex group-focus-within:flex absolute left-0 bg-black/40 p-2 z-50",
+          {
+            "text-blue-300 hover:text-blue-400":
+              props.remoteList || inventory?.some((inv) => inv.title === title),
+            "!text-gray-300 cursor-default":
+              !props.remoteList &&
+              !inventory?.some((inv) => inv.title === title),
           }
-          to={
-            !props.remoteList && !inventory?.some((inv) => inv.title === title)
-              ? window.location.href
-              : "/" +
-                i18next.language +
-                "/inventory/" +
-                (props.remoteList || library) +
-                "/" +
-                encodeURIComponent(title)
-          }
-          className={clsx(
-            "items-center gap-2 hidden group-hover:flex group-focus-within:flex absolute left-0 bg-black/40 p-2 z-50",
-            {
-              "text-blue-300 hover:text-blue-400":
-                props.remoteList ||
-                inventory?.some((inv) => inv.title === title),
-              "!text-gray-300 cursor-default":
-                !props.remoteList &&
-                !inventory?.some((inv) => inv.title === title),
-            }
-          )}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
-        </Link>
+        )}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
+      </Link>
 
-        <div className="block">{title}</div>
-        <div>
-          {usedAmount}
-          {unit}
-        </div>
+      <div className="block">{title}</div>
+      <div>
+        {usedAmount}
+        {unit}
+      </div>
+      {!readonly && (
         <Chip
           className={clsx("bg-blue-500 text-yellow-400 hidden", {
             "group-hover:block group-focus-within:block": !readonly,
@@ -820,51 +820,52 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
             </span>
           }
         ></Chip>
-        <div
-          className={clsx("block", {
-            "group-hover:hidden group-focus-within:hidden": !readonly,
-          })}
-        >
-          {props.dilution}
-        </div>
-        <div
-          className={clsx(
-            "ml-auto absolute right-0 md:relative hidden gap-1 items-center",
-            {
-              "group-focus-within:flex group-hover:flex": !readonly,
-            }
-          )}
-        >
-          <IconButton
-            icon="FaMinus"
-            className="!h-7 !w-7"
-            onClick={() => {
-              update?.({
-                usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
-                remoteList: props.remoteList || library,
-              });
-            }}
-          ></IconButton>
-          <IconButton
-            icon="FaPlus"
-            className="!h-7 !w-7"
-            onClick={() => {
-              update?.({
-                usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
-                remoteList: props.remoteList || library,
-              });
-            }}
-          ></IconButton>
-          <ActionButton
-            icon="FaTrash"
-            className="!h-7 !w-7"
-            level={1}
-            onDestruct={() => {
-              remove?.();
-            }}
-          ></ActionButton>
-        </div>
-      </button>
+      )}
+      <div
+        className={clsx("block", {
+          "group-hover:hidden group-focus-within:hidden": !readonly,
+        })}
+      >
+        {props.dilution}
+      </div>
+      <div
+        className={clsx(
+          "ml-auto absolute right-0 md:relative hidden gap-1 items-center",
+          {
+            "group-focus-within:flex group-hover:flex": !readonly,
+          }
+        )}
+      >
+        <IconButton
+          icon="FaMinus"
+          className="!h-7 !w-7"
+          onClick={() => {
+            update?.({
+              usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
+              remoteList: props.remoteList || library,
+            });
+          }}
+        ></IconButton>
+        <IconButton
+          icon="FaPlus"
+          className="!h-7 !w-7"
+          onClick={() => {
+            update?.({
+              usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
+              remoteList: props.remoteList || library,
+            });
+          }}
+        ></IconButton>
+        <ActionButton
+          icon="FaTrash"
+          className="!h-7 !w-7"
+          level={1}
+          onDestruct={() => {
+            remove?.();
+          }}
+        ></ActionButton>
+      </div>
+    </button>
   );
 };
 
