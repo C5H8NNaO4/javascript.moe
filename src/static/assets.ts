@@ -217,6 +217,6 @@ export const formulas = {
     "/images/perfumes/orangewoods-7.jpg",
   ],
   'Riviera Bloom OFA': [
-    "/images/perfumes/rivierapetalsofa.jpg",
+    "/images/perfumes/rivierabloomofa.jpg",
   ]
 } as Record<string, string[]>;
