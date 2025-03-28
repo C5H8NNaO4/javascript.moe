@@ -115,10 +115,10 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
       setTitle("");
     } else {
       const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
-      if (!frmla?.title) return;
-      setFormula({ ...frmla });
+      if (!frmla) return;
+      setFormula(frmla);
     }
-  }, [listId, fragrances, setFormula]);
+  }, [listId, fragrances?.length]);
 
   useEffect(() => {
     if (formula?.ingredients?.length)
@@ -126,7 +126,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
         formula?.ingredients || (formula as unknown as FormulaItem)?.items
       );
     if (formula?.title) setTitle(formula?.title);
-  }, [formula?.id, formula?.title]);
+  }, [formula]);
 
   const bp = useCurrentBreakpoint();
   const [text, setText] = useState("");
@@ -247,7 +247,6 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
 
   const navigate = useNavigate();
   const selectFormula = (frmla: IDBFormula | null) => {
-    setFormula(frmla);
     if (frmla === null) {
       setIngredients([]);
       setTitle("");
