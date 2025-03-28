@@ -758,7 +758,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       >
         <Icon icon="FaLink" className="!h-4 !w-4"></Icon>
       </Link>
-
       <div className="block">{title}</div>
       <div>
         {usedAmount}
@@ -821,15 +820,14 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
           }
         ></Chip>
       )}
-      {!readonly && (
-        <div
-          className={clsx("block", {
-            "group-hover:hidden group-focus-within:hidden": !readonly,
-          })}
-        >
-          {props.dilution}
-        </div>
-      )}
+      (
+      <div
+        className={clsx("block", {
+          "group-hover:hidden group-focus-within:hidden": !readonly,
+        })}
+      >
+        {props.dilution}
+      </div>
       {!readonly && (
         <div
           className={clsx(
