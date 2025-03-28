@@ -52,18 +52,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [search, setSearch] = useSearchParams();
   const [fragrances, { refetch }] = useLocalFormulas();
   const { listId } = useParams();
-  useEffect(() => {
-    if (!fragrances?.length) return;
-    if (!listId) {
-      setFormula(null);
-      setIngredients([]);
-      setTitle("");
-    } else {
-      const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
-      console.log("SELECT", frmla);
-      setFormula(formula);
-    }
-  }, [listId, fragrances?.length]);
+
   const source = search.get("source") || "remote";
   const library = search.get("library") || "Moe";
 
@@ -114,12 +103,22 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [step, setStep] = useState(0.1);
   const [probeAmount, setProbeAmount] = useState(0.1);
 
-  const [dnFormula, setFormula] = useLocalStorage<IDBFormula | null>(
-    null,
-    "formulas.selectedFormula"
-  );
+  const [dnFormula, setFormula] = useState<IDBFormula | null>(null);
   const formula = dnFormula;
   const fragranceDb = useIndexedDB("formulas");
+
+  useEffect(() => {
+    if (!fragrances?.length) return;
+    if (!listId) {
+      setFormula(null);
+      setIngredients([]);
+      setTitle("");
+    } else {
+      const frmla = fragrances?.find((f) => Number(f.id) === Number(listId));
+      console.log("SELECT", frmla);
+      setFormula(formula);
+    }
+  }, [listId, fragrances]);
 
   const bp = useCurrentBreakpoint();
   const [text, setText] = useState("");

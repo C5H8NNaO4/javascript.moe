@@ -82,8 +82,6 @@ export const FormulaList = ({
       itm?.title === paramsTitle && (itm?.author === author || author === "*")
   );
 
-  console.log("RECENT SEL", selected);
-
   useEffect(() => {
     if (!selected) return;
     const existing = recent?.findIndex((r) => {
