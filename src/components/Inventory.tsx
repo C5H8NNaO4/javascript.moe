@@ -1046,7 +1046,7 @@ export const IngredientDetail = ({
       className={clsx(
         "detail flex flex-col  md:max-w-[66%] md:flex-shrink pb-0 gap-0 bg-black/70 sm:bg-black/0 relative",
         {
-          "!-translate-x-[calc(292px)] !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0":
+          "!-translate-x-[calc(292px-48px)] !min-w-[100vw] max-w-[100vw] sm:!translate-x-0 sm:!min-w-0":
             expanded,
           "!w-full": !expanded,
         }
@@ -1787,7 +1787,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
   );
   const [showEdit, setShowEdit] = useState(false);
   const navigate = useNavigate();
-  
+
   return (
     <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
       <NavButton
@@ -1798,7 +1798,9 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           navigate(
             !toInventory
               ? `/${i18next.language}/formula/compose?library=${value}`
-              : `/${i18next.language}/inventory/Moe/${window.location.hash.slice(
+              : `/${
+                  i18next.language
+                }/inventory/Moe/${window.location.hash.slice(
                   1
                 )}?library=${value}&source=local`
           )
