@@ -106,7 +106,7 @@ export const FormulaList = ({
   return (
     <ul
       className={clsx(
-        "formulas flex flex-col gap-0 flex-shrink-0 pr-2 bg-white/40 ",
+        "formulas flex flex-col gap-0 flex-shrink-0 pr-2 bg-white/40 min-w-max",
         {
           "hidden md:flex": !!selected,
         }
@@ -117,7 +117,7 @@ export const FormulaList = ({
     >
       {formulas?.slice(0, 10).map((formula) => (
         <li
-          className={clsx("p-1", {
+          className={clsx("p-1 min-w-max", {
             "mr-[-8px] pr-[12px] ml-[-1rem] pl-[20px] bg-white/40 z-10":
               selected?.title === formula?.title &&
               selected?.author === formula?.author,
