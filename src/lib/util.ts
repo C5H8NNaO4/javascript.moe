@@ -3,10 +3,10 @@ import {
   FormulaItem,
   getPricePerMl,
   getRawPricePerMl,
-  Item,
 } from "@/components/Inventory";
 import { perfumeIngredientsOdours } from "@/static/descriptions";
 import i18next from "i18next";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
 export const getHeight = (container: HTMLElement | null) => {
   if (container === null) return 0;
@@ -99,7 +99,7 @@ export const totalIngredientCostPerMl = (items: FormulaItem[]) => {
   );
 };
 
-export const findCheapestByTitle = (title: string, inventory: Item[]) => {
+export const findCheapestByTitle = (title: string, inventory: NormalizedItem[]) => {
   return inventory
     .filter((invItm) => title === invItm.title)
     .sort((a, b) => getPricePerMl(b) - getPricePerMl(a))[0];

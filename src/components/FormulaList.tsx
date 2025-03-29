@@ -13,7 +13,7 @@ import { dist, findCheapestByTitle, lngLnk, randItm, unique } from "@/lib/util";
 import {
   Formula as FormulaType,
   Inventories,
-  Item,
+  LocalInventories,
   Notification,
 } from "./Inventory";
 import { inventory } from "@/static/inventory";
@@ -39,6 +39,7 @@ import { useIdentity } from "@/lib/hooks/useIdentity";
 import { Tooltip } from "react-tooltip";
 import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
 export const FormulaList = ({
   inventories,
@@ -145,8 +146,8 @@ export type FormulaEntryProps = Component<{
   className?: string;
   onClick?: (frmla: FormulaType | null) => void;
   onToggle?: () => void;
-  inventory: Item[];
-  inventories: Record<string, Item[]>;
+  inventory: NormalizedItem[];
+  inventories: Inventories;
   readonly?: boolean;
   isSelected?: boolean;
   selected?: FormulaEntryProps;
@@ -547,8 +548,7 @@ export const Formula = ({
                     {...ing}
                     readonly
                     library={"All"}
-                    inventory={inventory}
-                    remoteList="Moe"
+                    inventory={inventory as any}
                   ></FormulaIngredient>
                 </li>
               );
@@ -572,7 +572,7 @@ export const Formula = ({
 };
 
 export type FormulaCardsProps = {
-  inventories: { remote: Inventories; local: Inventories };
+  inventories: { remote: Inventories; local: LocalInventories };
   onSelect: (formula: FormulaType | null) => void;
   search: string;
 };

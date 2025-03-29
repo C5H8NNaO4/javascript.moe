@@ -1,11 +1,13 @@
-import { Item } from "@/components/Inventory";
+import { GroupedItem, Item } from "@/components/Inventory";
 import clsx from "clsx";
 
 type RawItem = Omit<Item, "tags" | "aliases">;
-export const normalize = (itm: RawItem, i?: number): Item => {
+export const normalize = (itm: RawItem): Item => {
+  console.log("NORMALIZE", itm);
   const norm = {
-    ...itm,
-    id: itm.id || (11000 + (Number(i) + 1)).toString(),
+    // ...itm,
+    price: itm.price,
+    size: itm.size,
     dilution: /\d+%/.exec(itm?.title)?.[0] || "100%",
     quantity: 1,
     title: itm?.title
@@ -19,6 +21,7 @@ export const normalize = (itm: RawItem, i?: number): Item => {
     }).split(" "),
     aliases: [] as string[],
     onStock: true,
+    source: "local" as any,
   };
 
   if (/a\.k\.a .+$/.test(norm?.title) || /\(.+?\)/.test(norm?.title)) {
@@ -35,6 +38,7 @@ export const normalize = (itm: RawItem, i?: number): Item => {
       norm.title = norm.title.replace(aliasReg, "");
     }
   }
+
   return norm;
 };
 
@@ -46,26 +50,30 @@ export const groupByTitle = (arr: Item[]) => {
       aliases: itm.aliases,
       id: i,
       items: [],
+      cas: itm.cas,
     };
     if (acc[itm.title].items)
       acc[itm.title].items = [
         ...(acc[itm.title]?.items || []),
         {
           title: itm.title,
-          amount: itm.amount,
-          quantity: 1,
+          size: itm.size,
+          // quantity: 1,
           price: itm.price,
-          onStock: itm.onStock,
-          remote: itm.remote,
+          source: itm.source,
+          onStock: !!itm.source,
+          remote: !!itm.source,
           dilution: itm.dilution || "100%",
           list: itm.list,
           local: itm.local,
           id: itm.id,
           tags: itm.tags,
           aliases: itm.aliases,
+          baseUrl: itm.baseUrl,
+          link: itm.link,
         },
       ];
     return acc;
-  }, {} as Record<string, Item>);
+  }, {} as Record<string, GroupedItem>);
   return Object.values(lkp);
 };

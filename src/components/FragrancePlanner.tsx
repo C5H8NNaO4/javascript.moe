@@ -7,7 +7,7 @@ import {
   Formula,
   FormulaItem,
   Inventories,
-  Item,
+  LocalInventories,
 } from "./Inventory";
 import { ingredients as imgs } from "@/static/assets";
 import { Button, IconButton, MenuButton } from "./Button";
@@ -38,11 +38,12 @@ import { NavButton } from "./NavButton";
 import { ActionButton } from "./ActionButton";
 import { idbToFormula } from "@/utils/types";
 import { IDBFormula } from "@/utils/dataStructure";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 export type FragrancePlannerProps = Component<{
   className?: string;
   inventories: {
     remote: Inventories;
-    local: Inventories;
+    local: LocalInventories;
   };
   formula?: Formula;
 }>;
@@ -56,9 +57,9 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const source = search.get("source") || "remote";
   const library = search.get("library") || "Moe";
 
-  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>(
-    inventories.local
-  );
+  const [storedListLkp, setStoredLkp] = useState<
+    Record<string, NormalizedItem[]>
+  >(inventories.local);
   const [localLists, setLocalLists] = useLocalStorage(
     Object.keys(inventories.local),
     "localLists"
@@ -121,10 +122,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   }, [listId, fragrances?.length]);
 
   useEffect(() => {
-    if (formula?.ingredients?.length)
-      setIngredients(
-        formula?.ingredients || (formula as unknown as FormulaItem)?.items
-      );
+    if (formula?.ingredients?.length) setIngredients(formula?.ingredients);
     if (formula?.title) setTitle(formula?.title);
   }, [formula]);
 
@@ -215,7 +213,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           unit: baseUnit,
           usedAmount: 0.1,
         },
-      ].filter(Boolean) as Item[]
+      ].filter(Boolean) as NormalizedItem[]
     );
   };
 
@@ -728,15 +726,15 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       <img src={imgs[title?.trim()]} className="h-8 w-8"></img>
       <Link
         aria-disabled={
-          !props.remoteList && !inventory?.some((inv) => inv.title === title)
+          !props.source && !inventory?.some((inv) => inv.title === title)
         }
         to={
-          !props.remoteList && !inventory?.some((inv) => inv.title === title)
+          !props.source && !inventory?.some((inv) => inv.title === title)
             ? window.location.href
             : "/" +
               i18next.language +
               "/inventory/" +
-              (props.remoteList || library) +
+              (props.source || library) +
               "/" +
               encodeURIComponent(title)
         }
@@ -744,10 +742,9 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
           "items-center gap-2 hidden group-hover:flex group-focus-within:flex absolute left-0 bg-black/40 p-2 z-50",
           {
             "text-blue-300 hover:text-blue-400":
-              props.remoteList || inventory?.some((inv) => inv.title === title),
+              props.source || inventory?.some((inv) => inv.title === title),
             "!text-gray-300 cursor-default":
-              !props.remoteList &&
-              !inventory?.some((inv) => inv.title === title),
+              !props.source && !inventory?.some((inv) => inv.title === title),
           }
         )}
         onClick={(e) => {
@@ -840,7 +837,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
             onClick={() => {
               update?.({
                 usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
-                remoteList: props.remoteList || library,
+                source: props.source || library,
               });
             }}
           ></IconButton>
@@ -850,7 +847,7 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
             onClick={() => {
               update?.({
                 usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
-                remoteList: props.remoteList || library,
+                source: props.source || library,
               });
             }}
           ></IconButton>

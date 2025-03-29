@@ -1,6 +1,7 @@
-import { Item } from "@/components/Inventory";
+import { perfumersApprenticeInventory } from "./data/ingredients/perfumersApprentice";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
-export const inventory: Item[] = [
+export const inventory: NormalizedItem[] = [
   {
     amount: "500g",
     quantity: 1,
@@ -1378,10 +1379,13 @@ export const inventory: Item[] = [
     id: 1028,
     onStock: true,
   },
-].map((itm) => {
-  return {
-    ...itm,
-    remote: true,
-    remoteList: "Moe",
-  };
-}) as unknown as Item[];
+]
+  .map((itm) => {
+    const norm = perfumersApprenticeInventory.find(
+      (paItm) =>
+        paItm.title === itm.title && (paItm as any).size === itm.amount
+    );
+    if (!norm) return;
+    return norm;
+  })
+  .filter((ele) => ele?.price) as unknown as NormalizedItem[];

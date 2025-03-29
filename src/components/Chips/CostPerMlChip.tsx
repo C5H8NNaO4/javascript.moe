@@ -1,8 +1,8 @@
 import { formatCurrency, totalIngredientCostPerMl } from "@/lib/util";
 import { Chip } from "../Chip";
-import { Item } from "../Inventory";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
-export const CostPerMlChip = ({ items }: { items: Item[] }) => {
+export const CostPerMlChip = ({ items }: { items: NormalizedItem[] }) => {
   const cost = totalIngredientCostPerMl(items);
   const formattedCost = formatCurrency(cost, "USD");
   return (

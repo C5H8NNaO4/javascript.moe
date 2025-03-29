@@ -1,14 +1,9 @@
-import { normalize } from "@/utils/perfumersApprentice";
-import OB from "./0B.json";
-import CD from "./CD.json";
-import EG from "./EG.json";
-import HK from "./HK.json";
-import LN from "./LN.json";
-import OR from "./OR.json";
-import SZ from "./SZ.json";
-import { Item } from "@/components/Inventory";
+import pa from "libperfumery/dist/static/data/normalized/pa";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
+import { ScrapedPAItem } from "libperfumery/dist/types/ScrapedItem";
+import { normalize } from "libperfumery/dist/utils/perfumersApprentice";
 
-export const perfumersApprenticeInventory: Item[] = ([OB, CD, EG, HK, LN, OR, SZ] as unknown as Item[][])
+export const perfumersApprenticeInventory = pa
   .flat(3)
-  .filter((itm: Item) => itm?.amount && itm?.price)
-  .map(normalize) as unknown as Item[]
+  .filter((itm: ScrapedPAItem) => itm?.amount && itm?.price)
+  .map(normalize) as unknown as NormalizedItem[];

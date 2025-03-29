@@ -12,13 +12,13 @@ export const importPlainText = (
     .filter(Boolean);
 
   lines.forEach((line) => {
-    const [amount] = /\d+(g|ml)/.exec(line) || [];
+    const [size] = /\d+(g|ml)/.exec(line) || [];
     const [, title] = /\s(.+?)(?:\s\d+%)?\s?\d+[$€]$/.exec(line) || [];
     const [, dilution = "100%"] = /\s(\d+%)\s?\d+[$€]/.exec(line) || [];
     const [, price] = /\s(\d+(€|\$))/.exec(line) || [];
 
     add({
-      amount,
+      size,
       quantity: 1,
       title: title?.trim(),
       dilution,

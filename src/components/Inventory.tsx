@@ -26,12 +26,15 @@ import { lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
 import { NavButton } from "./NavButton";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { inventory } from "@/static/inventory";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
+import { getDisplayCAS } from "@/utils/item";
+import { Sources } from "libperfumery/dist/types/Sources";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -54,7 +57,7 @@ export const getMostOnStock = (list: Item[]) => {
     })
     .sort((a, b) => {
       return (
-        (getGrams(b.amount) - getGrams(a.amount)) * 2 +
+        (getGrams(b.size) - getGrams(a.size)) * 2 +
         (getRawPricePerMl(b) - getRawPricePerMl(a)) * 1
       );
     })
@@ -107,73 +110,75 @@ export const getAmountUnit = (amount = "0g") => {
   return amount?.replace(/\d+/, "");
 };
 
-export const getPrice = (entry: Pick<Item, "price">) => {
+export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
   return Number(entry.price?.replace(/[$€]/, "") || 0);
 };
 
-export const getDilution = (entry: Pick<Item, "dilution">) => {
+export const getDilution = (entry: Pick<NormalizedItem, "dilution">) => {
   return Number(entry.dilution?.replace(/[%]/, "")) || 100;
 };
 
 export const getRawPricePerMl = (
-  entry: Pick<Item, "amount" | "price" | "dilution"> | null
+  entry: Pick<any, "size" | "price" | "dilution"> | null
 ) => {
   if (entry === null) return 0;
-  const nr = getGrams(entry.amount);
+  const nr = getGrams(entry.size);
   const prc = getPrice(entry);
   const dil = getDilution(entry);
   return Math.round(100 * (prc / nr) * (100 / dil)) / 100;
 };
 
 export const getPricePerMl = (
-  entry: Pick<Item, "amount" | "price" | "dilution"> | null
+  entry: Pick<NormalizedItem, "size" | "price" | "dilution"> | null
 ) => {
   if (entry === null) return 0;
-  const nr = getGrams(entry.amount);
+  const nr = getGrams(entry.size);
   const prc = getPrice(entry);
 
   return Math.round(100 * (prc / nr)) / 100;
 };
 
 export const getPricePerUnit = (
-  entry: Pick<Item, "amount" | "price" | "dilution"> | null
+  entry: Pick<NormalizedItem, "size" | "price" | "dilution"> | null
 ) => {
   if (entry === null) return 0;
-  const nr = getGrams(entry.amount);
+  const nr = getGrams(entry.size);
   const cur = getCurrency(entry.price);
   const prc = getPrice(entry);
   return (
-    Math.round((prc / nr) * 100) / 100 + cur + "/" + getAmountUnit(entry.amount)
+    Math.round((prc / nr) * 100) / 100 + cur + "/" + getAmountUnit(entry.size)
   );
 };
 
-export type Item = {
-  id: string;
-  title: string;
-  quantity: number;
-  price: string;
-  amount: string;
-  onStock?: boolean;
-  dilution?: string | null;
+export type Item = NormalizedItem & {
   list?: string | null;
-  remoteList?: string | null;
-  items?: Item[];
-  local?: Item | null;
+  id?: number;
+  quantity?: number;
+  onStock?: boolean;
   remote?: boolean;
-  tags: string[];
-  aliases: string[];
+  baseUrl?: string;
+  link?: string;
+  local?: Item | null;
 };
 
-export type AutoSuggestItem = Item & {
+export type GroupedItem = {
+  title: string;
+  tags: string[];
+  aliases: string[];
+  id: number;
+  cas?: string;
+  onStock?: boolean;
+  items: Item[];
+};
+export type AutoSuggestItem = NormalizedItem & {
   id: string;
   name: string;
 };
 
-export type FormulaItem = Item & {
+export type FormulaItem = NormalizedItem & {
   usedAmount?: number;
   unit?: string;
   token?: string;
-  remoteId?: string;
 };
 
 export type Formula = {
@@ -188,7 +193,8 @@ export type Formula = {
   items: FormulaItem[];
 };
 
-export type Inventories = Record<string, Item[]>;
+export type Inventories = Record<string, NormalizedItem[]>;
+export type LocalInventories = Record<string, Item[]>;
 export const InventoryList = ({
   list: initialList = [],
   inventories = { remote: {}, local: {} },
@@ -196,7 +202,7 @@ export const InventoryList = ({
   list?: Item[];
   inventories: {
     remote: Inventories;
-    local: Inventories;
+    local: LocalInventories;
   };
 }) => {
   const db = useIndexedDB("inventory");
@@ -213,7 +219,7 @@ export const InventoryList = ({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
-  const [invRemote, setInvRemote] = useState<string | null>(
+  const [invRemote, setInvRemote] = useState<Sources | string | null>(
     params?.list || "Moe"
   );
   const [invLocal, setInvLocal] = useState<string | null>(
@@ -232,7 +238,9 @@ export const InventoryList = ({
     "localLists"
   );
 
-  const availList = invRemote ? inventories.remote?.[invRemote] : initialList;
+  const availList = (
+    invRemote ? inventories.remote?.[invRemote] : initialList
+  ) as Item[];
   const available = availList.map((itm) => {
     return {
       ...itm,
@@ -247,7 +255,7 @@ export const InventoryList = ({
             ?.find((sitm) => {
               return (
                 itm.title?.trim() === sitm.title?.trim() &&
-                itm.amount === sitm.amount
+                itm.size === sitm.size
               );
             }),
     };
@@ -264,11 +272,11 @@ export const InventoryList = ({
     .some((itm) => {
       return storedList.some((sitm) => {
         return (
-          itm.title?.trim() === sitm.title?.trim() && itm.amount === sitm.amount
+          itm.title?.trim() === sitm.title?.trim() && itm.size === sitm.size
         );
       });
     });
-  const list = !invRemote ? storedList : available;
+  const list = (!invRemote ? storedList : available) as Item[];
 
   const load = async () => {
     const res = (await db.getAll()) || [];
@@ -298,14 +306,14 @@ export const InventoryList = ({
       quantity: Number(props.quantity),
       id: res,
       list: invLocal || "Local",
-    } as unknown as Item;
-    setStoredLkp((list) => ({
+    } as unknown as NormalizedItem;
+    (setStoredLkp as any)((list: Record<string, Item[]>) => ({
       ...list,
       [invLocal || "Local"]: [...list[invLocal || "Local"], toAdd],
     }));
   };
 
-  const del = async (id: string, noUpdate?: boolean) => {
+  const del = async (id: number, noUpdate?: boolean) => {
     await db.deleteRecord(id);
     if (noUpdate) return;
     const index = list.findIndex((itm) => {
@@ -322,14 +330,14 @@ export const InventoryList = ({
 
   const deleteList = async () => {
     setStoredLkp({ [invLocal || "Local"]: [] });
-    storedList.forEach((itm) => del(itm.id, true));
+    storedList.forEach((itm) => itm.id && del(itm.id, true));
     setInvRemote(null);
   };
   const upd = async (
-    id: string,
+    id: number,
     {
       title,
-      amount = "4ml",
+      size = "4ml",
       quantity = 1,
       onStock,
       price = "0$",
@@ -340,32 +348,27 @@ export const InventoryList = ({
     const existing =
       storedList.find((itm) => {
         return (
-          !itm.items &&
           itm.id === id &&
-          itm.amount === amount &&
+          itm.size === size &&
           itm.title === title &&
           (!itm.list || itm.list === list)
         );
       }) || {};
     const index = storedList.findIndex((itm) => {
-      return (
-        !itm.items &&
-        itm.id === id &&
-        itm.amount === amount &&
-        itm.title === title
-      );
+      return itm.id === id && itm.size === size && itm.title === title;
     });
 
     const toAdd = normalize({
       ...existing,
       title: title!,
-      amount,
+      size,
       quantity,
       onStock,
       price,
       dilution,
       id,
       remote: false,
+      source: "local" as any,
       list,
     });
 
@@ -433,7 +436,7 @@ export const InventoryList = ({
     if (selected?.title) {
       if (
         selected?.title !== decodeURIComponent(params.title || "") ||
-        selected?.amount !== params?.amount
+        selected?.size !== params?.amount
       ) {
         navigate(
           "/" +
@@ -443,7 +446,7 @@ export const InventoryList = ({
             invRemote +
             "/" +
             encodeURIComponent(selected?.title || "") +
-            (selected?.amount ? "/" + selected?.amount : "") +
+            (selected?.size ? "/" + selected?.size : "") +
             "?" +
             new URLSearchParams(searchParams).toString(),
           {
@@ -463,7 +466,7 @@ export const InventoryList = ({
       );
     }
     // setTimeout(() => setSearchParams((prev) => prev), 0);
-  }, [selected?.title, selected?.amount]);
+  }, [selected?.title, selected?.size]);
   const filtered = list
     ?.filter((itm) => {
       if (hideOnStock === 0) return true;
@@ -494,8 +497,8 @@ export const InventoryList = ({
       const pricePerMl = getRawPricePerMl(entry);
       return { ...entry, pricePerMl };
     });
-  const grouped = groupByTitle(filtered) as Item[];
-  const sorted = grouped.slice().sort((a: Item, b: Item) => {
+  const grouped = groupByTitle(filtered);
+  const sorted = grouped.slice().sort((a: GroupedItem, b: GroupedItem) => {
     if (sort === "+AZ") return a.title?.localeCompare(b?.title) || 0;
     if (sort === "-AZ") return b.title?.localeCompare(a?.title) || 0;
     if (sort === "+price")
@@ -509,13 +512,9 @@ export const InventoryList = ({
         Math.max(...(a.items?.map(getRawPricePerMl) || []))
       );
     if (sort === "+amount")
-      return (
-        getGrams(a.items?.at(-1)?.amount) - getGrams(b.items?.at(-1)?.amount)
-      );
+      return getGrams(a.items?.at(-1)?.size) - getGrams(b.items?.at(-1)?.size);
     if (sort === "-amount")
-      return (
-        getGrams(b.items?.at(-1)?.amount) - getGrams(a.items?.at(-1)?.amount)
-      );
+      return getGrams(b.items?.at(-1)?.size) - getGrams(a.items?.at(-1)?.size);
 
     if (sort === "+odor")
       return (
@@ -538,7 +537,7 @@ export const InventoryList = ({
     const ingredient = inventories.remote[params?.list || "All"]?.find(
       (itm) => {
         const titleMatches = params.title === itm.title;
-        const amountMatches = params.amount === itm.amount;
+        const amountMatches = params.amount === itm.size;
 
         return params.amount ? titleMatches && amountMatches : titleMatches;
       }
@@ -749,7 +748,7 @@ export const InventoryList = ({
       )}
 
       <div className="flex gap-4 overflow-hidden flex-1">
-        {(isMobile ? !selected?.amount : true) && (
+        {(isMobile ? !selected?.size : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
             <div className="flex justify-between flex-wrap mb-1 gap-1">
               <div className="flex gap-1 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
@@ -788,11 +787,11 @@ export const InventoryList = ({
                           className="w-7 h-7 text-white  bg-green-700/70"
                           icon="FaArrowRightFromBracket"
                           onClick={async () => {
-                            const onStock =
-                              available?.filter((itm) => {
-                                return itm.onStock;
-                              }) || [];
+                            const onStock = (available?.filter((itm) => {
+                              return itm.onStock && itm.size;
+                            }) || []) as Item[];
                             for (const itm of onStock) {
+                              if (!itm.id) continue;
                               await upd(itm.id, { ...itm, list: invLocal });
                             }
                           }}
@@ -834,7 +833,7 @@ export const InventoryList = ({
                 onAdd={(key: string | null) => {
                   setLocalLists([...localLists, key!].filter(Boolean));
                 }}
-                items={storedList || []}
+                items={(storedList || []) as Item[]}
                 value={invLocal}
               ></LocalListChips>
             </div>
@@ -855,12 +854,12 @@ export const InventoryList = ({
                       }}
                     >
                       <IngredientItem
-                        {...entry}
+                        {...(entry as any)}
                         selected={selected}
                         upd={upd}
                         setSelected={setSelected}
-                        list={invLocal}
-                        remoteList={invRemote}
+                        list={invLocal as any}
+                        source={invRemote as any}
                         setNotification={setNotification}
                         toggleFilter={(key) => {
                           // setShowTags(true);
@@ -888,7 +887,7 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {!!selected && (isMobile ? !!selected?.amount : true) && (
+        {!!selected && (isMobile ? !!selected?.size : true) && (
           <IngredientDetail
             inventories={{
               remote: {
@@ -903,7 +902,7 @@ export const InventoryList = ({
             invLocal={invLocal || "Local"}
             selected={selected!}
             setSelected={setSelected}
-            list={list}
+            list={list as Item[]}
             sorted={sorted}
             emptyStock={emptyStock}
             listAliases={listAliases}
@@ -917,14 +916,14 @@ export const InventoryList = ({
 };
 
 export type IngredientDetailProps = {
-  selected: Partial<Item> | null;
+  selected: Partial<GroupedItem> | Partial<Item> | null;
   setSelected: (itm: Partial<Item> | null) => void;
   invRemote: string;
   invLocal?: string;
-  inventories: { remote: Inventories; local: Inventories };
+  inventories: { remote: Inventories; local: LocalInventories };
   filter?: string[] | null;
-  list: Item[];
-  sorted: Item[];
+  list: GroupedItem[] | Item[];
+  sorted: GroupedItem[];
   emptyStock?: boolean;
   storedList?: any;
   listAliases?: Record<string, string>;
@@ -946,11 +945,14 @@ export const IngredientDetail = ({
   storedList,
   upd,
 }: IngredientDetailProps) => {
+  const selectedItem = selected as Item;
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
 
   const db = useIndexedDB("inventory");
-  const [storedLkp, setStoredLkp] = useState<Record<string, Item[]>>({});
+  const [storedLkp, setStoredLkp] = useState<Record<string, NormalizedItem[]>>(
+    {}
+  );
   const [localLists, setLocalLists] = useLocalStorage(
     Object.keys(inventories?.local || {}),
     "localLists"
@@ -996,7 +998,7 @@ export const IngredientDetail = ({
         })
     ),
   ];
-  const totalValue = list
+  const totalValue = (list as Item[])
     .filter((itm) => {
       return itm.onStock;
     })
@@ -1059,7 +1061,7 @@ export const IngredientDetail = ({
           ) : (
             <h2 className="line-clamp-1">{invRemote}</h2>
           )}
-          {selected?.aliases?.length && (
+          {!!selected?.aliases?.length && (
             <em>{selected?.aliases?.join(", ")}</em>
           )}
         </div>
@@ -1111,7 +1113,7 @@ export const IngredientDetail = ({
                 onDestruct={() => {
                   setSelected(
                     isMobile
-                      ? { title: selected?.title, amount: selected?.amount }
+                      ? { title: selectedItem?.title, size: selectedItem?.size }
                       : null
                   );
                 }}
@@ -1124,7 +1126,7 @@ export const IngredientDetail = ({
                 onClick={() => {
                   setSelected(
                     isMobile
-                      ? { title: selected?.title, amount: selected?.amount }
+                      ? { title: selectedItem?.title, size: selectedItem?.size }
                       : null
                   );
                 }}
@@ -1163,52 +1165,78 @@ export const IngredientDetail = ({
         >
           <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 p-1 ">
             <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
-              {<img src={ingredients[selected?.title?.trim()]} />}
-              <div className="flex flex-wrap gap-1 h-fit">
-                {selected?.remote && selected?.onStock && (
-                  <Chip
-                    icon="FaShoppingCart"
-                    className="bg-yellow-500 w-fit"
-                    label="Available"
-                  ></Chip>
-                )}
-                {(selected?.local?.onStock ||
-                  (!selected?.remote && selected?.onStock)) && (
-                  <Chip
-                    // onClick={() =>
-                    //   // setInvLocal(selected?.local?.list || "Local")
-                    // }
-                    icon="FaCheck"
-                    className={clsx("w-fit", {
-                      "bg-green-600":
-                        invLocal === selected?.local?.list ||
-                        invLocal === selected?.list,
-                      "bg-yellow-500":
-                        invLocal !== selected?.local?.list &&
-                        invLocal !== selected?.list,
-                    })}
-                    label={
-                      listAliases?.[
-                        selected?.list || selected?.local?.list || "Local"
-                      ] ||
-                      selected?.list ||
-                      selected?.local?.list ||
-                      "In collection"
-                    }
-                  ></Chip>
-                )}
-                {between(getRawPricePerMl?.(selected as Item), 10, 20) && (
-                  <Chip className="bg-yellow-300 w-fit" label="$"></Chip>
-                )}
-                {between(getRawPricePerMl?.(selected as Item), 20, 30) && (
-                  <Chip className="bg-yellow-400 w-fit" label="$$"></Chip>
-                )}
-                {between(getRawPricePerMl?.(selected as Item), 30, 100) && (
-                  <Chip className="bg-yellow-500 w-fit" label="$$$"></Chip>
-                )}
-                {between(getRawPricePerMl?.(selected as Item), 100, 1000) && (
-                  <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>
-                )}
+              {<img src={ingredients[selectedItem?.title?.trim()]} />}
+              <div className="flex flex-wrap gap-1 h-fit items-center">
+                {selectedItem?.source &&
+                  selectedItem?.baseUrl &&
+                  selectedItem?.link && (
+                    <Link
+                      to={selectedItem?.baseUrl + selectedItem?.link}
+                      target="_blank"
+                    >
+                      <NavButton
+                        tooltip={selectedItem?.source}
+                        tooltipPlacement="right"
+                        id="shopNavButton"
+                        icon="FaShoppingCart"
+                        className="bg-sky-500 w-fit"
+                      ></NavButton>
+                    </Link>
+                  )}
+                <div className="bg-white/20 p-[2px] flex items-center">
+                  <div className="bg-black/10 p-1 font-bold">CAS</div>
+                  <div className="bg-white/10 p-1 font-semibold w-full">
+                    {getDisplayCAS(selected?.cas)}
+                  </div>
+                </div>
+                {false &&
+                  (selectedItem?.local?.onStock ||
+                    (!selectedItem?.remote && selectedItem?.onStock)) && (
+                    <Chip
+                      // onClick={() =>
+                      //   // setInvLocal(selected?.local?.list || "Local")
+                      // }
+                      icon="FaCheck"
+                      className={clsx("w-fit", {
+                        "bg-green-600":
+                          invLocal === selectedItem?.local?.list ||
+                          invLocal === selectedItem?.list,
+                        "bg-yellow-500":
+                          invLocal !== selectedItem?.local?.list &&
+                          invLocal !== selectedItem?.list,
+                      })}
+                      label={
+                        listAliases?.[
+                          selectedItem?.list ||
+                            selectedItem?.local?.list ||
+                            "Local"
+                        ] ||
+                        selectedItem?.list ||
+                        selectedItem?.local?.list ||
+                        "In collection"
+                      }
+                    ></Chip>
+                  )}
+                {between(
+                  getRawPricePerMl?.(selected as NormalizedItem),
+                  10,
+                  20
+                ) && <Chip className="bg-yellow-300 w-fit" label="$"></Chip>}
+                {between(
+                  getRawPricePerMl?.(selected as NormalizedItem),
+                  20,
+                  30
+                ) && <Chip className="bg-yellow-400 w-fit" label="$$"></Chip>}
+                {between(
+                  getRawPricePerMl?.(selected as NormalizedItem),
+                  30,
+                  100
+                ) && <Chip className="bg-yellow-500 w-fit" label="$$$"></Chip>}
+                {between(
+                  getRawPricePerMl?.(selected as NormalizedItem),
+                  100,
+                  1000
+                ) && <Chip className="bg-yellow-600 w-fit" label="🤯"></Chip>}
               </div>
 
               <div className="flex flex-wrap gap-1 h-fit">
@@ -1224,13 +1252,6 @@ export const IngredientDetail = ({
                   );
                 })}
               </div>
-              <div className="flex flex-wrap gap-1 h-fit">
-                <div className="bg-white/20 p-1 flex items-center">
-                  <div className="bg-black/10 p-1 bold">CAS</div>
-                  <div className="bg-white/10 p-1 font-semibold w-full">
-                  </div>
-                </div>
-              </div>
 
               <LocalListChips
                 showButtons={false}
@@ -1239,7 +1260,7 @@ export const IngredientDetail = ({
                 // onAdd={ing => ing && add(ing)}
                 // onDelete={(id) => del(id)}
                 value={invLocal}
-                items={inventory}
+                items={inventory as Item[]}
                 onChange={(library) => {
                   const search = new URLSearchParams(window.location.search);
                   search.set("library", library || "Local");
@@ -1267,13 +1288,12 @@ export const IngredientDetail = ({
                 ).map((selected) => {
                   const local = inventory.find(
                     (i) =>
-                      i.title === selected?.title &&
-                      i.amount == selected?.amount
-                  );
+                      i.title === selected?.title && i.size == selected?.size
+                  ) as Item;
                   const inLib = !!local?.id;
                   return (
                     <Chip
-                      id={"amount" + selected?.amount}
+                      id={"size" + selected?.size}
                       className={clsx(
                         {
                           "bg-yellow-500/70": !inLib,
@@ -1290,13 +1310,14 @@ export const IngredientDetail = ({
                         const local = inventory?.find(
                           (i) =>
                             i.title === selected?.title &&
-                            i.amount == selected?.amount
-                        )?.id;
-                        if (local) await del(Number(local));
+                            i.size == selected?.size
+                        ) as Item;
+                        const id = local?.id;
+                        if (local) await del(Number(id));
                         if (!local) await add(selected);
                         setSelected({
                           title: selected?.title,
-                          amount: selected?.amount,
+                          size: selected?.size,
                         } as Item);
                         await loadLocalLists();
                       }}
@@ -1304,12 +1325,12 @@ export const IngredientDetail = ({
                         inventory.some(
                           (i) =>
                             i.title === selected?.title &&
-                            i.amount == selected?.amount
+                            i.size == selected?.size
                         )
                           ? "FaCheck"
                           : "FaPlus"
                       }
-                      label={selected?.amount}
+                      label={selected?.size}
                     ></Chip>
                   );
                 })}
@@ -1332,22 +1353,22 @@ export const IngredientDetail = ({
             </div>
             <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%]">
               <div className="flex gap-1">
-                {selected?.amount && (
+                {selectedItem?.size && (
                   <b className="flex">
-                    {amountToNumber(selected?.amount) *
-                      (selected?.quantity || 1)}
-                    {getAmountUnit(selected?.amount)}
+                    {amountToNumber(selectedItem?.size) *
+                      (selectedItem?.quantity || 1)}
+                    {getAmountUnit(selectedItem?.size)}
                   </b>
                 )}
                 {/* <h2 className="line-clamp-1 w-fit">{selected?.title}</h2> */}
-                {selected?.price && (
+                {selectedItem?.price && (
                   <div className="flex gap-1 ml-auto">
-                    <span>{selected?.price}</span>
+                    <span>{selectedItem?.price}</span>
 
                     <span>
-                      ({selected?.price?.slice(-1)}
+                      ({selectedItem?.price?.slice(-1)}
                       {getRawPricePerMl(selected as Item)}/
-                      {getAmountUnit(selected?.amount)})
+                      {getAmountUnit(selectedItem?.size)})
                     </span>
                   </div>
                 )}
@@ -1414,7 +1435,7 @@ export const IngredientDetail = ({
                     <div className="absolute bottom-1 right-1 flex gap-1 ">
                       <AmountChip
                         className="h-fit"
-                        amount={entry.amount}
+                        amount={entry.size}
                         dilution={
                           entry.dilution === "100%" ? undefined : entry.dilution
                         }
@@ -1461,7 +1482,7 @@ export const IngredientDetail = ({
                       <div className="absolute bottom-1 right-1 flex gap-1 ">
                         <AmountChip
                           className="h-fit"
-                          amount={entry.amount}
+                          amount={entry.size}
                           dilution={
                             entry.dilution === "100%"
                               ? undefined
@@ -1511,8 +1532,8 @@ export type IngredientItemProps = Component<{
   className?: string;
   items?: Item[];
   title: string;
-  selected?: Partial<Item> | null;
-  upd: (id: string, item: Partial<Item>) => void;
+  selected?: Partial<GroupedItem> | null;
+  upd: (id: number, item: Partial<Item>) => void;
   toggleFilter?: (key: string) => void;
   setSelected: (item: Item | null) => void;
   setNotification: (v: string) => void;
@@ -1523,12 +1544,12 @@ export const IngredientItem = (props: IngredientItemProps) => {
   const {
     title,
     items,
-    amount,
+    size,
     selected,
     upd,
     setSelected,
     list,
-    remoteList,
+    source,
     toggleFilter,
     setNotification,
     filter,
@@ -1576,7 +1597,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
         )}
         {!Array.isArray(items) && (
           <input
-            key={props.id + entry?.local?.onStock}
+            key={props.id + "" + entry?.local?.onStock}
             className={clsx(
               "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
@@ -1593,7 +1614,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
             onChange={(e) => {
               e.stopPropagation();
               e.preventDefault();
-
+              if (!props.id) return;
               upd(props.id, {
                 ...entry,
                 onStock: !(entry?.remote
@@ -1606,10 +1627,10 @@ export const IngredientItem = (props: IngredientItemProps) => {
             checked={entry?.remote ? entry?.local?.onStock : entry?.onStock}
           />
         )}
-        {amount && (
+        {size && (
           <div className="">
-            {amountToNumber(amount)}
-            {getAmountUnit(amount)}
+            {amountToNumber(size)}
+            {getAmountUnit(size)}
           </div>
         )}
         {entry?.dilution !== "100%" && (
@@ -1672,7 +1693,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
 
             <div className="hidden flex gap-1">
               {entry?.tags &&
-                !entry?.amount &&
+                !entry?.size &&
                 entry?.tags?.map((tag) => {
                   return (
                     <Chip
@@ -1700,7 +1721,10 @@ export const IngredientItem = (props: IngredientItemProps) => {
             <Chip className="bg-yellow-500/90 w-fit" label="🤯"></Chip>
           )}
         </div>
-        {selected?.title === entry?.title && !entry?.amount && (
+        {entry?.cas && !entry.size && (
+          <Icon icon="MdOutlineVerified" className="h-6 w-6"></Icon>
+        )}
+        {false && selected?.title === entry?.title && !entry?.size && (
           <Chip
             label=""
             icon="FaLink"
@@ -1713,7 +1737,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   "/" +
                   i18next.language +
                   "/inventory/" +
-                  remoteList +
+                  source +
                   "/" +
                   encodeURIComponent(entry?.title)
               );
@@ -1729,21 +1753,22 @@ export const IngredientItem = (props: IngredientItemProps) => {
           {items
             ?.slice()
             ?.sort((a, b) => {
-              return getGrams(a.amount) - getGrams(b.amount);
+              return getGrams(a.size) - getGrams(b.size);
             })
             .map((itm) => {
               return (
                 <IngredientItem
                   key={itm.title}
                   {...itm}
+                  cas={selected.cas}
                   title={title}
                   setNotification={setNotification}
-                  id={itm.id}
+                  // id={itm.id}
                   upd={upd}
                   selected={selected}
                   setSelected={setSelected}
                   list={list}
-                  remoteList={remoteList}
+                  source={source}
                 ></IngredientItem>
               );
             })}
@@ -1873,7 +1898,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
               const plain = items.reduce((txt, itm) => {
                 return (
                   txt +
-                  `${itm.amount} ${itm.title} ${itm.dilution} ${itm.price}\n`
+                  `${itm.size} ${itm.title} ${itm.dilution} ${itm.price}\n`
                 );
               }, "# " + (listAliases[value || ""] || value || "Local") + ":\n");
 
