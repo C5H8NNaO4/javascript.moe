@@ -1,4 +1,5 @@
 import { useIndexedDB } from "react-indexed-db-hook";
+import ReactDOM from "react-dom";
 import { IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
@@ -35,6 +36,7 @@ import { inventory } from "@/static/inventory";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { getDisplayCAS } from "@/utils/item";
 import { Sources } from "libperfumery/dist/types/Sources";
+import { Tooltip } from "react-tooltip";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -1183,6 +1185,47 @@ export const IngredientDetail = ({
                       ></NavButton>
                     </Link>
                   )}
+
+                {selectedItem?.size && (
+                  <div className="bg-white/20 p-[2px] flex items-center">
+                    <div className="bg-black/10 p-1 font-bold">Size</div>
+                    <div className="bg-white/10 p-1  w-full">
+                      {amountToNumber(selectedItem?.size) *
+                        (selectedItem?.quantity || 1)}
+                      {getAmountUnit(selectedItem?.size)}
+                    </div>
+                  </div>
+                )}
+
+                <div
+                  className="bg-white/20 p-[2px] flex  items-center"
+                  id={"price"}
+                >
+                  <div className="bg-black/10 p-1 font-bold">Price</div>
+                  {/* <h2 className="line-clamp-1 w-fit ">{selected?.title}</h2> */}
+                  <div className="bg-white/10 p-1 w-full">
+                    {selectedItem?.price && (
+                      <div className="flex gap-1 ml-auto group">
+                        <span className="font-semibold">
+                          {selectedItem?.price}
+                        </span>
+
+                        {ReactDOM.createPortal(
+                          <Tooltip
+                            anchorSelect="#price"
+                            id="tooltipprice"
+                            className="group-hover:hidden block"
+                          >
+                            {selectedItem?.price?.slice(-1)}
+                            {getRawPricePerMl(selected as Item)}/
+                            {getAmountUnit(selectedItem?.size)}
+                          </Tooltip>,
+                          document.body
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="bg-white/20 p-[2px] flex items-center">
                   <div className="bg-black/10 p-1 font-bold">CAS</div>
                   <div className="bg-white/10 p-1 font-semibold w-full">
@@ -1351,28 +1394,7 @@ export const IngredientDetail = ({
                 ></ActionButton>
               )}
             </div>
-            <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%]">
-              <div className="flex gap-1">
-                {selectedItem?.size && (
-                  <b className="flex">
-                    {amountToNumber(selectedItem?.size) *
-                      (selectedItem?.quantity || 1)}
-                    {getAmountUnit(selectedItem?.size)}
-                  </b>
-                )}
-                {/* <h2 className="line-clamp-1 w-fit">{selected?.title}</h2> */}
-                {selectedItem?.price && (
-                  <div className="flex gap-1 ml-auto">
-                    <span>{selectedItem?.price}</span>
-
-                    <span>
-                      ({selectedItem?.price?.slice(-1)}
-                      {getRawPricePerMl(selected as Item)}/
-                      {getAmountUnit(selectedItem?.size)})
-                    </span>
-                  </div>
-                )}
-              </div>
+            <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%] pt-2">
               {perfumeIngredientsOdours[selected?.title] && (
                 <div className="flex gap-2 flex-wrap">
                   {perfumeIngredientsOdours[selected?.title].map((odor) => {
@@ -1532,7 +1554,7 @@ export type IngredientItemProps = Component<{
   className?: string;
   items?: Item[];
   title: string;
-  selected?: Partial<GroupedItem> | null;
+  selected?: Partial<Item> | Partial<GroupedItem> | null;
   upd: (id: number, item: Partial<Item>) => void;
   toggleFilter?: (key: string) => void;
   setSelected: (item: Item | null) => void;
@@ -1573,19 +1595,22 @@ export const IngredientItem = (props: IngredientItemProps) => {
       clearTimeout(to);
     };
   }, [selected?.title, title]);
+
+  const isSelected =
+    selected?.title === props?.title &&
+    (selected as Item)?.size === props?.size;
   return (
     <>
       <div
         ref={ref}
         className={clsx("flex gap-1 w-full items-center p-1", {
-          "bg-white/40":
-            selected?.title === props?.title && selected?.id === props?.id,
+          "bg-white/40": isSelected,
         })}
         onClick={(e) => {
           e.stopPropagation();
           if ((e.target as HTMLElement).tagName === "INPUT") return;
 
-          setSelected(selected?.id === props?.id ? null : props);
+          setSelected(isSelected ? null : props);
         }}
       >
         {entry?.items && (
@@ -1724,6 +1749,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
         {entry?.cas && !entry.size && (
           <Icon icon="MdOutlineVerified" className="h-6 w-6"></Icon>
         )}
+
         {false && selected?.title === entry?.title && !entry?.size && (
           <Chip
             label=""
