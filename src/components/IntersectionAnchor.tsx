@@ -49,7 +49,7 @@ export const IntersectionAnchor = ({
         .querySelector("html")
         ?.removeEventListener("scroll", onScrollEnd);
     };
-  });
+  }, []);
 
   const observer = useMemo(() => {
     const intersectionObserver = new IntersectionObserver(
@@ -70,17 +70,24 @@ export const IntersectionAnchor = ({
       }
     );
     return intersectionObserver;
-  }, [hash, location.hash, hasScrolled, setHasScrolled]);
-
-  useEffect(() => {
-    if (!block && !rootMargin) return;
-    if (ref.current) observer.observe(ref.current);
-  }, [ref.current, observer]);
+  }, [hasScrolled, block, nav, rootMargin]);
 
   useEffect(() => {
     if (!ref.current) return;
-    if (location.hash === "#" + hash && !hasScrolled && scroll) {
 
+    if (!block && !rootMargin) return;
+    const oldRef = ref.current;
+    observer.observe(ref.current);
+    return () => {
+      if (oldRef) observer.unobserve(oldRef);
+      observer.disconnect();
+    };
+  }, [observer, block, rootMargin]);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (!scroll || hasScrolled) return;
+    if (location.hash === "#" + hash) {
       ref.current?.scrollIntoView({
         behavior: "smooth",
         block,
@@ -93,7 +100,7 @@ export const IntersectionAnchor = ({
           });
         }, 1000);
     }
-  }, [ref.current, loc.hash, hash, hasScrolled, setHasScrolled]);
+  }, [block, scroll, hasScrolled, hash, scrollBy]);
 
   return (
     <a href={hash} ref={ref} className={className} id={hash}>
