@@ -1385,7 +1385,7 @@ export const inventory: NormalizedItem[] = [
       (paItm) =>
         paItm.title === itm.title && (paItm as any).size === itm.amount
     );
-    if (!norm) return;
+    if (!norm) return itm;
     return norm;
   })
   .filter((ele) => ele?.price) as unknown as NormalizedItem[];
