@@ -48,7 +48,7 @@ export const PublishListButton = ({
         return {
           title: ing.title,
           dilution: ing.dilution || "100%",
-          amount: ing.size,
+          amount: ing.size || (ing as any).amount,
           usedAmount: ing.usedAmount,
           unit: ing.unit || "g",
           price: ing.price,
