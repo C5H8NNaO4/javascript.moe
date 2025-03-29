@@ -87,7 +87,7 @@ export const IntersectionAnchor = ({
   useEffect(() => {
     if (!ref.current) return;
     if (!scroll || hasScrolled) return;
-    if (location.hash === "#" + hash) {
+    if (loc.hash === "#" + hash) {
       ref.current?.scrollIntoView({
         behavior: "smooth",
         block,
@@ -100,7 +100,7 @@ export const IntersectionAnchor = ({
           });
         }, 1000);
     }
-  }, [block, scroll, hasScrolled, hash, scrollBy]);
+  }, [block, scroll, hasScrolled, hash, scrollBy, loc.hash]);
 
   return (
     <a href={hash} ref={ref} className={className} id={hash}>
