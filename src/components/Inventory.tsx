@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
-import { useEffect, useRef, useState } from "react";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { ScrollContainer } from "./ScrollContainer";
 import fls from "fast-levenshtein";
 import clsx from "clsx";
@@ -746,6 +746,7 @@ export const InventoryList = ({
               </span>
             </div>
           )}
+          <ValueTags list={list} />
         </div>
       )}
 
@@ -917,6 +918,87 @@ export const InventoryList = ({
   );
 };
 
+const Tag = ({
+  label,
+  children,
+  className,
+  tooltip,
+  id,
+}: PropsWithChildren<{
+  label: string;
+  className?: string;
+  tooltip?: string;
+  id?: string;
+}>) => {
+  return (
+    <div>
+      <div
+        id={`${id}-tag`}
+        className={clsx("bg-white/20 p-[2px] flex items-center", className)}
+      >
+        <div className="bg-black/10 p-1 font-bold">{label}</div>
+        <div className="bg-white/10 p-1  w-full">{children}</div>
+      </div>
+      {ReactDOM.createPortal(
+        <Tooltip
+          anchorSelect={`#${id}-tag`}
+          id={`${id}-tag-tooltip`}
+          place="bottom-start"
+        >
+          {tooltip}
+        </Tooltip>,
+        document.body
+      )}
+    </div>
+  );
+};
+
+const ValueTags = ({ list }: { list: Item[] }) => {
+  const uniqueIngredientsOnStock = [
+    ...new Set(
+      list
+        .filter((itm) => {
+          return itm.price;
+        })
+        .map((itm) => {
+          return itm.title;
+        })
+    ),
+  ];
+  const totalValue = (list as Item[])
+    .filter((itm) => {
+      return itm.price;
+    })
+    .reduce((total, itm) => {
+      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
+    }, 0);
+
+  const { list: listName } = useParams();
+  return (
+    <div className="flex gap-1 items-center">
+      <Tag
+        label={uniqueIngredientsOnStock?.length.toString()}
+        className="ml-auto md:ml-0 !bg-sky-500 h-8 items-center text-lg font-semibold border-2 "
+        tooltip={
+          "Number of unique ingredients in the list  '" + listName + "'."
+        }
+      >
+        <Icon icon="FaBottleDroplet" className="!h-5 !w-5 " />
+      </Tag>
+      <Tag
+        id="total"
+        label={totalValue.toString()}
+        tooltip={
+          "Total value of all ingredients in the list '" + listName + "'."
+        }
+        className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
+      >
+        <Icon icon="FaDollarSign" className="!h-5 !w-5 " />
+      </Tag>
+    </div>
+  );
+};
+
 export type IngredientDetailProps = {
   selected: Partial<GroupedItem> | Partial<Item> | null;
   setSelected: (itm: Partial<Item> | null) => void;
@@ -989,25 +1071,6 @@ export const IngredientDetail = ({
       ? inventories?.remote[invRemote]
       : storedLkp?.[invLocal.trim()]) || [];
 
-  const uniqueIngredientsOnStock = [
-    ...new Set(
-      list
-        .filter((itm) => {
-          return itm.onStock;
-        })
-        .map((itm) => {
-          return itm.title;
-        })
-    ),
-  ];
-  const totalValue = (list as Item[])
-    .filter((itm) => {
-      return itm.onStock;
-    })
-    .reduce((total, itm) => {
-      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
-    }, 0);
-
   const add = async ({ id, ...props }: Partial<Item>) => {
     await db.add({ ...props, list: invLocal });
 
@@ -1055,19 +1118,9 @@ export const IngredientDetail = ({
         className="
       flex gap-1 flex-col lg:flex-row 
       lg:flex-wrap justify-between bg-white/20
-      p-2 rounded-t-md items-center h-fit"
+      p-2 rounded-t-md items-center h-fit w-full"
       >
-        <div className="flex flex-1 flex-col flex-grow items-start justify-start w-full ">
-          {selected?.title ? (
-            <h2 className="line-clamp-1">{selected?.title}</h2>
-          ) : (
-            <h2 className="line-clamp-1">{invRemote}</h2>
-          )}
-          {!!selected?.aliases?.length && (
-            <em>{selected?.aliases?.join(", ")}</em>
-          )}
-        </div>
-        <div className="flex gap-1 flex-1 ml-auto justify-end w-full items-center">
+        <div className="flex gap-1  items-center ">
           <IconButton
             className=""
             round
@@ -1083,7 +1136,7 @@ export const IngredientDetail = ({
             }}
           ></IconButton>
           <IconButton
-            className="mr-auto lg:mr-0"
+            className=""
             round
             icon="FaChevronRight"
             onClick={() => {
@@ -1094,18 +1147,19 @@ export const IngredientDetail = ({
               setSelected(sorted[(index + 1) % sorted?.length]);
             }}
           ></IconButton>
-          <Chip
-            label={uniqueIngredientsOnStock?.length.toString()}
-            icon="FaBottleDroplet"
-            iconClsn="!h-5 !w-5"
-            className="ml-auto md:ml-0 bg-blue-500 h-8 items-center text-lg font-semibold border-2 "
-          ></Chip>
-          <Chip
-            label={totalValue.toString()}
-            icon="FaDollarSign"
-            iconClsn="!h-5 !w-5"
-            className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
-          ></Chip>
+        </div>
+        <div className="flex flex-col mx-auto items-start justify-start ">
+          {selected?.title ? (
+            <h2 className="line-clamp-1">{selected?.title}</h2>
+          ) : (
+            <h2 className="line-clamp-1">{invRemote}</h2>
+          )}
+          {!!selected?.aliases?.length && (
+            <em>{selected?.aliases?.join(", ")}</em>
+          )}
+        </div>
+
+        <div className="flex gap-1  justify-end items-center">
           {selected &&
             (!isMobile ? (
               <ActionButton
