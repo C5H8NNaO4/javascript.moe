@@ -335,9 +335,8 @@ export const InventoryList = ({
     storedList.forEach((itm) => itm.id && del(itm.id, true));
     setInvRemote(null);
   };
-  const upd = async (
-    id: number,
-    {
+  const upd = async (id?: number, item?: Partial<Item>) => {
+    const {
       title,
       size = "4ml",
       quantity = 1,
@@ -345,8 +344,7 @@ export const InventoryList = ({
       price = "0$",
       dilution = "100%",
       list = "Local",
-    }: Partial<Item>
-  ) => {
+    } = item || {};
     const existing =
       storedList.find((itm) => {
         return (
@@ -373,7 +371,7 @@ export const InventoryList = ({
       source: "local" as any,
       list,
     });
-
+    console.log("ID COPY", id);
     if (id) {
       await db.update({
         ...existing,
@@ -382,9 +380,8 @@ export const InventoryList = ({
       });
     } else {
       await db.add({
-        ...existing,
         ...toAdd,
-        id,
+        list: invLocal,
       });
     }
 
@@ -418,6 +415,7 @@ export const InventoryList = ({
   const [showTags, setShowTags] = useState<boolean>(false);
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
+  const { list: listName } = useParams();
   const [listAliases] = useLocalStorage<Record<string, string>>(
     {},
     "listNames"
@@ -753,7 +751,7 @@ export const InventoryList = ({
       <div className="flex gap-4 overflow-hidden flex-1">
         {(isMobile ? !selected?.size : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
-            <div className="flex justify-between flex-wrap mb-1 gap-1">
+            <div className="flex justify-between flex-wrap mb-1 gap-1 items-center">
               <div className="flex gap-1 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
                 {Object.keys(inventories.remote).map((key) => {
                   return (
@@ -776,34 +774,30 @@ export const InventoryList = ({
                           setSelected(null);
 
                           setInvRemote(key === invRemote ? "" : key);
+                          const search = new URLSearchParams(
+                            window.location.search
+                          );
+                          search.set("library", invLocal || "Local");
+                          navigate(
+                            lngLnk`/inventory/${key}/?` +
+                              search.toString() +
+                              window.location.hash,
+                            {
+                              replace: true,
+                            }
+                          );
                         }}
                       ></Chip>
-                      {key === invRemote && !emptyStock && (
-                        <IconButton
-                          title={
-                            !invLocal
-                              ? "Select a local list to transfer items to."
-                              : `Download items to the '${invLocal}' list in your indexed db.`
-                          }
-                          disabled={!invLocal || targetHasAll}
-                          round
-                          className="w-7 h-7 text-white  bg-green-700/70"
-                          icon="FaArrowRightFromBracket"
-                          onClick={async () => {
-                            const onStock = (available?.filter((itm) => {
-                              return itm.onStock && itm.size;
-                            }) || []) as Item[];
-                            for (const itm of onStock) {
-                              if (!itm.id) continue;
-                              await upd(itm.id, { ...itm, list: invLocal });
-                            }
-                          }}
-                        ></IconButton>
-                      )}
                     </div>
                   );
                 })}
                 <NavButton
+                  id="navbtnfragrancebuilder"
+                  tooltip={
+                    invRemote === "All"
+                      ? `Ingredients in 'All' are incomplete. The fragrance builder might not work as intended.`
+                      : `Open the library '${invRemote}' in the fragrance builder.`
+                  }
                   className="ml-auto text-blue-500"
                   icon="FaFlask"
                   internal
@@ -814,6 +808,31 @@ export const InventoryList = ({
                   }
                 ></NavButton>
               </div>
+              {listName === invRemote &&
+                !emptyStock &&
+                !!invLocal &&
+                !targetHasAll && (
+                  <IconButton
+                    id="downloadbtn"
+                    tooltip={
+                      !invLocal
+                        ? "Select a local list to transfer items to."
+                        : `Copy items to the '${invLocal}' list in your indexed db.`
+                    }
+                    disabled={!invLocal || targetHasAll}
+                    round
+                    className="w-7 h-7 text-white  bg-green-700/70"
+                    icon="FaArrowRightFromBracket"
+                    onClick={async () => {
+                      const onStock = (available?.filter((itm) => {
+                        return itm.price;
+                      }) || []) as Item[];
+                      for (const itm of onStock) {
+                        await upd(itm?.id, { ...itm, list: invLocal });
+                      }
+                    }}
+                  ></IconButton>
+                )}
               <LocalListChips
                 listNames={localLists}
                 onChange={(library) => {
@@ -978,7 +997,7 @@ const ValueTags = ({ list }: { list: Item[] }) => {
     <div className="flex gap-1 items-center">
       <Tag
         label={uniqueIngredientsOnStock?.length.toString()}
-        className="ml-auto md:ml-0 !bg-sky-500 h-8 items-center text-lg font-semibold border-2 "
+        className="ml-auto md:ml-0 !bg-sky-500/70 h-8 items-center text-lg font-semibold border-2 "
         tooltip={
           "Number of unique ingredients in the list  '" + listName + "'."
         }
@@ -991,7 +1010,7 @@ const ValueTags = ({ list }: { list: Item[] }) => {
         tooltip={
           "Total value of all ingredients in the list '" + listName + "'."
         }
-        className="bg-yellow-500 h-8 items-center text-lg font-semibold border-2"
+        className="bg-yellow-500/70 h-8 items-center text-lg font-semibold border-2"
       >
         <Icon icon="FaDollarSign" className="!h-5 !w-5 " />
       </Tag>
@@ -1885,7 +1904,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     items,
     setNotification,
     showButtons = true,
-    toInventory = false,
+    // toInventory = false,
   } = props;
 
   const [listAliases, setAliases] = useLocalStorage<Record<string, string>>(
@@ -1893,26 +1912,26 @@ export const LocalListChips = (props: LocalListChipsProps) => {
     "listNames"
   );
   const [showEdit, setShowEdit] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
-      <NavButton
-        internal
-        className="text-blue-500  !mr-2"
-        icon={toInventory ? "IoLibrary" : "FaFlask"}
-        onClick={() =>
-          navigate(
-            !toInventory
-              ? `/${i18next.language}/formula/compose?library=${value}`
-              : `/${
-                  i18next.language
-                }/inventory/Moe/${window.location.hash.slice(
-                  1
-                )}?library=${value}&source=local`
-          )
-        }
-      ></NavButton>
+      {/* <NavButton
+          internal
+          className="text-blue-500  !mr-2"
+          icon={toInventory ? "IoLibrary" : "FaFlask"}
+          onClick={() =>
+            navigate(
+              !toInventory
+                ? `/${i18next.language}/formula/compose?library=${value}`
+                : `/${
+                    i18next.language
+                  }/inventory/Moe/${window.location.hash.slice(
+                    1
+                  )}?library=${value}&source=local`
+            )
+          }
+        ></NavButton> */}
       {showEdit && (
         <Input
           placeholder={value || ""}
