@@ -11,7 +11,6 @@ import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
 import { dist, findCheapestByTitle, lngLnk, randItm, unique } from "@/lib/util";
 import {
-  FormulaItem,
   Formula as FormulaType,
   Inventories,
   LocalInventories,
