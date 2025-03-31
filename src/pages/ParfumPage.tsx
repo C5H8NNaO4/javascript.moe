@@ -720,7 +720,7 @@ export const DiscoverPage = () => {
   const bp = useCurrentBreakpoint();
   const isMobile = isSmallerEq(bp, "sm");
   const [searchParams] = useSearchParams();
-  const library = searchParams.get("library") || "Local";
+  const library = searchParams.get("library") || "Moe";
   const isRemote = !!searchParams.get("remote");
 
   return (
