@@ -11,12 +11,13 @@ import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
 import { dist, findCheapestByTitle, lngLnk, randItm, unique } from "@/lib/util";
 import {
+  FormulaItem,
   Formula as FormulaType,
   Inventories,
   LocalInventories,
   Notification,
 } from "./Inventory";
-import { inventory } from "@/static/inventory";
+import { inventory, pellwall, perfumersApprentice } from "@/static/inventory";
 import { CostPerMlChip } from "./Chips/CostPerMlChip";
 import { perfumeIngredientsOdours } from "@/static/descriptions";
 import { formulas } from "@/static/assets";
@@ -41,6 +42,7 @@ import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { useHydrated } from "@/lib/hooks/useHydrated";
+import { useSearchParams } from "react-router-dom";
 
 export const FormulaList = ({
   inventories,
@@ -127,7 +129,9 @@ export const FormulaList = ({
         >
           <FormulaEntry
             formula={formula}
-            inventory={inventories.remote.Moe}
+            inventory={
+              [...perfumersApprentice, ...pellwall] as NormalizedItem[]
+            }
             inventories={inventories}
             onClick={onSelect}
             isSelected={
@@ -319,10 +323,17 @@ export const Formula = ({
   selected,
   onToggle,
   expanded,
+  inventories,
 }: any) => {
   const { title: formulaTitle, items, remoteId } = formula;
-
-  const hydrated = useHydrated(items) as FormulaIngredientProps[];
+  const [searchParams] = useSearchParams();
+  const hydrated = items.map((frmItm: FormulaItem) => ({
+    ...findCheapestByTitle(
+      frmItm.title,
+      inventories.remote[searchParams.get("library") || "Moe"] || inventory
+    ),
+    ...frmItm,
+  }));
   const formulaDb = useFormulaDb();
   const navigate = useNavigate();
   const [activeIdentity] = useLocalStorage<AuthTokens | null>(
@@ -613,7 +624,9 @@ export const FormulaCards = ({
               shrink
               formula={frmla}
               inventories={inventories.remote}
-              inventory={inventories.remote.Moe}
+              inventory={
+                [...perfumersApprentice, ...pellwall] as NormalizedItem[]
+              }
               search={search}
             ></FormulaEntry>
           </li>

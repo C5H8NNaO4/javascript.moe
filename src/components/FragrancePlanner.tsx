@@ -13,6 +13,7 @@ import { ingredients as imgs } from "@/static/assets";
 import { Button, IconButton, MenuButton } from "./Button";
 import { Icon } from "./Icon";
 import {
+  findCheapestByTitle,
   lngLnk,
   similarity,
   totalIngredientCost,
@@ -95,10 +96,14 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
     loadLocalLists();
   }, []);
 
-  const [ingredients, setIngredients] = useLocalStorage<FormulaItem[]>(
+  const [ingredients2, setIngredients] = useLocalStorage<FormulaItem[]>(
     [],
     "formulaDraft"
   );
+  const ingredients = ingredients2.map((ing) => ({
+      ...(findCheapestByTitle(ing.title, inventory) || ing),
+    ...ing,
+  }));
   const [value, setValue] = useState("");
   const [baseUnit, setBaseUnit] = useState("g");
   const [step, setStep] = useState(0.1);
@@ -134,7 +139,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
   const [showList, setShowList] = useState(!isMobile);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const toText = (ings = ingredients) => {
+  const toText = (ings = ingredients2) => {
     return ings?.reduce((txt, ing) => {
       return (
         txt + `${ing.title} ${ing.usedAmount}${ing.unit} ${ing.dilution}\n`
@@ -148,14 +153,14 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
       ?.split("\n")
       ?.map((line: string) => {
         const title = line
-          .replace(/\d\./, "")
+          .replace(/\d\./g, "")
           .replace(/\s\d+[%]/, "")
           .replace(/\d+[g]/, "")
           ?.trim();
         const amount = /(\d?\.?\d+)[g]/.exec(line)?.[1];
         const unit = "g";
 
-        const dilution = /\d+%$/.exec(line)?.[0];
+        const dilution = /\d+?\.?\d+%$/.exec(line)?.[0];
         const ing = inventory?.find(
           (ing) => ing.title?.trim() === title?.trim()
         );

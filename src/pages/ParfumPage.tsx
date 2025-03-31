@@ -2,6 +2,7 @@
 import {
   drops2Grams,
   drops2ml,
+  findCheapestByTitle,
   getGCD,
   getVH,
   lngLnk,
@@ -495,7 +496,8 @@ export const FormulaPage = () => {
   const { hash } = useLocation();
   const { list = "All" as const } = useParams();
   const selectedItems = (selected?.items || []).map(
-    (itm) => inventoryLkp[list]?.find((i: any) => itm?.title === i.title) || itm
+    (itm) =>
+      (itm?.title && findCheapestByTitle(itm?.title, inventoryLkp[list])) || itm
   );
   const selectedItem = selectedItems?.find(
     (itm) => itm?.title === decodeURIComponent(hash.slice(1))
