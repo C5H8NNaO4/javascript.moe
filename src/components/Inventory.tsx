@@ -438,7 +438,7 @@ export const InventoryList = ({
   useEffect(() => {
     if (!params.list) {
       setInvRemote("Moe");
-      navigate(lngLnk`/inventory/Moe`);
+      navigate(lngLnk`/inventory/Moe`, { replace: true });
     }
   }, [params.list, navigate]);
   useEffect(() => {
@@ -449,7 +449,10 @@ export const InventoryList = ({
       navigate(
         lngLnk`/inventory/${params.list}/?` +
           searchParams.toString() +
-          window.location.hash
+          window.location.hash,
+        {
+          replace: true,
+        }
       );
     }
   }, [params.list, searchParams?.get("library"), invLocal, navigate]);
