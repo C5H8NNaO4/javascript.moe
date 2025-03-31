@@ -11,6 +11,7 @@ import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
 import { dist, findCheapestByTitle, lngLnk, randItm, unique } from "@/lib/util";
 import {
+  FormulaItem,
   Formula as FormulaType,
   Inventories,
   LocalInventories,
@@ -40,6 +41,7 @@ import { Tooltip } from "react-tooltip";
 import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
+import { useHydrated } from "@/lib/hooks/useHydrated";
 
 export const FormulaList = ({
   inventories,
@@ -321,6 +323,7 @@ export const Formula = ({
 }: any) => {
   const { title: formulaTitle, items, remoteId } = formula;
 
+  const hydrated = useHydrated(items) as FormulaIngredientProps[];
   const formulaDb = useFormulaDb();
   const navigate = useNavigate();
   const [activeIdentity] = useLocalStorage<AuthTokens | null>(
@@ -533,7 +536,7 @@ export const Formula = ({
         </div>
         <div className="overflow-y-scroll overflow-x-hidden ">
           <ul className="min-w-max">
-            {items.map((ing: FormulaIngredientProps) => {
+            {hydrated.map((ing: FormulaIngredientProps) => {
               return (
                 <li
                   onClick={() => onSelect(ing)}
