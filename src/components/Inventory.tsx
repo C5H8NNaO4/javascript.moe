@@ -3,7 +3,13 @@ import ReactDOM from "react-dom";
 import { IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { ScrollContainer } from "./ScrollContainer";
 import fls from "fast-levenshtein";
 import clsx from "clsx";
@@ -973,7 +979,7 @@ const Tag = ({
 }: PropsWithChildren<{
   label: string;
   className?: string;
-  tooltip?: string;
+  tooltip?: string | ReactNode;
   id?: string;
   semibold?: boolean;
 }>) => {
@@ -1005,9 +1011,14 @@ const Tag = ({
         <Tooltip
           anchorSelect={`#${id}-tag`}
           id={`${id}-tag-tooltip`}
-          place="bottom-start"
+          place="right"
         >
-          {tooltip}
+          {tooltip || (
+            <div className="flex gap-1 font-semibold items-center">
+              <Icon icon="FaCopy" className="h-4 w-4" />
+              Copy
+            </div>
+          )}
         </Tooltip>,
         document.body
       )}
@@ -1308,15 +1319,7 @@ export const IngredientDetail = ({
                     </Link>
                   )}
 
-                <Tag
-                  label="Price"
-                  id={"pricetag"}
-                  tooltip={`${selectedItem?.price?.slice(-1)}
-                           ${getRawPricePerMl(
-                             selected as Item
-                           )}/${getAmountUnit(selectedItem?.size)}`}
-                  semibold
-                >
+                <Tag label="Price" id={"pricetag"} semibold>
                   {selectedItem?.price}
                 </Tag>
                 {selectedItem?.size && (
