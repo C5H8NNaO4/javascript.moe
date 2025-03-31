@@ -39,7 +39,7 @@ import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
 import { NavButton } from "./NavButton";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
-import { inventory } from "@/static/inventory";
+import { inventory, pellwall, perfumersApprentice } from "@/static/inventory";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { getDisplayCAS } from "@/utils/item";
 import { Sources } from "libperfumery/dist/types/Sources";
@@ -107,22 +107,24 @@ export const getPriceAndCurrency = (price = "0$") => {
   if (price.includes("$")) return "$";
   return "$";
 };
-export const getPriceInDollar = (price = "0$") => {
-  // console.log ("GET GRAMS", amount)
-  const raw = Number(price.replace(/[$€]/, ""));
-  if (price.includes("€")) return raw * (1 / 0.92) + "$";
-  if (price.includes("$")) return price;
-  return raw;
-};
 
 export const getAmountUnit = (amount = "0g") => {
   return amount?.replace(/\d+/, "");
 };
 
 export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
-  return Number(entry.price?.replace(/[$€]/, "") || 0);
+  return Number(
+    entry.price?.replace(/[$€£]/, "").replace("GBP", "").trim() || 0
+  );
 };
-
+export const getPriceInDollar = (price = "0$") => {
+  // console.log ("GET GRAMS", amount)
+  const raw = getPrice(price);
+  if (price.includes("€")) return raw * (1 / 0.92) + "$";
+  if (price.includes("£")) return raw * (1 / 0.77) + "$";
+  if (price.includes("$")) return price;
+  return raw;
+};
 export const getDilution = (entry: Pick<NormalizedItem, "dilution">) => {
   return Number(entry.dilution?.replace(/[%]/, "")) || 100;
 };
@@ -154,9 +156,38 @@ export const getPricePerUnit = (
   const nr = getGrams(entry.size);
   const cur = getCurrency(entry.price);
   const prc = getPrice(entry);
+  const intl = new Intl.NumberFormat(i18next.language, {
+    unit: units[getAmountUnit(entry?.size)],
+    currency: currencyCodes[cur],
+    unitDisplay: "short",
+    style: "currency",
+  });
   return (
-    Math.round((prc / nr) * 100) / 100 + cur + "/" + getAmountUnit(entry.size)
+    intl.format(Math.round((prc / nr) * 100) / 100) +
+    "/" +
+    getAmountUnit(entry?.size)
   );
+};
+
+const currencyCodes = {
+  $: "USD",
+  "£": "GBP",
+  "€": "EUR",
+};
+
+const units = {
+  g: "gram",
+  ml: "milliliter",
+} as Record<string, string>;
+export const getDisplayPrice = (price) => {
+  const frm = new Intl.NumberFormat(i18next.language, {
+    currency: currencyCodes[getCurrency(price)],
+    currencySign: "standard",
+    compactDisplay: "short",
+    currencyDisplay: "symbol",
+    style: "currency",
+  });
+  return frm.format(getPrice({ price }));
 };
 
 export type Item = NormalizedItem & {
@@ -945,7 +976,8 @@ export const InventoryList = ({
           <IngredientDetail
             inventories={{
               remote: {
-                All: perfumersApprenticeInventory,
+                PA: perfumersApprentice,
+                PW: pellwall,
                 Moe: inventory || [],
               },
               local: {
@@ -1320,17 +1352,16 @@ export const IngredientDetail = ({
                   )}
 
                 <Tag label="Price" id={"pricetag"} semibold>
-                  {selectedItem?.price}
+                  {getDisplayPrice(selectedItem?.price)}
                 </Tag>
                 <Tag
                   label={`${getCurrency(selectedItem?.price)}/${getAmountUnit(
                     selectedItem?.size
                   )}`}
-                  id={"pricetag"}
+                  id={"mlpricetag"}
                   semibold
                 >
-                  {getPricePerMl(selectedItem) +
-                    getCurrency(selectedItem?.price)}
+                  {getDisplayPrice(selectedItem?.price)}
                 </Tag>
                 {selectedItem?.size && (
                   <Tag label="Size" id="sizetag">
@@ -1792,7 +1823,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
 
         {!entry?.items && (
           <>
-            <div className="">{entry.price}</div>
+            <div className="">{getDisplayPrice(entry?.price)}</div>
             <div className="">{getPricePerUnit(entry)}</div>
           </>
         )}

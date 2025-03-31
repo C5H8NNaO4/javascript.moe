@@ -67,7 +67,7 @@ import {
 
 import { IngredientDetail, InventoryList } from "../components/Inventory";
 
-import { inventory } from "@/static/inventory";
+import { inventory, pellwall, perfumersApprentice } from "@/static/inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { isSmallerEq, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
 import {
@@ -370,7 +370,8 @@ export const InventoryPage = () => {
           <InventoryList
             inventories={{
               remote: {
-                All: perfumersApprenticeInventory,
+                PA: perfumersApprentice,
+                PW: pellwall,
                 Moe: inventory || [],
               },
               local: {
@@ -460,7 +461,8 @@ export const FragrancePage = () => {
           <FragrancePlanner
             inventories={{
               remote: {
-                All: perfumersApprenticeInventory,
+                PA: perfumersApprentice,
+                PW: pellwall,
                 Moe: inventory || [],
               },
               local: {
@@ -594,7 +596,11 @@ export const FormulaPage = () => {
             setExpanded(true);
           }}
           inventories={{
-            remote: { All: perfumersApprenticeInventory, Moe: inventory },
+            remote: {
+              PA: perfumersApprentice,
+              PW: pellwall,
+              Moe: inventory || [],
+            },
             local: {},
           }}
         ></FormulaCards>
@@ -610,7 +616,8 @@ export const FormulaPage = () => {
               <FormulaList
                 inventories={{
                   remote: {
-                    All: perfumersApprenticeInventory,
+                    PA: perfumersApprentice,
+                    PW: pellwall,
                     Moe: inventory || [],
                   },
                   local: {
@@ -628,7 +635,8 @@ export const FormulaPage = () => {
                   formula={selected}
                   inventories={{
                     remote: {
-                      All: perfumersApprenticeInventory,
+                      PA: perfumersApprentice,
+                      PW: pellwall,
                       Moe: inventory || [],
                     },
                     local: {
@@ -653,8 +661,9 @@ export const FormulaPage = () => {
                 <IngredientDetail
                   inventories={{
                     remote: {
-                      All: perfumersApprenticeInventory,
-                      Moe: inventory,
+                      PA: perfumersApprentice,
+                      PW: pellwall,
+                      Moe: inventory || [],
                     },
                     local: {},
                   }}
@@ -808,7 +817,11 @@ export const DiscoverPage = () => {
               setExpanded(!isMobile);
             }}
             inventories={{
-              remote: { All: perfumersApprenticeInventory, Moe: inventory },
+              remote: {
+                PA: perfumersApprentice,
+                PW: pellwall,
+                Moe: inventory || [],
+              },
               local: {},
             }}
             search={search}
@@ -901,7 +914,8 @@ export const PublishPage = () => {
           <FormulaPublisher
             inventories={{
               remote: {
-                All: perfumersApprenticeInventory,
+                PA: perfumersApprentice,
+                PW: pellwall,
                 Moe: inventory || [],
               },
               local: {

@@ -1,8 +1,29 @@
+
 import { normalize } from "@/utils/perfumersApprentice";
-import { perfumersApprenticeInventory } from "./data/ingredients/perfumersApprentice";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
-export const inventory: NormalizedItem[] = [
+import pa from "libperfumery/dist/static/data/normalized/pa";
+import pw from "libperfumery/dist/static/data/normalized/pw";
+import {
+  ScrapedPAItem,
+  ScrapedPWItem,
+} from "libperfumery/dist/types/ScrapedItem";
+import { normalize as normPA } from "libperfumery/dist/utils/perfumersApprentice";
+import { normalize as normPW } from "libperfumery/dist/utils/pellwall/normalize";
+export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
+  return Number(entry.price?.replace(/[$€£]/, "") || 0);
+};
+const perfumersApprentice = pa
+  .flat(3)
+  .filter((itm: ScrapedPAItem) => itm?.amount && itm?.price)
+  .map(normPA) as unknown as NormalizedItem[];
+
+const pellwall = (await pw)
+  .flat(3)
+  .filter((itm: ScrapedPWItem) => itm?.size && itm?.price)
+  .map(normPW) as unknown as NormalizedItem[];
+
+const inventory: NormalizedItem[] = [
   {
     amount: "500g",
     quantity: 1,
@@ -1382,7 +1403,7 @@ export const inventory: NormalizedItem[] = [
   },
 ]
   .map((itm) => {
-    const norm = perfumersApprenticeInventory.find(
+    const norm = perfumersApprentice.find(
       (paItm) => paItm.title === itm.title && (paItm as any).size === itm.amount
     );
     if (!itm.price || !itm.amount) return;
@@ -1391,3 +1412,5 @@ export const inventory: NormalizedItem[] = [
     return norm;
   })
   .filter((ele) => ele?.price) as unknown as NormalizedItem[];
+
+export { pellwall, perfumersApprentice, inventory };
