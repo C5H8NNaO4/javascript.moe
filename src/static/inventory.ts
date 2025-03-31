@@ -1,27 +1,16 @@
-
 import { normalize } from "@/utils/perfumersApprentice";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
 import pa from "libperfumery/dist/static/data/normalized/pa";
 import pw from "libperfumery/dist/static/data/normalized/pw";
-import {
-  ScrapedPAItem,
-  ScrapedPWItem,
-} from "libperfumery/dist/types/ScrapedItem";
-import { normalize as normPA } from "libperfumery/dist/utils/perfumersApprentice";
-import { normalize as normPW } from "libperfumery/dist/utils/pellwall/normalize";
 export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
   return Number(entry.price?.replace(/[$€£]/, "") || 0);
 };
 const perfumersApprentice = pa
   .flat(3)
-  .filter((itm: ScrapedPAItem) => itm?.amount && itm?.price)
-  .map(normPA) as unknown as NormalizedItem[];
+  .filter((itm) => itm?.amount && itm?.price);
 
-const pellwall = (await pw)
-  .flat(3)
-  .filter((itm: ScrapedPWItem) => itm?.size && itm?.price)
-  .map(normPW) as unknown as NormalizedItem[];
+const pellwall = pw.flat(3).filter((itm) => itm?.size && itm?.price);
 
 const inventory: NormalizedItem[] = [
   {

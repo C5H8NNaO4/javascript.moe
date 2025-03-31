@@ -1378,6 +1378,15 @@ export const IngredientDetail = ({
                 <Tag label="CAS" id="castag">
                   {getDisplayCAS(selected?.cas)}
                 </Tag>
+
+                {selectedItem?.attributes?.map((attr) => {
+                  return (
+                    <Tag label={Object.keys(attr)[0]}>
+                      {Object.values(attr)[0]?.toString()}
+                    </Tag>
+                  );
+                })}
+                
                 {false &&
                   (selectedItem?.local?.onStock ||
                     (!selectedItem?.remote && selectedItem?.onStock)) && (

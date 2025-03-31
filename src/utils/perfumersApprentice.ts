@@ -21,6 +21,7 @@ export const normalize = (itm: RawItem): Item => {
     aliases: [] as string[],
     onStock: itm.onStock,
     source: itm.source,
+    attributes: itm.attributes,
   };
 
   if (/a\.k\.a .+$/.test(norm?.title) || /\(.+?\)/.test(norm?.title)) {
@@ -55,6 +56,7 @@ export const groupByTitle = (arr: Item[]) => {
       acc[itm.title].items = [
         ...(acc[itm.title]?.items || []),
         {
+          ...itm,
           title: itm.title,
           size: itm.size,
           // quantity: 1,
@@ -71,6 +73,7 @@ export const groupByTitle = (arr: Item[]) => {
           baseUrl: itm.baseUrl,
           link: itm.link,
           cas: itm.cas,
+          attributes: itm.attributes,
         },
       ];
     return acc;
