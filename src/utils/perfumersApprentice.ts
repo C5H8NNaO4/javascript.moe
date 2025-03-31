@@ -70,6 +70,7 @@ export const groupByTitle = (arr: Item[]) => {
           aliases: itm.aliases,
           baseUrl: itm.baseUrl,
           link: itm.link,
+          cas: itm.cas,
         },
       ];
     return acc;

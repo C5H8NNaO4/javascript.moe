@@ -977,11 +977,22 @@ const Tag = ({
   id?: string;
   semibold?: boolean;
 }>) => {
+  const [not, setNot] = useState<string>("");
   return (
     <>
-      <div
+      {not &&
+        ReactDOM.createPortal(
+          <Notification title={not} setNotification={setNot} />,
+          document.body
+        )}
+      <button
         id={`${id}-tag`}
         className={clsx("bg-white/5 p-[2px] flex items-center ", className)}
+        onClick={() => {
+          if (typeof children !== "string") return;
+          copy(children);
+          setNot("Copied " + label);
+        }}
       >
         <div className="bg-black/20 p-1 font-bold">{label}</div>
         <div
@@ -989,7 +1000,7 @@ const Tag = ({
         >
           {children}
         </div>
-      </div>
+      </button>
       {ReactDOM.createPortal(
         <Tooltip
           anchorSelect={`#${id}-tag`}
@@ -1289,7 +1300,10 @@ export const IngredientDetail = ({
                         icon="FaShoppingCart"
                         className="bg-sky-500  !h-7 !w-7 !p-0"
                       >
-                        <img src={PALogo} className="absolute h-6 w-6 opacity-100 hover:opacity-0" />
+                        <img
+                          src={PALogo}
+                          className="absolute h-6 w-6 opacity-100 hover:opacity-0"
+                        />
                       </NavButton>
                     </Link>
                   )}
@@ -1307,9 +1321,11 @@ export const IngredientDetail = ({
                 </Tag>
                 {selectedItem?.size && (
                   <Tag label="Size" id="sizetag">
-                    {amountToNumber(selectedItem?.size) *
-                      (selectedItem?.quantity || 1)}
-                    {getAmountUnit(selectedItem?.size)}
+                    {(
+                      amountToNumber(selectedItem?.size) *
+                        (selectedItem?.quantity || 1) +
+                      getAmountUnit(selectedItem?.size)
+                    ).toString()}
                   </Tag>
                 )}
 
@@ -2078,7 +2094,7 @@ export const Notification = (props: NotificationProps) => {
   useEffect(() => {
     const to = setTimeout(() => setNotification(""), 5000);
     return () => clearTimeout(to);
-  });
+  }, [setNotification]);
 
   return (
     <div className="backdrop-blur-sm fixed top-2 right-1/2 translate-x-1/2 bg-blue-500/70 rounded-md font-semibold z-[1000] p-1 gap-0 flex items-center justify-between">
