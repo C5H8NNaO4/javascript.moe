@@ -592,7 +592,7 @@ export const FormulaPage = () => {
           onSelect={(frmla: any) => {
             navigate(
               lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/?library=${
-                library || "Local"
+                library || "Moe"
               }&${isRemote ? "&remote=1" : ""}`
             );
             setExpanded(true);
