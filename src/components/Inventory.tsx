@@ -1322,6 +1322,16 @@ export const IngredientDetail = ({
                 <Tag label="Price" id={"pricetag"} semibold>
                   {selectedItem?.price}
                 </Tag>
+                <Tag
+                  label={`${getCurrency(selectedItem?.price)}/${getAmountUnit(
+                    selectedItem?.size
+                  )}`}
+                  id={"pricetag"}
+                  semibold
+                >
+                  {getPricePerMl(selectedItem) +
+                    getCurrency(selectedItem?.price)}
+                </Tag>
                 {selectedItem?.size && (
                   <Tag label="Size" id="sizetag">
                     {(
