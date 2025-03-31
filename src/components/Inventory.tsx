@@ -385,6 +385,7 @@ export const InventoryList = ({
       price = "0$",
       dilution = "100%",
       list = "Local",
+      attributes = [],
     } = item || {};
     const existing =
       storedList.find((itm) => {
@@ -406,6 +407,7 @@ export const InventoryList = ({
       remote: false,
       source: "local" as any,
       list,
+      attributes,
     });
     if (id) {
       await db.update({
@@ -1386,7 +1388,7 @@ export const IngredientDetail = ({
                     </Tag>
                   );
                 })}
-                
+
                 {false &&
                   (selectedItem?.local?.onStock ||
                     (!selectedItem?.remote && selectedItem?.onStock)) && (
