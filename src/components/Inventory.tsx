@@ -118,7 +118,7 @@ export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
 };
 export const getPriceInDollar = (price = "0$") => {
   // console.log ("GET GRAMS", amount)
-  const raw = getPrice(price);
+  const raw = getPrice({price});
   if (price.includes("€")) return raw * (1 / 0.92) + "$";
   if (price.includes("£")) return raw * (1 / 0.77) + "$";
   if (price.includes("$")) return price;
