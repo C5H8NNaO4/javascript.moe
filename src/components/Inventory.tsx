@@ -17,6 +17,7 @@ import {
   TagColors,
   TagIcons,
 } from "../static/descriptions";
+import PALogo from "../assets/logos/PerfumersApprentice.png";
 import { Chip, Component, OdorChip } from "./Chip";
 import { between } from "../utils/numbers";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -178,6 +179,7 @@ export type AutoSuggestItem = NormalizedItem & {
 };
 
 export type FormulaItem = NormalizedItem & {
+  amount?: string;
   usedAmount?: number;
   unit?: string;
   token?: string;
@@ -1285,8 +1287,10 @@ export const IngredientDetail = ({
                         tooltipPlacement="right"
                         id="shopNavButton"
                         icon="FaShoppingCart"
-                        className="bg-sky-500 w-fit"
-                      ></NavButton>
+                        className="bg-sky-500  !h-7 !w-7 !p-0"
+                      >
+                        <img src={PALogo} className="absolute h-6 w-6 opacity-100 hover:opacity-0" />
+                      </NavButton>
                     </Link>
                   )}
 

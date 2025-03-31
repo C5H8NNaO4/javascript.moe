@@ -1,3 +1,5 @@
+import { FormulaIngredientProps } from "@/components/FragrancePlanner";
+import { FormulaItem } from "@/components/Inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { inventory } from "@/static/inventory";
 import { HydratableItem } from "@/types/Item";
@@ -9,15 +11,16 @@ const invLkp = {
   Moe: inventory,
 } as Record<string, NormalizedItem[]>;
 
-export const useHydrated = (items: HydratableItem[]) => {
+export const useHydrated = (items: FormulaItem[]) => {
   const { list } = useParams();
 
   const lkpItems = invLkp[list || "Moe"];
 
-  return items.map((item) => {
+  return items.map((formulaItem) => {
     const lkp = lkpItems.find(
-      (itm) => itm.title === item.title && itm.size === item.size
+      (itm) =>
+        itm.title === formulaItem.title && itm.size === formulaItem.amount
     );
-    return { ...lkp, ...item };
+    return { ...lkp, ...formulaItem };
   });
 };
