@@ -370,7 +370,6 @@ export const InventoryPage = () => {
           <InventoryList
             inventories={{
               remote: {
-                "*": [],
                 All: perfumersApprenticeInventory,
                 Moe: inventory || [],
               },

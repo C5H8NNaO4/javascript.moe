@@ -222,7 +222,7 @@ export const InventoryList = ({
 
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
   const [invRemote, setInvRemote] = useState<Sources | string | null>(
-    params?.list || "Moe"
+    params?.list === "*" ? "" : params.list || "Moe"
   );
   const [invLocal, setInvLocal] = useState<string | null>(
     searchParams.get("library") || "Local"
@@ -230,7 +230,8 @@ export const InventoryList = ({
 
   useEffect(() => {
     setInvLocal(searchParams.get("library"));
-  }, [searchParams.get("library")]);
+  }, [searchParams]);
+
   const [sort, setSort] = useState<string>("+AZ");
   const [notification, setNotification] = useState<string>("");
 
@@ -241,7 +242,9 @@ export const InventoryList = ({
   );
 
   const availList = (
-    invRemote ? inventories.remote?.[invRemote] : initialList
+    invRemote && invRemote !== "*"
+      ? inventories.remote?.[invRemote] || []
+      : initialList
   ) as Item[];
   const available = availList.map((itm) => {
     return {
@@ -379,13 +382,16 @@ export const InventoryList = ({
       });
     }
 
+    console.log("UPDATE", existing, toAdd);
     setStoredLkp((storedList) => {
       const newList = { ...storedList };
-      newList[invLocal || "Local"].splice(index, index > -1 ? 1 : 0, toAdd);
+      const newItems = newList[invLocal || "Local"].slice();
+      newItems.splice(index, index > -1 ? 1 : 0, toAdd);
+      newList[invLocal || "Local"] = newItems;
       return newList;
     });
     // if (selected?.local?.id === id) {
-    setSelected(toAdd);
+    // setSelected(toAdd);
     // }
   };
 
@@ -430,6 +436,9 @@ export const InventoryList = ({
   };
   const navigate = useNavigate();
   useEffect(() => {
+    if (!params.list) navigate(lngLnk`/inventory/Moe`);
+  }, [params.list, navigate]);
+  useEffect(() => {
     if (selected?.title) {
       if (
         selected?.title !== decodeURIComponent(params.title || "") ||
@@ -440,7 +449,7 @@ export const InventoryList = ({
             i18next.language +
             "/" +
             "inventory/" +
-            invRemote +
+            (invRemote || "*") +
             "/" +
             encodeURIComponent(selected?.title || "") +
             (selected?.size ? "/" + selected?.size : "") +
@@ -769,14 +778,14 @@ export const InventoryList = ({
                         })}
                         onClick={() => {
                           setSelected(null);
-
-                          setInvRemote(key === invRemote ? "*" : key);
+                          const newInvRemote = key === invRemote ? "" : key;
+                          setInvRemote(newInvRemote);
                           const search = new URLSearchParams(
                             window.location.search
                           );
                           search.set("library", invLocal || "Local");
                           navigate(
-                            lngLnk`/inventory/${key}/?` +
+                            lngLnk`/inventory/${newInvRemote || "*"}/?` +
                               search.toString() +
                               window.location.hash,
                             {
@@ -836,7 +845,7 @@ export const InventoryList = ({
                   const search = new URLSearchParams(window.location.search);
                   search.set("library", library || "Local");
                   navigate(
-                    lngLnk`/inventory/${invRemote!}/?` +
+                    lngLnk`/inventory/${invRemote || "*"}/?` +
                       search.toString() +
                       window.location.hash
                   );
@@ -940,20 +949,26 @@ const Tag = ({
   className,
   tooltip,
   id,
+  semibold,
 }: PropsWithChildren<{
   label: string;
   className?: string;
   tooltip?: string;
   id?: string;
+  semibold?: boolean;
 }>) => {
   return (
-    <div>
+    <>
       <div
         id={`${id}-tag`}
-        className={clsx("bg-white/20 p-[2px] flex items-center", className)}
+        className={clsx("bg-white/5 p-[2px] flex items-center ", className)}
       >
-        <div className="bg-black/10 p-1 font-bold">{label}</div>
-        <div className="bg-white/10 p-1  w-full">{children}</div>
+        <div className="bg-black/20 p-1 font-bold">{label}</div>
+        <div
+          className={clsx("bg-white/20 p-1 ", { "font-semibold": semibold })}
+        >
+          {children}
+        </div>
       </div>
       {ReactDOM.createPortal(
         <Tooltip
@@ -965,7 +980,7 @@ const Tag = ({
         </Tooltip>,
         document.body
       )}
-    </div>
+    </>
   );
 };
 
@@ -993,6 +1008,7 @@ const ValueTags = ({ list }: { list: Item[] }) => {
   return (
     <div className="flex gap-1 items-center">
       <Tag
+        id="uniqueingredients"
         label={uniqueIngredientsOnStock?.length.toString()}
         className="ml-auto md:ml-0 !bg-sky-500/70 h-8 items-center text-lg font-semibold border-2 "
         tooltip={
@@ -1256,52 +1272,28 @@ export const IngredientDetail = ({
                     </Link>
                   )}
 
+                <Tag
+                  label="Price"
+                  id={"pricetag"}
+                  tooltip={`${selectedItem?.price?.slice(-1)}
+                           ${getRawPricePerMl(
+                             selected as Item
+                           )}/${getAmountUnit(selectedItem?.size)}`}
+                  semibold
+                >
+                  {selectedItem?.price}
+                </Tag>
                 {selectedItem?.size && (
-                  <div className="bg-white/20 p-[2px] flex items-center">
-                    <div className="bg-black/10 p-1 font-bold">Size</div>
-                    <div className="bg-white/10 p-1  w-full">
-                      {amountToNumber(selectedItem?.size) *
-                        (selectedItem?.quantity || 1)}
-                      {getAmountUnit(selectedItem?.size)}
-                    </div>
-                  </div>
+                  <Tag label="Size" id="sizetag">
+                    {amountToNumber(selectedItem?.size) *
+                      (selectedItem?.quantity || 1)}
+                    {getAmountUnit(selectedItem?.size)}
+                  </Tag>
                 )}
 
-                <div
-                  className="bg-white/20 p-[2px] flex  items-center"
-                  id={"price"}
-                >
-                  <div className="bg-black/10 p-1 font-bold">Price</div>
-                  {/* <h2 className="line-clamp-1 w-fit ">{selected?.title}</h2> */}
-                  <div className="bg-white/10 p-1 w-full">
-                    {selectedItem?.price && (
-                      <div className="flex gap-1 ml-auto group">
-                        <span className="font-semibold">
-                          {selectedItem?.price}
-                        </span>
-
-                        {ReactDOM.createPortal(
-                          <Tooltip
-                            anchorSelect="#price"
-                            id="tooltipprice"
-                            className="group-hover:hidden block"
-                          >
-                            {selectedItem?.price?.slice(-1)}
-                            {getRawPricePerMl(selected as Item)}/
-                            {getAmountUnit(selectedItem?.size)}
-                          </Tooltip>,
-                          document.body
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="bg-white/20 p-[2px] flex items-center">
-                  <div className="bg-black/10 p-1 font-bold">CAS</div>
-                  <div className="bg-white/10 p-1 font-semibold w-full">
-                    {getDisplayCAS(selected?.cas)}
-                  </div>
-                </div>
+                <Tag label="CAS" id="castag">
+                  {getDisplayCAS(selected?.cas)}
+                </Tag>
                 {false &&
                   (selectedItem?.local?.onStock ||
                     (!selectedItem?.remote && selectedItem?.onStock)) && (
@@ -1379,9 +1371,11 @@ export const IngredientDetail = ({
                   search.set("library", library || "Local");
                   if (window.location.pathname.includes("/inventory/")) {
                     navigate(
-                      lngLnk`/inventory/${params.list!}/${encodeURIComponent(
-                        params.title!
-                      )}${params.amount ? "/" + params.amount! : ""}?` +
+                      lngLnk`/inventory/${
+                        params.list || "*"
+                      }/${encodeURIComponent(params.title!)}${
+                        params.amount ? "/" + params.amount! : ""
+                      }?` +
                         search.toString() +
                         window.location.hash
                     );
@@ -1625,7 +1619,7 @@ export type IngredientItemProps = Component<{
   items?: Item[];
   title: string;
   selected?: Partial<Item> | Partial<GroupedItem> | null;
-  upd: (id: number, item: Partial<Item>) => void;
+  upd: (id?: number, item?: Partial<Item>) => void;
   toggleFilter?: (key: string) => void;
   setSelected: (item: Item | null) => void;
   setNotification: (v: string) => void;
@@ -1692,7 +1686,11 @@ export const IngredientItem = (props: IngredientItemProps) => {
         )}
         {!Array.isArray(items) && (
           <input
-            key={props.id + "" + entry?.local?.onStock}
+            key={
+              props.id +
+              "" +
+              (entry?.local ? entry?.local?.onStock : entry?.onStock)
+            }
             className={clsx(
               "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
@@ -1709,15 +1707,15 @@ export const IngredientItem = (props: IngredientItemProps) => {
             onChange={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              if (!props.local?.id) return;
-              upd(props.local.id, {
+              if (!(props.local?.id || props.id)) return;
+              upd(props?.local?.id || props?.id, {
                 ...entry,
                 onStock: e.target.checked,
                 list: entry.list,
               });
               return false;
             }}
-            checked={entry?.remote ? entry?.local?.onStock : entry?.onStock}
+            checked={entry?.local ? entry?.local?.onStock : entry?.onStock}
           />
         )}
         {size && (
