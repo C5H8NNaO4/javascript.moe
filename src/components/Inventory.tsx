@@ -770,7 +770,7 @@ export const InventoryList = ({
                         onClick={() => {
                           setSelected(null);
 
-                          setInvRemote(key === invRemote ? "" : key);
+                          setInvRemote(key === invRemote ? "*" : key);
                           const search = new URLSearchParams(
                             window.location.search
                           );
