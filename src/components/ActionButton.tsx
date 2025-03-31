@@ -20,6 +20,7 @@ export type ActionButtonProps = ReactButton &
     level?: number;
     params?: any;
     constructive?: boolean;
+    confirmTooltip?: string;
   };
 export const ActionButton = ({
   className,
@@ -32,6 +33,9 @@ export const ActionButton = ({
   icon,
   constructive,
   tooltipPlacement = "left",
+  confirmTooltip,
+  promptText,
+  promptTitle,
   id,
   ...rest
 }: ActionButtonProps) => {
@@ -42,8 +46,10 @@ export const ActionButton = ({
   //     onDestruct
   //   );
   const ref = useRef<any>();
-  useOnClickOutside(ref, () => {
-    setConfirm(false);
+  useOnClickOutside(ref, (e) => {
+    setTimeout(() => {
+      setConfirm(false);
+    }, 0);
   });
   const { trackUse, active } = useIdentity();
   const identity = useMemo(() => {
@@ -54,12 +60,12 @@ export const ActionButton = ({
     <>
       <Cmp
         {...rest}
-        disabled={confirm || rest.disabled}
+        disabled={rest.disabled}
         round={round}
         onClick={() => {
           const fn = constructive ? onConstruct : onDestruct;
           if (level > 1) {
-            setConfirm(true);
+            if (!confirm) setConfirm(true);
           } else if (level === 1) {
             fn?.(true, params);
           }
@@ -73,14 +79,17 @@ export const ActionButton = ({
               level === 1 && constructive,
             "bg-green-500/70 hover:!bg-green-700/70":
               level === 2 && constructive,
-            "blur-sm": confirm,
+            "blur-[1px]": confirm,
+            "disabled:bg-red-500/40 hover:disabled:!bg-red-700/40":
+              confirm && level === 2 && !constructive,
           },
           "relative",
           "overflow-hidden group",
           className
         )}
-        id={id + "confirmButton"}
+        id={id + "confirmButton" + confirm}
         tooltipPlacement={tooltipPlacement}
+        tooltip={confirm ? confirmTooltip || "" : rest.tooltip}
       >
         {rest.children}
         {needsLogin && !identity?.active?.GOOGLE?.id_token && (
@@ -92,20 +101,32 @@ export const ActionButton = ({
           </div>
         )}
       </Cmp>
+
+      {needsLogin &&
+        !identity?.active?.GOOGLE?.id_token &&
+        ReactDOM.createPortal(
+          <Tooltip anchorSelect={`#${id}confirmButton`} place="right" clickable>
+            <span className="flex gap-2 items-center font-bold text-base">
+              <GoogleLoginButton className="h-4 w-4"></GoogleLoginButton>
+              Login Required
+            </span>
+          </Tooltip>,
+          document.body
+        )}
       {level === 2 &&
         confirm &&
         ReactDOM.createPortal(
           <Tooltip
-            anchorSelect={`#${id}confirmButton`}
+            anchorSelect={`#${id}confirmButton${confirm}`}
             isOpen={level === 2 && confirm}
             clickable
             place={tooltipPlacement}
           >
-            <span
-              ref={ref}
-              className="flex gap-2 items-center font-bold text-base"
-            >
-              Confirm
+            <span className="flex gap-2 items-center text-base w-fit" ref={ref}>
+              <div className="flex flex-col text-end  ">
+                <span className="font-semibold w-full">{promptTitle}</span>
+                <span className="italic  ml-auto">{promptText}</span>
+              </div>
               <IconButton
                 icon="FaCheck"
                 className="bg-green-400"
@@ -115,18 +136,6 @@ export const ActionButton = ({
                   setConfirm(false);
                 }}
               ></IconButton>
-            </span>
-          </Tooltip>,
-          document.body
-        )}
-
-      {needsLogin &&
-        !identity?.active?.GOOGLE?.id_token &&
-        ReactDOM.createPortal(
-          <Tooltip anchorSelect={`#${id}confirmButton`} place="right" clickable>
-            <span className="flex gap-2 items-center font-bold text-base">
-              <GoogleLoginButton className="h-4 w-4"></GoogleLoginButton>
-              Login Required
             </span>
           </Tooltip>,
           document.body

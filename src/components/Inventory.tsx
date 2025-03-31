@@ -2027,9 +2027,12 @@ export const LocalListChips = (props: LocalListChipsProps) => {
         ></IconButton>
         {items?.length > 0 && (
           <ActionButton
+            id="clearlistaction"
             className={clsx("h-7 w-7", {})}
+            tooltip="Clear this list."
+            confirmTooltip="Cancel."
             level={2}
-            icon="FaTrash"
+            icon="GrClear"
             round
             promptTitle="Empty this list?"
             promptText="This will delete all local ingredients from this list."

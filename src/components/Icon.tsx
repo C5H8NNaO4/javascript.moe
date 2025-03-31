@@ -8,6 +8,7 @@ import * as TB from "react-icons/tb";
 import * as GI from "react-icons/gi";
 import * as IO5 from "react-icons/io5";
 import * as IO from "react-icons/io";
+import * as GR from "react-icons/gr";
 import clsx from "clsx";
 
 export const Icon = ({
@@ -28,13 +29,16 @@ export const Icon = ({
     (GI as any)[icon] ||
     (IO5 as any)[icon] ||
     (IO as any)[icon] ||
+    (GR as any)[icon] ||
     MUI.MdQuestionMark;
   return (
-    <span className={clsx("relative inline-block h-fit w-fit flex justify-center items-center")}>
+    <span
+      className={clsx(
+        "relative inline-block h-fit w-fit flex justify-center items-center"
+      )}
+    >
       <Cmp color="inherit" {...rest} />
-      <span className="absolute">
-        {children}
-      </span>
+      <span className="absolute">{children}</span>
     </span>
   );
 };

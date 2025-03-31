@@ -14,7 +14,7 @@ export type ButtonProps = {
   tooltipPlacement?: PlacesType;
 };
 export type ReactButton = React.ButtonHTMLAttributes<HTMLButtonElement> &
-  ButtonProps 
+  ButtonProps;
 
 export const Button = ({
   className,
@@ -63,6 +63,7 @@ export const Button = ({
       </button>
       {ReactDOM.createPortal(
         <Tooltip
+          key={tooltip}
           anchorSelect={"#" + id}
           place={tooltipPlacement}
           className="z-[10000]"
@@ -109,7 +110,15 @@ export const IconButton = ({
       allowDisabledClick={allowDisabledClick}
       onDisabledClick={onDisabledClick}
     >
-      {icon && <Icon className={clsx(iconClsn, " w-fit h-fit pointer-events-none cursor-grab")} icon={icon} />}
+      {icon && (
+        <Icon
+          className={clsx(
+            iconClsn,
+            " w-fit h-fit pointer-events-none cursor-grab"
+          )}
+          icon={icon}
+        />
+      )}
       {rest.children}
     </Button>
   );
