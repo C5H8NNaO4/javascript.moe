@@ -157,7 +157,7 @@ export const FragrancePlanner = (props: FragrancePlannerProps) => {
           .replace(/\s\d+[%]/, "")
           .replace(/\d+[g]/, "")
           ?.trim();
-        const amount = /(\d?\.?\d+)[g]/.exec(line)?.[1];
+        const amount = /(\d+?\.?\d+)[g]/.exec(line)?.[1];
         const unit = "g";
 
         const dilution = /\d+?\.?\d+%$/.exec(line)?.[0];
