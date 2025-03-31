@@ -65,11 +65,7 @@ import {
   LabelList,
 } from "recharts";
 
-import {
-  IngredientDetail,
-  Inventories,
-  InventoryList,
-} from "../components/Inventory";
+import { IngredientDetail, InventoryList } from "../components/Inventory";
 
 import { inventory } from "@/static/inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
