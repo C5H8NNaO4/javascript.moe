@@ -1361,7 +1361,7 @@ export const IngredientDetail = ({
                   id={"mlpricetag"}
                   semibold
                 >
-                  {getDisplayPrice(selectedItem?.price)}
+                  {getDisplayPrice(getPricePerMl(selectedItem))}
                 </Tag>
                 {selectedItem?.size && (
                   <Tag label="Size" id="sizetag">
