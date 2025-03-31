@@ -18,13 +18,14 @@ export const Icon = ({
   tooltip,
   id,
   children,
-  className,
+  containerClsn,
   ...rest
 }: React.PropsWithChildren<{
   icon: string;
   tooltip?: string;
   id?: string;
   className?: string;
+  containerClsn?: string;
 }>) => {
   const Cmp =
     (FontAwesome as any)[icon] ||
@@ -43,7 +44,7 @@ export const Icon = ({
       <span
         className={clsx(
           "relative h-fit w-fit flex justify-center items-center",
-          className
+          containerClsn
         )}
         id={id}
       >

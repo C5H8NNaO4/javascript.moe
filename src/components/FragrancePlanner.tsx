@@ -864,7 +864,8 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
       {props.cas && (
         <Icon
           icon="MdOutlineVerified"
-          className="h-6 w-6 ml-auto"
+          className="h-6 w-6"
+          containerClsn="ml-auto"
           tooltip="CAS Available"
           id="casicon"
         ></Icon>
