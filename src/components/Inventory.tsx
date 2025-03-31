@@ -222,7 +222,7 @@ export const InventoryList = ({
 
   const [hideOnStock, setHideOnStock] = useState<0 | 1 | 2>(0);
   const [invRemote, setInvRemote] = useState<Sources | string | null>(
-    params?.list === "*" ? "" : params.list || "Moe"
+    params?.list === "*" ? "" : params.list || ""
   );
   const [invLocal, setInvLocal] = useState<string | null>(
     searchParams.get("library") || "Local"
@@ -436,8 +436,23 @@ export const InventoryList = ({
   };
   const navigate = useNavigate();
   useEffect(() => {
-    if (!params.list) navigate(lngLnk`/inventory/Moe`);
+    if (!params.list) {
+      setInvRemote("Moe");
+      navigate(lngLnk`/inventory/Moe`);
+    }
   }, [params.list, navigate]);
+  useEffect(() => {
+    if (!params.list) return;
+    if (!searchParams.get("library")) {
+      searchParams.set("library", invLocal || "Local");
+
+      navigate(
+        lngLnk`/inventory/${params.list}/?` +
+          searchParams.toString() +
+          window.location.hash
+      );
+    }
+  }, [params.list, searchParams?.get("library"), invLocal, navigate]);
   useEffect(() => {
     if (selected?.title) {
       if (
