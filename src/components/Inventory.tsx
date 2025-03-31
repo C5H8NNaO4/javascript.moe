@@ -2003,6 +2003,8 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           <IconButton
             className="h-7 w-7"
             icon="FaCopy"
+            tooltip="Copy this list as text."
+            id="copylistbtnb"
             round
             onClick={() => {
               const plain = items.reduce((txt, itm) => {
@@ -2021,6 +2023,8 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           className="h-7 w-7"
           icon="FaPlus"
           round
+          tooltip="Add a new list."
+          id="newlistbtn"
           onClick={() => {
             onAdd?.("List " + listNames?.length);
           }}
@@ -2045,6 +2049,8 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           <IconButton
             className="h-7 w-7"
             icon="FaPencil"
+            id="editlistbtn"
+            tooltip="Edit this list."
             round
             onClick={() => {
               setShowEdit?.(!showEdit);

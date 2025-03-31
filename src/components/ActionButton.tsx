@@ -46,7 +46,8 @@ export const ActionButton = ({
   //     onDestruct
   //   );
   const ref = useRef<any>();
-  useOnClickOutside(ref, (e) => {
+  useOnClickOutside(ref, () => {
+    /** We need to delay this execution otherwise the button opens the menu again. */
     setTimeout(() => {
       setConfirm(false);
     }, 0);
