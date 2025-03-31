@@ -1063,7 +1063,7 @@ const ValueTags = ({ list }: { list: Item[] }) => {
     ...new Set(
       list
         .filter((itm) => {
-          return itm.price;
+          return getPrice(itm);
         })
         .map((itm) => {
           return itm.title;
@@ -1072,10 +1072,10 @@ const ValueTags = ({ list }: { list: Item[] }) => {
   ];
   const totalValue = (list as Item[])
     .filter((itm) => {
-      return itm.price;
+      return getPrice(itm);
     })
     .reduce((total, itm) => {
-      return total + Number(itm.price?.replace("$", "")?.replace("€", "") || 0);
+      return total + getPrice(itm);
     }, 0);
 
   const { list: listName } = useParams();
@@ -1093,7 +1093,7 @@ const ValueTags = ({ list }: { list: Item[] }) => {
       </Tag>
       <Tag
         id="total"
-        label={totalValue.toString()}
+        label={Math.round(totalValue).toString()}
         tooltip={
           "Total value of all ingredients in the list '" + listName + "'."
         }
