@@ -65,7 +65,11 @@ import {
   LabelList,
 } from "recharts";
 
-import { IngredientDetail, InventoryList } from "../components/Inventory";
+import {
+  IngredientDetail,
+  Inventories,
+  InventoryList,
+} from "../components/Inventory";
 
 import { inventory } from "@/static/inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
@@ -80,6 +84,7 @@ import { useListFormulasQuery } from "@/apollo/queries/generated/graphql";
 import { ActionInput } from "@/components/Input";
 import { IdentifyOverlay } from "@/components/IdentifyOverlay";
 import { IdentifyItem } from "@/components/Items";
+import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
 const Images: Record<string, string[]> = {
   "Vetiveryl Acetat": [
@@ -473,6 +478,11 @@ export const FragrancePage = () => {
   );
 };
 
+const inventoryLkp: Record<string, NormalizedItem[]> = {
+  All: perfumersApprenticeInventory,
+  Moe: inventory,
+};
+
 export const FormulaPage = () => {
   const params = useParams();
   const { data } = useListFormulasQuery();
@@ -485,7 +495,10 @@ export const FormulaPage = () => {
   );
 
   const { hash } = useLocation();
-  const selectedItems = selected?.items || [];
+  const { list = "All" as const } = useParams();
+  const selectedItems = (selected?.items || []).map(
+    (itm) => inventoryLkp[list]?.find((i: any) => itm?.title === i.title) || itm
+  );
   const selectedItem = selectedItems?.find(
     (itm) => itm?.title === decodeURIComponent(hash.slice(1))
   );
@@ -769,7 +782,10 @@ export const DiscoverPage = () => {
       <EnsureLanguage path="/formula/compose" />
 
       <div className="absolute top-0  max-w-[100vw] flex h-full w-full">
-        <img src="/images/wallpaper/ingredients.jpg" className="w-full h-screen" />
+        <img
+          src="/images/wallpaper/ingredients.jpg"
+          className="w-full h-screen"
+        />
       </div>
 
       <ContextMenuTrigger id="my-context-menu-1" className="h-fit w-full">

@@ -347,12 +347,7 @@ export const InventoryList = ({
     } = item || {};
     const existing =
       storedList.find((itm) => {
-        return (
-          itm.id === id &&
-          itm.size === size &&
-          itm.title === title &&
-          (!itm.list || itm.list === list)
-        );
+        return itm.id === id && itm.size === size && itm.title === title;
       }) || {};
     const index = storedList.findIndex((itm) => {
       return itm.id === id && itm.size === size && itm.title === title;
@@ -371,7 +366,6 @@ export const InventoryList = ({
       source: "local" as any,
       list,
     });
-    console.log("ID COPY", id);
     if (id) {
       await db.update({
         ...existing,
@@ -390,6 +384,9 @@ export const InventoryList = ({
       newList[invLocal || "Local"].splice(index, index > -1 ? 1 : 0, toAdd);
       return newList;
     });
+    // if (selected?.local?.id === id) {
+    setSelected(toAdd);
+    // }
   };
 
   useEffect(() => {
@@ -1053,6 +1050,7 @@ export const IngredientDetail = ({
   const isMobile = isSmaller(bp, "md");
 
   const db = useIndexedDB("inventory");
+
   const [storedLkp, setStoredLkp] = useState<Record<string, NormalizedItem[]>>(
     {}
   );
@@ -1081,15 +1079,14 @@ export const IngredientDetail = ({
     });
   };
 
-  useEffect(() => {
-    loadLocalLists();
-  }, [invLocal]);
-
   const inventory =
     (invRemote
       ? inventories?.remote[invRemote]
       : storedLkp?.[invLocal.trim()]) || [];
 
+  useEffect(() => {
+    loadLocalLists();
+  }, [invLocal, loadLocalLists, selected]);
   const add = async ({ id, ...props }: Partial<Item>) => {
     await db.add({ ...props, list: invLocal });
 
@@ -1712,12 +1709,10 @@ export const IngredientItem = (props: IngredientItemProps) => {
             onChange={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              if (!props.id) return;
-              upd(props.id, {
+              if (!props.local?.id) return;
+              upd(props.local.id, {
                 ...entry,
-                onStock: !(entry?.remote
-                  ? entry?.local?.onStock
-                  : entry?.onStock),
+                onStock: e.target.checked,
                 list: entry.list,
               });
               return false;
@@ -1862,7 +1857,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   cas={selected.cas}
                   title={title}
                   setNotification={setNotification}
-                  // id={itm.id}
+                  id={itm.id}
                   upd={upd}
                   selected={selected}
                   setSelected={setSelected}

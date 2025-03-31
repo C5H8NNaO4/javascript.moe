@@ -3,9 +3,8 @@ import clsx from "clsx";
 
 type RawItem = Omit<Item, "tags" | "aliases">;
 export const normalize = (itm: RawItem): Item => {
-  console.log("NORMALIZE", itm);
   const norm = {
-    // ...itm,
+    ...itm,
     price: itm.price,
     size: itm.size,
     dilution: /\d+%/.exec(itm?.title)?.[0] || "100%",
@@ -20,8 +19,8 @@ export const normalize = (itm: RawItem): Item => {
       natural: /\(Natural\)/.test(itm?.title) || /P&N/.test(itm?.title),
     }).split(" "),
     aliases: [] as string[],
-    onStock: true,
-    source: "local" as any,
+    onStock: itm.onStock,
+    source: itm.source,
   };
 
   if (/a\.k\.a .+$/.test(norm?.title) || /\(.+?\)/.test(norm?.title)) {
