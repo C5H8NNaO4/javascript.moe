@@ -38,7 +38,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
 import { NavButton } from "./NavButton";
-import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { inventory, pellwall, perfumersApprentice } from "@/static/inventory";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { getDisplayCAS } from "@/utils/item";
@@ -179,7 +178,7 @@ const units = {
   g: "gram",
   ml: "milliliter",
 } as Record<string, string>;
-export const getDisplayPrice = (price) => {
+export const getDisplayPrice = (price: string) => {
   const frm = new Intl.NumberFormat(i18next.language, {
     currency: currencyCodes[getCurrency(price)],
     currencySign: "standard",
