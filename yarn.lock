@@ -6421,7 +6421,7 @@ levn@^0.4.1:
 
 libperfumery@C5H8NNaO4/libperfumery:
   version "0.0.2"
-  resolved "https://codeload.github.com/C5H8NNaO4/libperfumery/tar.gz/455299ee8edd77da0d4bff60bf34fef87cd3092a"
+  resolved "https://codeload.github.com/C5H8NNaO4/libperfumery/tar.gz/8681a33e32593975bcc95756a5a1fa5819f9b2d3"
   dependencies:
     "@types/node" "^22.13.5"
     clsx "^2.1.1"
