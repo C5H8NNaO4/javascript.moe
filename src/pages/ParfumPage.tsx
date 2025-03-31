@@ -661,7 +661,7 @@ export const FormulaPage = () => {
                   selected={selectedItem as any}
                   setSelected={(sel) => {
                     navigate(window.location.search + "#" + (sel?.title || ""));
-                    if (isMobile) setExpanded(false);
+                    // if (isMobile) setExpanded(false);
                   }}
                   invRemote={isRemote ? library || "Moe" : ""}
                   invLocal={!isRemote ? library || "Local" : ""}
