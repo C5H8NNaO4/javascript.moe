@@ -511,7 +511,7 @@ export const FormulaPage = () => {
   const [showIdentifyOverlay, setShowIdentifyOverlay] = useState(false);
 
   const [searchParams] = useSearchParams();
-  const library = searchParams.get("library");
+  const library = searchParams.get("library") || 'Moe';
   const isRemote = searchParams.get("remote");
 
   return (
@@ -628,7 +628,9 @@ export const FormulaPage = () => {
                 }}
                 onSelect={(frmla: any) => {
                   navigate(
-                    lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/`
+                    lngLnk`/formula/${frmla.author || "*"}/${
+                      frmla.title
+                    }/?library=${library}${isRemote ? "&remote=1" : ""}`
                   );
                 }}
               ></FormulaList>
