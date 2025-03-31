@@ -10,13 +10,19 @@ import * as IO5 from "react-icons/io5";
 import * as IO from "react-icons/io";
 import * as GR from "react-icons/gr";
 import clsx from "clsx";
+import { Tooltip } from "react-tooltip";
+import ReactDOM from "react-dom";
 
 export const Icon = ({
   icon,
+  tooltip,
+  id,
   children,
   ...rest
 }: React.PropsWithChildren<{
   icon: string;
+  tooltip?: string;
+  id?: string;
   className?: string;
 }>) => {
   const Cmp =
@@ -32,13 +38,19 @@ export const Icon = ({
     (GR as any)[icon] ||
     MUI.MdQuestionMark;
   return (
-    <span
-      className={clsx(
-        "relative inline-block h-fit w-fit flex justify-center items-center"
+    <>
+      <span
+        className={clsx(
+          "relative inline-block h-fit w-fit flex justify-center items-center"
+        )}
+      >
+        <Cmp color="inherit" {...rest} />
+        <span className="absolute">{children}</span>
+      </span>
+      {ReactDOM.createPortal(
+        <Tooltip anchorSelect={"#" + id} children={tooltip} />,
+        document.body
       )}
-    >
-      <Cmp color="inherit" {...rest} />
-      <span className="absolute">{children}</span>
-    </span>
+    </>
   );
 };
