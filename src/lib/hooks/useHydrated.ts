@@ -1,8 +1,6 @@
-import { FormulaIngredientProps } from "@/components/FragrancePlanner";
 import { FormulaItem } from "@/components/Inventory";
 import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { inventory } from "@/static/inventory";
-import { HydratableItem } from "@/types/Item";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { useParams } from "react-router";
 
