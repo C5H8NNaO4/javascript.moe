@@ -18,6 +18,7 @@ export const Icon = ({
   tooltip,
   id,
   children,
+  className,
   ...rest
 }: React.PropsWithChildren<{
   icon: string;
@@ -41,14 +42,16 @@ export const Icon = ({
     <>
       <span
         className={clsx(
-          "relative inline-block h-fit w-fit flex justify-center items-center"
+          "relative h-fit w-fit flex justify-center items-center",
+          className
         )}
+        id={id}
       >
         <Cmp color="inherit" {...rest} />
         <span className="absolute">{children}</span>
       </span>
       {ReactDOM.createPortal(
-        <Tooltip anchorSelect={"#" + id} children={tooltip} />,
+        <Tooltip anchorSelect={"#" + id} children={tooltip} id={id} />,
         document.body
       )}
     </>
