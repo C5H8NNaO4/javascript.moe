@@ -172,8 +172,8 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
   } = props;
   const { title, token, author, items, published } = formula;
   const hydratedItems = items.map((frmItm) => ({
-    ...findCheapestByTitle(frmItm.title, inventory),
     ...frmItm,
+    ...findCheapestByTitle(frmItm.title, inventory),
   }));
 
   const { trackUse, active } = useIdentity();
@@ -325,8 +325,8 @@ export const Formula = ({
 }: any) => {
   const { title: formulaTitle, items, remoteId } = formula;
   const hydrated = items.map((frmItm: FormulaItem) => ({
-    ...findCheapestByTitle(frmItm.title, inventories.remote["*"] || inventory),
     ...frmItm,
+    ...findCheapestByTitle(frmItm.title, inventories.remote["*"] || inventory),
   }));
   const formulaDb = useFormulaDb();
   const navigate = useNavigate();
@@ -543,7 +543,7 @@ export const Formula = ({
             {hydrated.map((ing: FormulaIngredientProps) => {
               return (
                 <li
-                  onClick={() => onSelect(ing)}
+                  onClick={() => onSelect({ ...ing, size: ing.amount })}
                   className={clsx(
                     {
                       "bg-white/20": selected?.title === ing?.title,
@@ -555,7 +555,7 @@ export const Formula = ({
                     {...ing}
                     readonly
                     library={"All"}
-                    inventory={inventory as any}
+                    inventory={inventories.remote["*"] || inventory}
                   ></FormulaIngredient>
                 </li>
               );
