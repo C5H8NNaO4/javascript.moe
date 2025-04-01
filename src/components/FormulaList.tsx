@@ -11,7 +11,6 @@ import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
 import {
   dist,
-  findCheapestByTitle,
   findSmallestByTitle,
   lngLnk,
   randItm,
@@ -179,8 +178,8 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
   } = props;
   const { title, token, author, items, published } = formula;
   const hydratedItems = items.map((frmItm) => ({
+    ...findSmallestByTitle(frmItm.title, inventory),
     ...frmItm,
-    ...findCheapestByTitle(frmItm.title, inventory),
   }));
 
   const { trackUse, active } = useIdentity();
@@ -332,8 +331,8 @@ export const Formula = ({
 }: any) => {
   const { title: formulaTitle, items, remoteId } = formula;
   const hydrated = items.map((frmItm: FormulaItem) => ({
+    ...findSmallestByTitle(frmItm.title, inventories.remote["*"] || inventory),
     ...frmItm,
-    ...findCheapestByTitle(frmItm.title, inventories.remote["*"] || inventory),
   }));
   const formulaDb = useFormulaDb();
   const navigate = useNavigate();
