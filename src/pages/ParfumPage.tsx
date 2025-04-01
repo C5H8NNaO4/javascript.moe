@@ -69,7 +69,6 @@ import {
 import { IngredientDetail, InventoryList } from "../components/Inventory";
 
 import { inventory, pellwall, perfumersApprentice } from "@/static/inventory";
-import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
 import { isSmallerEq, useCurrentBreakpoint } from "@/hooks/useBreakpoint";
 import {
   FormulaIngredientProps,
