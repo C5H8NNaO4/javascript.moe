@@ -50,7 +50,7 @@ export const HeartButton = () => {
   const x = useTransform(t, [0, 0.5, 1], [-(8 * 5), 8, -(4 * 1)]);
   //   const p = useTransform(t, [0.54, 0.59], [0, 8 * 2]);
   //   const r = useTransform(t, [0.5, 0.7], ["100% 100% 100% 100%", " 0% 100%  100% 0%"]);
-  const o = useTransform(t, [0, 1], [0, 1]);
+  const o = useTransform(t, [0, 1], [0, 0.7]);
 
   const shadow = useTransform(
     t,
@@ -83,7 +83,7 @@ export const HeartButton = () => {
           }}
           icon="FaHeart"
           round
-          className="z-50 bg-red-600/40 !border-red-700"
+          className="z-50 bg-red-600/40 !border-red-700 hover:text-red-600 hover:bg-white/5 hover:blur-[1px]"
         />
       </motion.div>
     </motion.div>
