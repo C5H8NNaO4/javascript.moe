@@ -70,6 +70,17 @@ export const HeartButton = () => {
     ],
     { ease: easeInOut }
   );
+
+  const filter = useTransform(
+    t,
+    [0, 0.9, 1],
+    [
+      "blur(0px)",
+      "blur(1px)",
+      "blur(2px)",
+    ],
+    { ease: easeIn }
+  );
   return (
     <motion.div
       style={{
@@ -80,9 +91,10 @@ export const HeartButton = () => {
       className="flex w-full justify-start pl-4 my-auto"
     >
       <motion.div
-        className="h-fit rounded-full"
+        className="h-fit rounded-full hover:!blur-[0px]"
         style={{
           boxShadow: shadow,
+          filter
         }}
       >
         <IconButton
@@ -92,7 +104,7 @@ export const HeartButton = () => {
           }}
           icon="FaHeart"
           round
-          className="z-50 bg-red-600/40 !border-red-700 hover:text-red-600 hover:bg-white/5 hover:blur-[1px]"
+          className="z-50 bg-red-600/40 !border-red-700 hover:text-red-600 hover:bg-white/5 "
         />
       </motion.div>
     </motion.div>
