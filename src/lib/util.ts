@@ -90,7 +90,7 @@ export const totalIngredientCost = (acc: number, cur: FormulaItem) => {
   return (
     acc +
     getRawPricePerMl(cur) *
-      (convert(Number(cur.usedAmount || 0), cur.unit || "g", "ml") || NaN)
+      (convert(Number(cur.usedAmount || 0), cur.unit || "g", "g") || NaN)
   );
 };
 export const totalIngredientCostPerMl = (items: FormulaItem[]) => {
