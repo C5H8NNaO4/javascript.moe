@@ -477,11 +477,6 @@ export const FragrancePage = () => {
   );
 };
 
-const inventoryLkp: Record<string, NormalizedItem[]> = {
-  All: perfumersApprenticeInventory,
-  Moe: inventory,
-};
-
 export const FormulaPage = () => {
   const params = useParams();
   const { data } = useListFormulasQuery();
