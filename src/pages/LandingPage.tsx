@@ -27,7 +27,7 @@ import {
 } from "framer-motion";
 import { useState, useEffect, useContext } from "react";
 import "swiper/css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
@@ -43,7 +43,10 @@ export const LandingPage = () => {
   const index = useTransform(scrollYProgress, [0, 1], [1, 2]);
 
   const { t } = useTranslation();
-  const [activeIndex, setActiveIndex] = useState(1);
+  const location = useLocation();
+  const initialSlide = window.location.hash === "#love" ? 0 : 1;
+
+  const [activeIndex, setActiveIndex] = useState(initialSlide);
   useMotionValueEvent(index, "change", (i) => {
     if ((swiper?.activeIndex || 0) > 0) {
       swiper?.slideTo(Math.round(i));
@@ -58,11 +61,22 @@ export const LandingPage = () => {
 
   useEffect(() => {
     swiper?.slideTo(activeIndex);
-  }, [activeIndex]);
+  }, [activeIndex, swiper]);
 
+  useEffect(() => {
+    if (!(window as any).noReset) {
+      const { hash } = location;
+      if (hash === "#love") setActiveIndex(0);
+      if (hash === "#about") setActiveIndex(1);
+      if (hash === "#perfumery") setActiveIndex(2);
+      document.documentElement.scrollTo(0, 0);
+    }
+    (window as any).noReset = false;
+  }, [location]);
   const iOS_1to12 = /iPad|iPhone|iPod/.test(navigator.platform);
   const h = (n: number) => `${n}${iOS_1to12 ? "vh" : "lvh"}`;
   const params = useParams();
+
   return (
     <>
       {ReactDOM.createPortal(
@@ -141,16 +155,35 @@ export const LandingPage = () => {
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
-
+        <IntersectionAnchor
+          hash={"love"}
+          block="center"
+          noChange
+          scroll
+          scrollBy={[
+            window.innerHeight * 0.75,
+            window.innerHeight * 1.5,
+            window.innerHeight * 1.5,
+          ]}
+        ></IntersectionAnchor>
+        <IntersectionAnchor
+          hash={"about"}
+          block="center"
+          noChange
+          scroll
+          scrollBy={[window.innerHeight * 0.75, window.innerHeight * 1.5]}
+        ></IntersectionAnchor>
         <IntersectionAnchor
           hash={"perfumery"}
+          block="center"
+          noChange
           scroll
-          scrollBy={window.innerHeight * 4}
+          scrollBy={[window.innerHeight * 3.4, 0.1, window.innerHeight * 0.5]}
         ></IntersectionAnchor>
         <Swiper
           className="h-[120vh] w-[100vw] sticky top-0 "
           onSwiper={setSwiper}
-          initialSlide={1}
+          initialSlide={initialSlide}
         >
           <SwiperSlide className="h-full w-full flex justify-center">
             <DualImages
@@ -171,6 +204,7 @@ export const LandingPage = () => {
               active={activeIndex === 0}
             />
             <AppearingText
+              hash="love"
               range={[0, 1]}
               className="top-[50vh]"
               slices={[0, 6, 6]}

@@ -6,13 +6,15 @@ export type IntersectionAnchorProps = {
   block?: ScrollIntoViewOptions["block"];
   rootMargin?: string;
   scroll?: boolean;
-  scrollBy?: number;
+  scrollBy?: number | number[];
   className?: string;
+  noChange?: boolean;
 };
 export const IntersectionAnchor = ({
   hash = "",
   block,
   rootMargin,
+  noChange,
   scroll = false,
   scrollBy = 0,
   className,
@@ -20,6 +22,7 @@ export const IntersectionAnchor = ({
   const loc = useLocation();
   const nav = useNavigate();
   const ref = useRef<HTMLAnchorElement>(null);
+  const sem = useRef<boolean>(false);
 
   const [hasScrolled, setHasScrolled] = useState(false);
 
@@ -56,8 +59,16 @@ export const IntersectionAnchor = ({
       (e) => {
         const [entry] = e;
 
-        if (entry.isIntersecting && hasScrolled && (block || rootMargin)) {
-          nav("#" + entry.target.id.replace("#", ""), {});
+        if (
+          entry.isIntersecting &&
+          hasScrolled &&
+          !noChange &&
+          (block || rootMargin)
+        ) {
+          (window as any).noReset = true;
+          // setTimeout(() => {
+          nav("#" + entry.target.id.replace("#", ""), { replace: true });
+          // }, 0);
         }
       },
       {
@@ -70,7 +81,7 @@ export const IntersectionAnchor = ({
       }
     );
     return intersectionObserver;
-  }, [hasScrolled, block, nav, rootMargin]);
+  }, [hasScrolled, block, rootMargin, noChange]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -84,21 +95,46 @@ export const IntersectionAnchor = ({
     };
   }, [observer, block, rootMargin]);
 
+  // useEffect(() => {
+  //   if (!ref.current) return;
+  //   if (loc.hash === "#" + hash) {
+  //     ref.current?.scrollTo(0, 0);
+  //     setTimeout(() => {
+  //       ref.current?.scrollIntoView({
+  //         behavior: "smooth",
+  //         block: "center",
+  //       });
+  //     }, 900);
+  //   }
+  // }, [loc.hash, hash]);
   useEffect(() => {
     if (!ref.current) return;
-    if (!scroll || hasScrolled) return;
+    if (!scroll || hasScrolled || sem.current || (window as any).noReset)
+      return;
     if (loc.hash === "#" + hash) {
-      ref.current?.scrollIntoView({
-        behavior: "smooth",
-        block,
-      });
-      if (scrollBy)
-        setTimeout(() => {
-          document.querySelector("html")?.scrollBy({
-            top: scrollBy,
-            behavior: "smooth",
-          });
-        }, 1000);
+      sem.current = true;
+      setTimeout(() => {
+        ref.current?.scrollIntoView({
+          behavior: "smooth",
+          block,
+        });
+      }, 0);
+      let scrolls = [scrollBy].flat().filter(Boolean);
+      if (scrolls?.length) {
+        scrolls.forEach((s, i) => {
+          setTimeout(() => {
+            console.log("SCROLL BY", s);
+            document.querySelector("html")?.scrollBy({
+              top: s,
+              behavior: "smooth",
+            });
+            if (i === scrolls.length - 1) {
+              sem.current = false;
+              // setHasScrolled(false);
+            }
+          }, 900 * (i + 1));
+        });
+      }
     }
   }, [block, scroll, hasScrolled, hash, scrollBy, loc.hash]);
 
