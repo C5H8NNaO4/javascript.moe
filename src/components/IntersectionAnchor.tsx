@@ -118,23 +118,23 @@ export const IntersectionAnchor = ({
           behavior: "smooth",
           block,
         });
+
+        const scrolls = [scrollBy].flat().filter(Boolean);
+        if (scrolls?.length) {
+          scrolls.forEach((s, i) => {
+            setTimeout(() => {
+              document.querySelector("html")?.scrollBy({
+                top: s,
+                behavior: "smooth",
+              });
+              if (i === scrolls.length - 1) {
+                sem.current = false;
+                // setHasScrolled(false);
+              }
+            }, 900 * (i + 1));
+          });
+        }
       }, 0);
-      let scrolls = [scrollBy].flat().filter(Boolean);
-      if (scrolls?.length) {
-        scrolls.forEach((s, i) => {
-          setTimeout(() => {
-            console.log("SCROLL BY", s);
-            document.querySelector("html")?.scrollBy({
-              top: s,
-              behavior: "smooth",
-            });
-            if (i === scrolls.length - 1) {
-              sem.current = false;
-              // setHasScrolled(false);
-            }
-          }, 900 * (i + 1));
-        });
-      }
     }
   }, [block, scroll, hasScrolled, hash, scrollBy, loc.hash]);
 

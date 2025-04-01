@@ -64,11 +64,11 @@ export const LandingPage = () => {
   }, [activeIndex, swiper]);
 
   useEffect(() => {
+    const { hash } = location;
+    if (hash === "#love") setActiveIndex(0);
+    if (hash === "#about") setActiveIndex(1);
+    if (hash === "#perfumery") setActiveIndex(2);
     if (!(window as any).noReset) {
-      const { hash } = location;
-      if (hash === "#love") setActiveIndex(0);
-      if (hash === "#about") setActiveIndex(1);
-      if (hash === "#perfumery") setActiveIndex(2);
       document.documentElement.scrollTo(0, 0);
     }
     (window as any).noReset = false;
