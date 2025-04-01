@@ -1,6 +1,7 @@
 import lvs from "fast-levenshtein";
 import {
   FormulaItem,
+  getGrams,
   getPricePerMl,
   getRawPricePerMl,
 } from "@/components/Inventory";
@@ -99,10 +100,22 @@ export const totalIngredientCostPerMl = (items: FormulaItem[]) => {
   );
 };
 
-export const findCheapestByTitle = (title: string, inventory: NormalizedItem[]) => {
+export const findCheapestByTitle = (
+  title: string,
+  inventory: NormalizedItem[]
+) => {
   return inventory
     .filter((invItm) => title === invItm.title && invItm?.size)
     .sort((a, b) => getPricePerMl(a) - getPricePerMl(b))[0];
+};
+
+export const findSmallestByTitle = (
+  title: string,
+  inventory: NormalizedItem[]
+) => {
+  return inventory
+    .filter((invItm) => title === invItm.title && invItm?.size)
+    .sort((a, b) => getGrams(a.size) - getGrams(b.size))[0];
 };
 
 export const similarity = (a: FormulaItem, ingredients: FormulaItem[]) => {

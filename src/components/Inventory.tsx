@@ -30,7 +30,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import { lngLnk, toggle, trim } from "@/lib/util";
+import { findCheapestByTitle, findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
@@ -598,18 +598,12 @@ export const InventoryList = ({
 
   useEffect(() => {
     if (!params?.title) return;
-    const ingredient = inventories.remote[params?.list || "All"]?.find(
-      (itm) => {
-        const titleMatches = params.title === itm.title;
-        const amountMatches = params.amount === itm.size;
-
-        return params.amount ? titleMatches && amountMatches : titleMatches;
-      }
-    );
+    const ingredient = findSmallestByTitle(params.title,  inventories.remote[params?.list || "All"]);
 
     if (!params?.list || !ingredient || !inventories?.remote[params?.list])
       return;
 
+    /** This automatically selects the first */
     setSelected(ingredient);
   }, [params.title, params.list]);
 
@@ -936,7 +930,8 @@ export const InventoryList = ({
                       onClick={(e: React.MouseEvent<HTMLLIElement>) => {
                         if ((e.target as HTMLInputElement).type === "INPUT")
                           return;
-                        setSelected(selected?.id === entry?.id ? null : entry);
+
+                        // setSelected(selected?.title === entry?.title ? null : entry);
                       }}
                     >
                       <IngredientItem
@@ -1769,7 +1764,13 @@ export const IngredientItem = (props: IngredientItemProps) => {
           e.stopPropagation();
           if ((e.target as HTMLElement).tagName === "INPUT") return;
 
-          setSelected(isSelected ? null : props);
+          setSelected(
+            isSelected
+              ? props.size
+                ? ({ title: props.title } as IngredientItemProps)
+                : null
+              : props
+          );
         }}
       >
         {entry?.items && (
