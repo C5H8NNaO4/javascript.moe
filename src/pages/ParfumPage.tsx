@@ -511,8 +511,8 @@ export const FormulaPage = () => {
   const [showIdentifyOverlay, setShowIdentifyOverlay] = useState(false);
 
   const [searchParams] = useSearchParams();
-  const library = searchParams.get("library") || 'Moe';
-  const isRemote = searchParams.get("remote");
+  const library = searchParams.get("library") || "Moe";
+  const source = searchParams.get("source");
 
   return (
     <div className="h-full w-full relative flex justify-center page">
@@ -593,7 +593,7 @@ export const FormulaPage = () => {
             navigate(
               lngLnk`/formula/${frmla.author || "*"}/${frmla.title}/?library=${
                 library || "Moe"
-              }&${isRemote ? "&remote=1" : ""}`
+              }&${source !== null ? "&source=" + source : "&source=remote"}`
             );
             setExpanded(true);
           }}
@@ -630,7 +630,9 @@ export const FormulaPage = () => {
                   navigate(
                     lngLnk`/formula/${frmla.author || "*"}/${
                       frmla.title
-                    }/?library=${library}${isRemote ? "&remote=1" : ""}`
+                    }/?library=${library}${
+                      source !== null ? "&source=" + source : "&source=remote"
+                    }`
                   );
                 }}
               ></FormulaList>
@@ -639,6 +641,10 @@ export const FormulaPage = () => {
                   formula={selected}
                   inventories={{
                     remote: {
+                      "*": [
+                        ...perfumersApprentice,
+                        ...pellwall,
+                      ] as NormalizedItem[],
                       PA: perfumersApprentice,
                       PW: pellwall,
                       Moe: inventory || [],
@@ -665,6 +671,10 @@ export const FormulaPage = () => {
                 <IngredientDetail
                   inventories={{
                     remote: {
+                      "*": [
+                        ...perfumersApprentice,
+                        ...pellwall,
+                      ] as NormalizedItem[],
                       PA: perfumersApprentice,
                       PW: pellwall,
                       Moe: inventory || [],
@@ -676,8 +686,8 @@ export const FormulaPage = () => {
                     navigate(window.location.search + "#" + (sel?.title || ""));
                     // if (isMobile) setExpanded(false);
                   }}
-                  invRemote={isRemote ? library || "Moe" : ""}
-                  invLocal={!isRemote ? library || "Local" : ""}
+                  invRemote={source === "remote" ? library || "*" : ""}
+                  invLocal={source !== "remote" ? library || "Local" : ""}
                   list={selected?.items || ([] as any)}
                   sorted={selected?.items || ([] as any)}
                   upd={() => {}}
@@ -723,7 +733,7 @@ export const DiscoverPage = () => {
   const isMobile = isSmallerEq(bp, "sm");
   const [searchParams] = useSearchParams();
   const library = searchParams.get("library") || "Moe";
-  const isRemote = !!searchParams.get("remote");
+  const source = searchParams.get("source");
 
   return (
     <div className="h-full w-full relative flex justify-center page">
@@ -816,7 +826,9 @@ export const DiscoverPage = () => {
                 navigate(
                   lngLnk`/formula/${frmla.author || "*"}/${
                     frmla.title
-                  }/?library=${library}${isRemote ? "&remote=1" : ""}`
+                  }/?library=${library}${
+                    source !== null ? "&source=" + source : "&source=remote"
+                  }`
                 );
               setExpanded(!isMobile);
             }}

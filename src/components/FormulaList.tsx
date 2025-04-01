@@ -325,12 +325,8 @@ export const Formula = ({
   inventories,
 }: any) => {
   const { title: formulaTitle, items, remoteId } = formula;
-  const [searchParams] = useSearchParams();
   const hydrated = items.map((frmItm: FormulaItem) => ({
-    ...findCheapestByTitle(
-      frmItm.title,
-      inventories.remote[searchParams.get("library") || "Moe"] || inventory
-    ),
+    ...findCheapestByTitle(frmItm.title, inventories.remote["*"] || inventory),
     ...frmItm,
   }));
   const formulaDb = useFormulaDb();
