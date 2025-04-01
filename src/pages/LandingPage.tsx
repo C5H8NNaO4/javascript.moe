@@ -27,7 +27,7 @@ import {
 } from "framer-motion";
 import { useState, useEffect, useContext } from "react";
 import "swiper/css";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
@@ -35,8 +35,6 @@ import { Overlay } from "@/components/BurnOverlay";
 import { Icon } from "@/components/Icon";
 import { lngLnk } from "@/lib/util";
 import { IntersectionAnchor } from "@/components/IntersectionAnchor";
-import { NavButton } from "@/components/NavButton";
-import { IconButton } from "@/components/Button";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -46,7 +44,6 @@ export const LandingPage = () => {
 
   const { t } = useTranslation();
   const location = useLocation();
-  const nav = useNavigate();
   const initialSlide = window.location.hash === "#love" ? 0 : 1;
 
   const [activeIndex, setActiveIndex] = useState(initialSlide);

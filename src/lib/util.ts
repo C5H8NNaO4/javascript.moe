@@ -3,7 +3,6 @@ import {
   FormulaItem,
   getPricePerMl,
   getRawPricePerMl,
-  Item,
 } from "@/components/Inventory";
 import { perfumeIngredientsOdours } from "@/static/descriptions";
 import i18next from "i18next";
