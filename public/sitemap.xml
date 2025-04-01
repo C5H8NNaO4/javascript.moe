@@ -12,118 +12,88 @@
       rel="alternate"
       hreflang="de"
       href="https://javascript.moe/de" />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://javascript.moe/en" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
+
   <url>
     <loc>https://javascript.moe/de</loc>
     <xhtml:link
       rel="alternate"
-      hreflang="de"
-      href="https://javascript.moe/de" />
-    <xhtml:link
-      rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
+
   <url>
     <loc>https://javascript.moe/en/about</loc>
     <xhtml:link
       rel="alternate"
       hreflang="de"
       href="https://javascript.moe/de/about" />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://javascript.moe/en/about" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
+
   <url>
     <loc>https://javascript.moe/de/about</loc>
     <xhtml:link
       rel="alternate"
-      hreflang="de"
-      href="https://javascript.moe/de/about" />
-    <xhtml:link
-      rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/about" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
-  <url>
-    <loc>https://javascript.moe/de/perfumes</loc>
-    <xhtml:link
-      rel="alternate"
-      hreflang="de"
-      href="https://javascript.moe/de/perfumes" />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://javascript.moe/en/perfumes" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
-  </url>
+
   <url>
     <loc>https://javascript.moe/en/perfumes</loc>
     <xhtml:link
       rel="alternate"
       hreflang="de"
       href="https://javascript.moe/de/perfumes" />
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
+  </url>
+
+  <url>
+    <loc>https://javascript.moe/de/perfumes</loc>
     <xhtml:link
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/perfumes" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
-  <url>
-    <loc>https://javascript.moe/de/ingredients</loc>
-    <xhtml:link
-      rel="alternate"
-      hreflang="de"
-      href="https://javascript.moe/de/ingredients" />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://javascript.moe/en/ingredients" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
-  </url>
+
   <url>
     <loc>https://javascript.moe/en/ingredients</loc>
     <xhtml:link
       rel="alternate"
       hreflang="de"
       href="https://javascript.moe/de/ingredients" />
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
+  </url>
+
+  <url>
+    <loc>https://javascript.moe/de/ingredients</loc>
     <xhtml:link
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/ingredients" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
-  <url>
-    <loc>https://javascript.moe/de/inventory</loc>
-    <xhtml:link
-      rel="alternate"
-      hreflang="de"
-      href="https://javascript.moe/de/inventory" />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://javascript.moe/en/inventory" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
-  </url>
+
   <url>
     <loc>https://javascript.moe/en/inventory</loc>
     <xhtml:link
       rel="alternate"
       hreflang="de"
       href="https://javascript.moe/de/inventory" />
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
+  </url>
+
+  <url>
+    <loc>https://javascript.moe/de/inventory</loc>
     <xhtml:link
       rel="alternate"
       hreflang="en"
       href="https://javascript.moe/en/inventory" />
-    <lastmod>2024-11-4T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url>
+
 </urlset>
