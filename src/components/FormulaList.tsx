@@ -9,7 +9,14 @@ import ReactDOM from "react-dom";
 import { Component, OdorChip } from "./Chip";
 import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
-import { dist, findCheapestByTitle, lngLnk, randItm, unique } from "@/lib/util";
+import {
+  dist,
+  findCheapestByTitle,
+  findSmallestByTitle,
+  lngLnk,
+  randItm,
+  unique,
+} from "@/lib/util";
 import {
   FormulaItem,
   Formula as FormulaType,
@@ -543,7 +550,14 @@ export const Formula = ({
             {hydrated.map((ing: FormulaIngredientProps) => {
               return (
                 <li
-                  onClick={() => onSelect({ ...ing, size: ing.amount })}
+                  onClick={() =>
+                    onSelect(
+                      findSmallestByTitle(
+                        ing.title,
+                        inventories.remote["*"] || inventory
+                      )
+                    )
+                  }
                   className={clsx(
                     {
                       "bg-white/20": selected?.title === ing?.title,
