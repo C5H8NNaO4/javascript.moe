@@ -30,7 +30,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import { findCheapestByTitle, findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
+import { findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
@@ -598,7 +598,10 @@ export const InventoryList = ({
 
   useEffect(() => {
     if (!params?.title) return;
-    const ingredient = findSmallestByTitle(params.title,  inventories.remote[params?.list || "All"]);
+    const ingredient = findSmallestByTitle(
+      params.title,
+      inventories.remote[params?.list || "All"]
+    );
 
     if (!params?.list || !ingredient || !inventories?.remote[params?.list])
       return;
