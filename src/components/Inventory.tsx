@@ -1462,6 +1462,7 @@ export const IngredientDetail = ({
                 onChange={(library) => {
                   const search = new URLSearchParams(window.location.search);
                   search.set("library", library || "Local");
+                  search.set("source", "local");
                   if (window.location.pathname.includes("/inventory/")) {
                     navigate(
                       lngLnk`/inventory/${
