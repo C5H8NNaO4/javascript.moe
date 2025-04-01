@@ -41,7 +41,6 @@ import { Tooltip } from "react-tooltip";
 import { ActionButton } from "./ActionButton";
 import { ToggleButton } from "./ToggleButton";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
-import { useSearchParams } from "react-router-dom";
 
 export const FormulaList = ({
   inventories,
