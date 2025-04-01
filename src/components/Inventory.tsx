@@ -30,7 +30,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import { findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
+import { convert, findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
@@ -82,10 +82,7 @@ export const amountToNumber = (amount = "0g") => {
 export const getGrams = (amount = "0g") => {
   // console.log ("GET GRAMS", amount)
   const raw = amountToNumber(amount);
-  if (amount.includes("ml")) return raw;
-  if (amount.includes("l")) return raw * 1000;
-  if (amount.includes("kg")) return raw * 1000;
-  if (amount.includes("g")) return raw;
+  return convert(raw, getAmountUnit(amount), "g");
   return raw;
 };
 
