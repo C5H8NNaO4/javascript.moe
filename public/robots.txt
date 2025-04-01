@@ -1,9 +1,6 @@
 User-agent: *
-Disallow: /
 Disallow: /about
 Disallow: /perfumes
 Disallow: /ingredients
-Allow: /de
-Allow: /en
-
-
+Allow: /de/
+Allow: /en/
