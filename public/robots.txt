@@ -3,4 +3,7 @@ Disallow: /
 Disallow: /about
 Disallow: /perfumes
 Disallow: /ingredients
+Allow: /de
+Allow: /en
+
 
