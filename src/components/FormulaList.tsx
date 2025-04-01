@@ -175,14 +175,18 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
   } = props;
   const { title, token, author, items, published } = formula;
   const hydratedItems = items.map((frmItm) => ({
-    ...findSmallestByTitle(frmItm.title, [
+    ...(findSmallestByTitle(frmItm.title, [
       ...pellwall,
       ...perfumersApprentice,
       ...inventory,
-    ] as NormalizedItem[]),
+    ] as NormalizedItem[]) || {
+      size: frmItm.amount,
+    }),
     ...frmItm,
   }));
-
+  useEffect(() => {
+    console.log("Hydrated Formula Items", hydratedItems);
+  });
   const { trackUse, active } = useIdentity();
   useEffect(() => {
     trackUse();
