@@ -3,6 +3,7 @@ import {
   FormulaItem,
   getPricePerMl,
   getRawPricePerMl,
+  Item,
 } from "@/components/Inventory";
 import { perfumeIngredientsOdours } from "@/static/descriptions";
 import i18next from "i18next";
@@ -101,8 +102,8 @@ export const totalIngredientCostPerMl = (items: FormulaItem[]) => {
 
 export const findCheapestByTitle = (title: string, inventory: NormalizedItem[]) => {
   return inventory
-    .filter((invItm) => title === invItm.title)
-    .sort((a, b) => getPricePerMl(b) - getPricePerMl(a))[0];
+    .filter((invItm) => title === invItm.title && invItm?.size)
+    .sort((a, b) => getPricePerMl(a) - getPricePerMl(b))[0];
 };
 
 export const similarity = (a: FormulaItem, ingredients: FormulaItem[]) => {
