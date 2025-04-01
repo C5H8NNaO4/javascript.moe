@@ -9,13 +9,7 @@ import ReactDOM from "react-dom";
 import { Component, OdorChip } from "./Chip";
 import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
-import {
-  dist,
-  findSmallestByTitle,
-  lngLnk,
-  randItm,
-  unique,
-} from "@/lib/util";
+import { dist, findSmallestByTitle, lngLnk, randItm, unique } from "@/lib/util";
 import {
   FormulaItem,
   Formula as FormulaType,
@@ -134,7 +128,11 @@ export const FormulaList = ({
           <FormulaEntry
             formula={formula}
             inventory={
-              [...perfumersApprentice, ...pellwall] as NormalizedItem[]
+              [
+                ...perfumersApprentice,
+                ...pellwall,
+                ...inventory,
+              ] as NormalizedItem[]
             }
             inventories={inventories}
             onClick={onSelect}
@@ -170,7 +168,6 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
     className,
     formula,
     onClick,
-    inventory,
     isSelected,
     shrink = false,
     hasBrightBg = false,
@@ -178,7 +175,11 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
   } = props;
   const { title, token, author, items, published } = formula;
   const hydratedItems = items.map((frmItm) => ({
-    ...findSmallestByTitle(frmItm.title, inventory),
+    ...findSmallestByTitle(frmItm.title, [
+      ...pellwall,
+      ...perfumersApprentice,
+      ...inventory,
+    ] as NormalizedItem[]),
     ...frmItm,
   }));
 
