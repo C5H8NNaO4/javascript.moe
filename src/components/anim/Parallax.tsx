@@ -1,4 +1,10 @@
-import { easeIn, motion, useScroll, useTransform } from "framer-motion";
+import {
+  easeIn,
+  easeInOut,
+  motion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { PropsWithChildren, useContext } from "react";
 import { sectionCtx } from "@/components/AnimatedSection";
 import { useParallax } from "@/lib/hooks";
@@ -47,10 +53,12 @@ export const HeartButton = () => {
     offset: ["start start", "end end"],
   });
   const t = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
-  const x = useTransform(t, [0, 0.5, 1], [-(8 * 5), 8, -(4 * 1)]);
+  const x = useTransform(t, [0, 0.5, 1], [-(8 * 5), 8, -(4 * 1)], {
+    ease: easeInOut,
+  });
   //   const p = useTransform(t, [0.54, 0.59], [0, 8 * 2]);
   //   const r = useTransform(t, [0.5, 0.7], ["100% 100% 100% 100%", " 0% 100%  100% 0%"]);
-  const o = useTransform(t, [0, 1], [0, 0.7]);
+  const o = useTransform(t, [0, 1], [0, 0.7], {ease: easeIn});
 
   const shadow = useTransform(
     t,
@@ -59,7 +67,8 @@ export const HeartButton = () => {
       "0px 0px 0px 0px rgb(220 38 38 / 0.4)",
       "0px 0px 4px 4px rgb(220 38 38 / 0.4)",
       "0px 0px 3px 1px rgb(220 38 38 / 0.4)",
-    ]
+    ],
+    { ease: easeInOut }
   );
   return (
     <motion.div
