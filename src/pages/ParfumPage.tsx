@@ -494,10 +494,15 @@ export const FormulaPage = () => {
   );
 
   const { hash } = useLocation();
-  const { list = "All" as const } = useParams();
   const selectedItems = (selected?.items || []).map(
     (itm) =>
-      (itm?.title && findCheapestByTitle(itm?.title, inventoryLkp[list])) || itm
+      (itm?.title &&
+        findCheapestByTitle(itm?.title, [
+          ...pellwall,
+          ...perfumersApprentice,
+          ...inventory,
+        ] as NormalizedItem[])) ||
+      itm
   );
   const selectedItem = selectedItems?.find(
     (itm) => itm?.title === decodeURIComponent(hash.slice(1))
@@ -674,6 +679,7 @@ export const FormulaPage = () => {
                       "*": [
                         ...perfumersApprentice,
                         ...pellwall,
+                        ...inventory,
                       ] as NormalizedItem[],
                       PA: perfumersApprentice,
                       PW: pellwall,
