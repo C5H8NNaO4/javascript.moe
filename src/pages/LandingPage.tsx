@@ -111,7 +111,9 @@ export const LandingPage = () => {
           />
           <meta
             property="og:image"
-            content="https://javascript.moe/images/preview.png"
+            content={`https://javascript.moe/images/previews/${
+              window.location.hash || "hello"
+            }.png`}
           />
           <meta property="og:url" content="https://javascript.moe" />
           <title>
