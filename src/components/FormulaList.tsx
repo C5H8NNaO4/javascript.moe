@@ -550,14 +550,7 @@ export const Formula = ({
             {hydrated.map((ing: FormulaIngredientProps) => {
               return (
                 <li
-                  onClick={() =>
-                    onSelect(
-                      findSmallestByTitle(
-                        ing.title,
-                        inventories.remote["*"] || inventory
-                      )
-                    )
-                  }
+                  onClick={() => onSelect(ing)}
                   className={clsx(
                     {
                       "bg-white/20": selected?.title === ing?.title,
@@ -568,7 +561,7 @@ export const Formula = ({
                   <FormulaIngredient
                     {...ing}
                     readonly
-                    library={"All"}
+                    library={"*"}
                     inventory={inventories.remote["*"] || inventory}
                   ></FormulaIngredient>
                 </li>

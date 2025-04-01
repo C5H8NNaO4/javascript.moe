@@ -3,6 +3,7 @@ import {
   drops2Grams,
   drops2ml,
   findCheapestByTitle,
+  findSmallestByTitle,
   getGCD,
   getVH,
   lngLnk,
@@ -491,7 +492,7 @@ export const FormulaPage = () => {
   const selectedItems = (selected?.items || []).map(
     (itm) =>
       (itm?.title &&
-        findCheapestByTitle(itm?.title, [
+        findSmallestByTitle(itm?.title, [
           ...pellwall,
           ...perfumersApprentice,
           ...inventory,
