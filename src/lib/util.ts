@@ -59,6 +59,7 @@ export const convert = (amount: number, from: string, to: string) => {
     if (to === "ml") return amount / 20;
     if (to === "dr") return amount * 1;
   }
+  return amount;
 };
 export const toDrops = (amount: string) => {
   if (amount.includes("dr")) return Number(amount.replace("dr", ""));
