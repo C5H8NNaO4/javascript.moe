@@ -82,7 +82,7 @@ export const amountToNumber = (amount = "0g") => {
 export const getGrams = (amount = "0g") => {
   // console.log ("GET GRAMS", amount)
   const raw = amountToNumber(amount);
-  return convert(raw, getAmountUnit(amount), "g");
+  return convert(raw, getAmountUnit(amount), "g") || raw;
   return raw;
 };
 
