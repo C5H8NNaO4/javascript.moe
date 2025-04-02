@@ -33,7 +33,7 @@ export function getGCD(arr: number[]) {
   return gcd;
 }
 
-export const convert = (amount: number, from: string, to: string) => {
+export const convert = (amount: number, from: string, to: string): number => {
   if (from === "g") {
     if (to === "kg") return amount / 1000;
     if (to === "ml") return amount / 0.9;
