@@ -388,9 +388,6 @@ export const InventoryList = ({
       storedList.find((itm) => {
         return itm.id === id && itm.size === size && itm.title === title;
       }) || {};
-    const index = storedList.findIndex((itm) => {
-      return itm.id === id && itm.size === size && itm.title === title;
-    });
 
     const toAdd = normalize({
       title: title!,
@@ -1272,23 +1269,19 @@ export const IngredientDetail = ({
             (!isMobile ? (
               <ActionButton
                 level={1}
-                icon={isMobile ? "FaChevronRight" : "FaX"}
+                icon={"FaX"}
                 className="!rounded-l-full sm:!rounded-l-none"
                 onDestruct={() => {
-                  setSelected(
-                    isMobile
-                      ? { title: selectedItem?.title, size: selectedItem?.size }
-                      : null
-                  );
+                  setSelected(null);
                 }}
               ></ActionButton>
             ) : (
               <ToggleButton
                 active={!!expanded}
-                icon={isMobile ? "FaChevronRight" : "FaX"}
+                icon={"FaChevronRight"}
                 className="!rounded-l-full sm:!rounded-l-none"
                 onClick={() => {
-                  setSelected(isMobile ? { title: selectedItem?.title } : null);
+                  setSelected({ title: selectedItem?.title });
                 }}
               ></ToggleButton>
             ))}
