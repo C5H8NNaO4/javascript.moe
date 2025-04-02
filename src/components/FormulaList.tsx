@@ -313,7 +313,7 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
                   )
                   .map((o) => o.toLowerCase())
               )
-                .slice(0, 3)
+                .slice(0, 4)
                 .map((odor) => (
                   <OdorChip odor={odor} size="xs" />
                 ))}
