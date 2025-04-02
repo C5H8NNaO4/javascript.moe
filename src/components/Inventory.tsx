@@ -116,9 +116,9 @@ export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
 export const getPriceInDollar = (price = "0$") => {
   // console.log ("GET GRAMS", amount)
   const raw = getPrice({ price });
-  if (price.includes("€")) return raw * (1 / 0.92) + "$";
-  if (price.includes("£")) return raw * (1 / 0.77) + "$";
-  if (price.includes("$")) return price;
+  if (price.includes("€")) return raw * (1 / 0.92) ;
+  if (price.includes("£")) return raw * (1 / 0.77);
+  if (price.includes("$")) return raw;
   return raw;
 };
 export const getDilution = (entry: Pick<NormalizedItem, "dilution">) => {
@@ -130,9 +130,9 @@ export const getRawPricePerMl = (
 ) => {
   if (entry === null) return 0;
   const nr = getGrams(entry.size);
-  const prc = getPrice(entry);
+  const prc = getPriceInDollar(entry.price);
   const dil = getDilution(entry);
-  return Math.round(100 * (prc / nr) * (100 / dil)) / 100;
+  return (prc / nr / 100) * dil;
 };
 
 export const getPricePerMl = (
