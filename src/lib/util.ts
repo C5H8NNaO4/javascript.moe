@@ -1,6 +1,8 @@
 import lvs from "fast-levenshtein";
 import {
+  amountToNumber,
   FormulaItem,
+  getAmountUnit,
   getGrams,
   getPricePerMl,
   getRawPricePerMl,
@@ -62,9 +64,7 @@ export const convert = (amount: number, from: string, to: string): number => {
   return amount;
 };
 export const toDrops = (amount: string) => {
-  if (amount.includes("dr")) return Number(amount.replace("dr", ""));
-  if (amount.includes("ml")) return 20 * Number(amount.replace("ml", ""));
-  return 1;
+  return convert(amountToNumber(amount), getAmountUnit(amount), "dr");
 };
 
 export const drops2Grams = (drops: number) => {
