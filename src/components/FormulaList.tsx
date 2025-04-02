@@ -9,7 +9,7 @@ import ReactDOM from "react-dom";
 import { Component, OdorChip } from "./Chip";
 import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
-import { findSmallestByTitle, lngLnk, randItm, unique } from "@/lib/util";
+import { findSmallestByTitle, lngLnk, randItm } from "@/lib/util";
 import {
   FormulaItem,
   Formula as FormulaType,
