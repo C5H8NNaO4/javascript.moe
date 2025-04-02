@@ -1791,10 +1791,8 @@ export const IngredientItem = (props: IngredientItemProps) => {
             className={clsx(
               "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
-                "checked:bg-green-700/80":
-                  list === props?.local?.list || list === props?.list,
-                "checked:bg-yellow-500/80":
-                  list !== props?.local?.list && list !== props.list,
+                "checked:bg-green-700/80": list === props?.local?.list,
+                "checked:bg-yellow-500/80": list !== props?.local?.list,
                 "disabled:checked:bg-green-700/40": 1,
                 "border-yellow-400": props.onStock,
                 "border-white": !props.onStock,
@@ -1804,15 +1802,15 @@ export const IngredientItem = (props: IngredientItemProps) => {
             onChange={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              if (!(props.local?.id || props.id)) return;
-              upd(props?.local?.id || props?.id, {
-                ...entry,
+              if (!props.local?.id) return;
+              upd(props?.local?.id, {
+                ...(entry.local || entry),
                 onStock: e.target.checked,
                 list: entry.list,
               });
               return false;
             }}
-            checked={entry?.local ? entry?.local?.onStock : entry?.onStock}
+            checked={entry?.local?.onStock}
           />
         )}
         {size && (
