@@ -68,11 +68,11 @@ export const toDrops = (amount: string) => {
 };
 
 export const drops2Grams = (drops: number) => {
-  return drops * 0.01;
+  return convert(drops, "dr", "g");
 };
 
 export const drops2ml = (drops: number) => {
-  return drops / 20;
+  return convert(drops, "dr", "ml");
 };
 
 export const round = (number: number) => {
