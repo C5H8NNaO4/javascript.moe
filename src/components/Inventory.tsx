@@ -1118,6 +1118,7 @@ export type IngredientDetailProps = {
   listAliases?: Record<string, string>;
   upd: any;
   expanded?: boolean;
+  setExpanded?: (e: boolean) => void;
 };
 export const IngredientDetail = ({
   selected,
@@ -1132,6 +1133,7 @@ export const IngredientDetail = ({
   filter = null,
   emptyStock,
   storedList,
+  setExpanded,
   upd,
 }: IngredientDetailProps) => {
   const selectedItem = selected as Item;
@@ -1282,6 +1284,7 @@ export const IngredientDetail = ({
                 className="!rounded-l-full sm:!rounded-l-none"
                 onClick={() => {
                   setSelected({ title: selectedItem?.title });
+                  setExpanded?.(false);
                 }}
               ></ToggleButton>
             ))}
