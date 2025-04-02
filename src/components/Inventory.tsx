@@ -807,7 +807,7 @@ export const InventoryList = ({
       )}
 
       <div className="flex gap-4 overflow-hidden flex-1">
-        {(isMobile ? !selected?.size : true) && (
+        {(isMobile ? true : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
             <div className="flex justify-between flex-wrap mb-1 gap-1 items-center">
               <div className="flex gap-1 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
@@ -985,6 +985,7 @@ export const InventoryList = ({
                 Local: [],
               },
             }}
+            expanded={isMobile ? !!selected?.size : false}
             invRemote={invRemote || "*"}
             invLocal={invLocal || "Local"}
             selected={selected!}
@@ -1223,7 +1224,7 @@ export const IngredientDetail = ({
     >
       <div
         className="
-      flex gap-1 flex-col lg:flex-row 
+      flex gap-1 flex-row 
       lg:flex-wrap justify-between bg-white/20
       p-2 rounded-t-md items-center h-fit w-full"
       >
@@ -1287,11 +1288,7 @@ export const IngredientDetail = ({
                 icon={isMobile ? "FaChevronRight" : "FaX"}
                 className="!rounded-l-full sm:!rounded-l-none"
                 onClick={() => {
-                  setSelected(
-                    isMobile
-                      ? { title: selectedItem?.title, size: selectedItem?.size }
-                      : null
-                  );
+                  setSelected(isMobile ? { title: selectedItem?.title } : null);
                 }}
               ></ToggleButton>
             ))}
