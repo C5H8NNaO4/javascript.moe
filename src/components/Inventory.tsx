@@ -377,8 +377,8 @@ export const InventoryList = ({
     const {
       title,
       size = "4ml",
-      quantity = 1,
       onStock,
+      quantity = 1,
       price = "0$",
       dilution = "100%",
       list = "Local",
@@ -393,14 +393,12 @@ export const InventoryList = ({
     });
 
     const toAdd = normalize({
-      ...existing,
       title: title!,
       size,
       quantity,
       onStock,
       price,
       dilution,
-      id,
       remote: false,
       source: "local" as any,
       list,
@@ -416,17 +414,19 @@ export const InventoryList = ({
       await db.add({
         ...toAdd,
         list: invLocal,
+        onStock: true,
       });
     }
 
     console.log("UPDATE", existing, toAdd);
-    setStoredLkp((storedList) => {
-      const newList = { ...storedList };
-      const newItems = newList[invLocal || "Local"].slice();
-      newItems.splice(index, index > -1 ? 1 : 0, toAdd);
-      newList[invLocal || "Local"] = newItems;
-      return newList;
-    });
+    // setStoredLkp((storedList) => {
+    //   const newList = { ...storedList };
+    //   const newItems = newList[invLocal || "Local"].slice();
+    //   newItems.splice(index, index > -1 ? 1 : 0, toAdd);
+    //   newList[invLocal || "Local"] = newItems;
+    //   return newList;
+    // });
+    await load();
     // if (selected?.local?.id === id) {
     // setSelected(toAdd);
     // }
@@ -597,7 +597,7 @@ export const InventoryList = ({
     if (!params?.title) return;
     const ingredient = findSmallestByTitle(
       params.title,
-      inventories.remote[params?.list || "All"]
+      inventories.remote[params?.list || ""] || []
     );
 
     if (!params?.list || !ingredient || !inventories?.remote[params?.list])
@@ -972,6 +972,11 @@ export const InventoryList = ({
           <IngredientDetail
             inventories={{
               remote: {
+                "*": [
+                  ...pellwall,
+                  ...perfumersApprentice,
+                  ...inventory,
+                ] as NormalizedItem[],
                 PA: perfumersApprentice,
                 PW: pellwall,
                 Moe: inventory || [],
@@ -980,7 +985,7 @@ export const InventoryList = ({
                 Local: [],
               },
             }}
-            invRemote={""}
+            invRemote={invRemote || "*"}
             invLocal={invLocal || "Local"}
             selected={selected!}
             setSelected={setSelected}
@@ -1169,7 +1174,7 @@ export const IngredientDetail = ({
     (invRemote
       ? inventories?.remote[invRemote]
       : storedLkp?.[invLocal.trim()]) || [];
-
+  const inventoryLocal = storedLkp?.[invLocal.trim()] || [];
   useEffect(() => {
     loadLocalLists();
   }, [invLocal, loadLocalLists, selected]);
@@ -1481,57 +1486,57 @@ export const IngredientDetail = ({
               ></LocalListChips>
 
               <div className="flex gap-1 flex-wrap">
-                {inventories?.remote?.Moe.filter(
-                  (i) => i.title === selected.title
-                ).map((selected) => {
-                  const local = inventory.find(
-                    (i) =>
-                      i.title === selected?.title && i.size == selected?.size
-                  ) as Item;
-                  const inLib = !!local?.id;
-                  return (
-                    <Chip
-                      id={"size" + selected?.size}
-                      className={clsx(
-                        {
-                          "bg-yellow-500/70": !inLib,
-                          "bg-green-600/70": inLib,
-                        },
-                        "w-fit"
-                      )}
-                      tooltip={
-                        inLib
-                          ? `This item is in your library.`
-                          : `This item is *not* your library.`
-                      }
-                      onClick={async () => {
-                        const local = inventory?.find(
-                          (i) =>
-                            i.title === selected?.title &&
-                            i.size == selected?.size
-                        ) as Item;
-                        const id = local?.id;
-                        if (local) await del(Number(id));
-                        if (!local) await add(selected);
-                        setSelected({
-                          title: selected?.title,
-                          size: selected?.size,
-                        } as Item);
-                        await loadLocalLists();
-                      }}
-                      icon={
-                        inventory.some(
-                          (i) =>
-                            i.title === selected?.title &&
-                            i.size == selected?.size
-                        )
-                          ? "FaCheck"
-                          : "FaPlus"
-                      }
-                      label={selected?.size}
-                    ></Chip>
-                  );
-                })}
+                {inventories?.remote[invRemote]
+                  .filter((i) => i.title === selected.title)
+                  .map((selected) => {
+                    const local = inventoryLocal.find(
+                      (i) =>
+                        i.title === selected?.title && i.size == selected?.size
+                    ) as Item;
+                    const inLib = !!local?.id;
+                    return (
+                      <Chip
+                        id={"size" + selected?.size}
+                        className={clsx(
+                          {
+                            "bg-yellow-500/70": !inLib,
+                            "bg-green-600/70": inLib,
+                          },
+                          "w-fit"
+                        )}
+                        tooltip={
+                          inLib
+                            ? `This item is in your library.`
+                            : `This item is *not* in your library.`
+                        }
+                        onClick={async () => {
+                          const local = inventoryLocal?.find(
+                            (i) =>
+                              i.title === selected?.title &&
+                              i.size == selected?.size
+                          ) as Item;
+                          const id = local?.id;
+                          if (local) await del(Number(id));
+                          if (!local) await add(selected);
+                          setSelected({
+                            title: selected?.title,
+                            size: selected?.size,
+                          } as Item);
+                          await loadLocalLists();
+                        }}
+                        icon={
+                          inventory.some(
+                            (i) =>
+                              i.title === selected?.title &&
+                              i.size == selected?.size
+                          )
+                            ? "FaCheck"
+                            : "FaPlus"
+                        }
+                        label={selected?.size}
+                      ></Chip>
+                    );
+                  })}
               </div>
               {selected?.title?.match(/[$€]$/) && (
                 <ActionButton
@@ -1802,7 +1807,6 @@ export const IngredientItem = (props: IngredientItemProps) => {
             onChange={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              if (!props.local?.id) return;
               upd(props?.local?.id, {
                 ...(entry.local || entry),
                 onStock: e.target.checked,
@@ -1945,7 +1949,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
             .map((itm) => {
               return (
                 <IngredientItem
-                  key={itm.title}
+                  key={itm.title + itm?.size}
                   {...itm}
                   cas={selected.cas}
                   title={title}
