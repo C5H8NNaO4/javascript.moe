@@ -306,14 +306,13 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
             </div>
             <div className="flex flex-wrap w-fit gap-1 items-center">
               {unique(
-                hydratedItems.flatMap(
-                  (itm) =>
-                    perfumeIngredientsOdours[itm?.title]?.slice(0, 3) || []
-                )
+                hydratedItems
+                  .sort((a, b) => Number(b.usedAmount) - Number(a.usedAmount))
+                  .flatMap(
+                    (itm) =>
+                      perfumeIngredientsOdours[itm?.title]?.slice(0, 1) || []
+                  )
               )
-                .sort((a, b) => {
-                  return dist(search || "", a) - dist(search || "", b);
-                })
                 .slice(0, 3)
                 .map((odor) => (
                   <OdorChip odor={odor} size="xs" />
