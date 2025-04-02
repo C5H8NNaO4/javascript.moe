@@ -312,6 +312,7 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
                     (itm) =>
                       perfumeIngredientsOdours[itm?.title]?.slice(0, 1) || []
                   )
+                  .map((o) => o.toLowerCase())
               )
                 .slice(0, 3)
                 .map((odor) => (
