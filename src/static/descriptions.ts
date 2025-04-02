@@ -764,12 +764,13 @@ const IraliaOdor = [
 ];
 
 const IsoESuperOdor = [
-  "woody",
-  "velvety",
-  "clean",
-  "resinous",
   "soft",
+  "clean",
+  "woody",
+  "transparent",
   "sophisticated",
+  "velvety",
+  "resinous",
 ];
 
 const IsolongifolanoneOdor = [
@@ -1922,9 +1923,9 @@ export const OdorColors = {
   dynamic: "#007BFF",
   modern: "#A8D300",
   "almond-like": "#EFDECD",
-  cucumber: '#A1D7B3', // Light green, fresh and crisp like cucumber
-  "vinegar-like": '#D4E6B5', // Light, acidic green, reflecting vinegar's sharpness
-  pungent: '#9A9A9A',
+  cucumber: "#A1D7B3", // Light green, fresh and crisp like cucumber
+  "vinegar-like": "#D4E6B5", // Light, acidic green, reflecting vinegar's sharpness
+  pungent: "#9A9A9A",
 } as Record<string, string>;
 
 export const TagColors = {

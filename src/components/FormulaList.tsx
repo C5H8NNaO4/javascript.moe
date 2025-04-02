@@ -304,18 +304,25 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
               <CostPerMlChip items={hydratedItems} />
             </div>
             <div className="flex flex-wrap w-fit gap-1 items-center">
-              {unique(
+              {Object.entries(
                 hydratedItems
                   .sort((a, b) => Number(b.usedAmount) - Number(a.usedAmount))
                   .flatMap(
                     (itm) =>
-                      perfumeIngredientsOdours[itm?.title]?.slice(0, 1) || []
+                      perfumeIngredientsOdours[itm?.title]?.slice(0, 3) || []
                   )
                   .map((o) => o.toLowerCase())
+                  .reduce((acc, odr) => {
+                    acc[odr] = ~~acc[odr] + 1;
+                    return acc;
+                  }, {} as Record<string, number>)
               )
+                .sort((a, b) => {
+                  return b[1] - a[1];
+                })
                 .slice(0, 4)
                 .map((odor) => (
-                  <OdorChip odor={odor} size="xs" />
+                  <OdorChip odor={odor[0]} size="xs" />
                 ))}
             </div>
           </div>
