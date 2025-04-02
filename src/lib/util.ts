@@ -35,18 +35,26 @@ export function getGCD(arr: number[]) {
 
 export const convert = (amount: number, from: string, to: string) => {
   if (from === "g") {
+    if (to === "kg") return amount / 1000;
     if (to === "ml") return amount / 0.9;
     if (to === "dr") return (amount / 0.9) * 20;
     if (to === "g") return amount * 1;
   }
 
+  if (from === "kg") {
+    if (to === "g") return amount * 1000;
+    return convert(amount * 1000, "g", to);
+  }
+
   if (from === "ml") {
     if (to === "g") return amount / 0.9;
+    if (to === "kg") return amount / 1000 / 0.9;
     if (to === "dr") return amount * 20;
     if (to === "ml") return amount * 1;
   }
 
   if (from === "dr") {
+    if (to === "kg") return (amount / 1000 / 20) * 0.9;
     if (to === "g") return (amount / 20) * 0.9;
     if (to === "ml") return amount / 20;
     if (to === "dr") return amount * 1;
