@@ -691,6 +691,7 @@ export const FormulaPage = () => {
                   list={selected?.items || ([] as any)}
                   sorted={selected?.items || ([] as any)}
                   upd={() => {}}
+                  setExpanded={setExpanded}
                   expanded={expanded}
                 ></IngredientDetail>
               )}

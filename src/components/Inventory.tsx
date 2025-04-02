@@ -1284,6 +1284,7 @@ export const IngredientDetail = ({
                 className="!rounded-l-full sm:!rounded-l-none"
                 onClick={() => {
                   setSelected({ title: selectedItem?.title });
+                  /** TODO: Change to onClose and move logic up */
                   setExpanded?.(false);
                 }}
               ></ToggleButton>
