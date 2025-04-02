@@ -9,7 +9,7 @@ import ReactDOM from "react-dom";
 import { Component, OdorChip } from "./Chip";
 import clsx from "clsx";
 import { NumberOfItemsChip } from "./Chips/NumberofItemsChip";
-import { dist, findSmallestByTitle, lngLnk, randItm, unique } from "@/lib/util";
+import { findSmallestByTitle, lngLnk, randItm, unique } from "@/lib/util";
 import {
   FormulaItem,
   Formula as FormulaType,
@@ -171,7 +171,6 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
     isSelected,
     shrink = false,
     hasBrightBg = false,
-    search,
   } = props;
   const { title, token, author, items, published } = formula;
   const hydratedItems = items.map((frmItm) => ({
