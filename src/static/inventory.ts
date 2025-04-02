@@ -10,10 +10,14 @@ export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
 };
 const perfumersApprentice = pa
   .flat(3)
-  .filter((itm: ScrapedPAItem) => itm?.amount && itm?.price)
-  .map(normPA) as unknown as NormalizedItem[];
+  .filter((itm) => itm?.size && itm?.price)
+  .map((itm) => ({ ...itm, source: "PA" }));
 
-const pellwall = pw.flat(3).filter((itm) => itm?.size && itm?.price);
+console.log("PA ", pa, perfumersApprentice);
+const pellwall = pw
+  .flat(3)
+  .filter((itm) => itm?.size && itm?.price)
+  .map((itm) => ({ ...itm, source: "PW" }));
 
 const inventory: NormalizedItem[] = [
   {
@@ -1395,19 +1399,24 @@ const inventory: NormalizedItem[] = [
   },
 ]
   .map((itm) => {
-    const norm = perfumersApprentice.find(
-      (paItm) => paItm.title === itm.title && (paItm as any).size === itm.amount
+    const norm = [...perfumersApprentice, ...pellwall].find(
+      (paItm) =>
+        paItm.title.trim() === itm.title.trim() &&
+        (paItm as any).size === itm.amount
     );
+
+    if (norm) return norm;
     if (!itm.price || !itm.amount) return;
     if (!norm)
       return normalize({
         ...itm,
-        source: "Moe" as any,
         size: itm.amount,
         attributes: [],
       });
     return norm;
   })
   .filter((ele) => ele?.price) as unknown as NormalizedItem[];
+console.log("INVENTORY MOE", inventory);
+console.log("INVENTORY ALL", [...perfumersApprentice, ...pellwall]);
 
 export { pellwall, perfumersApprentice, inventory };

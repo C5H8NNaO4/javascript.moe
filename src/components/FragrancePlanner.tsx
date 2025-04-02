@@ -842,7 +842,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
             onClick={() => {
               update?.({
                 usedAmount: Math.round(100 * (Number(usedAmount) - step)) / 100,
-                source: props.source || library,
               });
             }}
           ></IconButton>
@@ -852,7 +851,6 @@ export const FormulaIngredient = (props: FormulaIngredientProps) => {
             onClick={() => {
               update?.({
                 usedAmount: Math.round(100 * (Number(usedAmount) + step)) / 100,
-                source: props.source || library,
               });
             }}
           ></IconButton>

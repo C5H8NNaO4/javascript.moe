@@ -383,6 +383,7 @@ export const InventoryList = ({
       dilution = "100%",
       list = "Local",
       attributes = [],
+      source,
     } = item || {};
     const existing =
       storedList.find((itm) => {
@@ -397,7 +398,7 @@ export const InventoryList = ({
       price,
       dilution,
       remote: false,
-      source: "local" as any,
+      source,
       list,
       attributes,
     });
@@ -937,7 +938,6 @@ export const InventoryList = ({
                         upd={upd}
                         setSelected={setSelected}
                         list={invLocal as any}
-                        source={invRemote as any}
                         setNotification={setNotification}
                         toggleFilter={(key) => {
                           // setShowTags(true);
@@ -1905,6 +1905,16 @@ export const IngredientItem = (props: IngredientItemProps) => {
             <Chip className="bg-yellow-500/90 w-fit" label="🤯"></Chip>
           )}
         </div>
+        {entry?.size && entry?.source && (
+          <Chip
+            label={entry.source}
+            className={clsx({
+              "bg-[#EFE6EF] text-black": entry.source === "PW",
+              "bg-sky-500": entry.source === "PA",
+              "bg-yellow-500": entry.source === "Moe",
+            })}
+          />
+        )}
         {entry?.cas && !entry.size && (
           <Icon icon="MdOutlineVerified" className="h-6 w-6"></Icon>
         )}
@@ -1953,7 +1963,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   selected={selected}
                   setSelected={setSelected}
                   list={list}
-                  source={source}
+                  source={itm.source}
                 ></IngredientItem>
               );
             })}
