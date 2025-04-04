@@ -1,4 +1,3 @@
-import { useIndexedDB } from "react-indexed-db-hook";
 import ReactDOM from "react-dom";
 import { IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
@@ -6,7 +5,6 @@ import { List, ListItem } from "./List";
 import {
   PropsWithChildren,
   ReactNode,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -28,7 +26,7 @@ import PALogo from "../assets/logos/PerfumersApprentice.png";
 import { Chip, Component, OdorChip } from "./Chip";
 import { between } from "../utils/numbers";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
+import { groupByTitle } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
 import { convert, findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
@@ -44,6 +42,8 @@ import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { getDisplayCAS } from "@/utils/item";
 import { Sources } from "libperfumery/dist/types/Sources";
 import { Tooltip } from "react-tooltip";
+import { useFeatures } from "@/hooks/useFeatures";
+import { useLocalInventories } from "@/hooks/dbs/useInventoryDb";
 
 export const getMostExpensive = (list: Item[]) => {
   const e = list
@@ -243,11 +243,6 @@ export const InventoryList = ({
     local: LocalInventories;
   };
 }) => {
-  const db = useIndexedDB("inventory");
-  const [storedListLkp, setStoredLkp] = useState<Record<string, Item[]>>(
-    inventories?.local || {}
-  );
-
   const params = useParams<{
     list: string;
     title: string;
@@ -268,14 +263,14 @@ export const InventoryList = ({
     setInvLocal(searchParams.get("library"));
   }, [searchParams]);
 
+  const [
+    storedListLkp,
+    { add, deleteList, upd, toggle: toggleOnStock, localListNames: localLists, setLocalLists },
+  ] = useLocalInventories(inventories?.local, invLocal);
   const [sort, setSort] = useState<string>("+AZ");
   const [notification, setNotification] = useState<string>("");
 
   const storedList = storedListLkp[invLocal || "Local"] || [];
-  const [localLists, setLocalLists] = useLocalStorage(
-    Object.keys(inventories?.local || {}),
-    "localLists"
-  );
 
   const availList = (
     invRemote && invRemote !== "*"
@@ -291,6 +286,8 @@ export const InventoryList = ({
       remote: true,
       local: !invLocal
         ? null
+        : itm.id
+        ? itm
         : Object.values(storedListLkp)
             .flat()
             ?.find((sitm) => {
@@ -318,116 +315,6 @@ export const InventoryList = ({
       });
     });
   const list = (!invRemote ? storedList : available) as Item[];
-
-  const load = async () => {
-    const res = (await db.getAll()) || [];
-    setLocalLists(
-      [
-        ...new Set([
-          ...Object.keys(inventories?.local),
-          ...localLists,
-          ...res.flatMap((itm) => {
-            return itm.list
-              ?.trim()
-              ?.split(", ")
-              .map((l: string) => l.trim());
-          }),
-        ]),
-      ].filter(Boolean)
-    );
-    setStoredLkp({
-      ...storedListLkp,
-      ...res.reduce((acc, itm) => {
-        return { ...acc, [itm.list]: [...(acc[itm.list] || []), itm] };
-      }, {}),
-    });
-  };
-
-  useEffect(() => {
-    load();
-  }, []);
-  const add = async (props: Partial<Item>) => {
-    const res = await db.add(props);
-    const toAdd = {
-      ...props,
-      quantity: Number(props.quantity),
-      id: res,
-    } as unknown as NormalizedItem;
-    (setStoredLkp as any)((list: Record<string, Item[]>) => ({
-      ...list,
-      [invLocal || "Local"]: [...list[invLocal || "Local"], toAdd],
-    }));
-  };
-
-  const del = async (id: number, noUpdate?: boolean) => {
-    await db.deleteRecord(id);
-    if (noUpdate) return;
-    const index = list.findIndex((itm) => {
-      return itm.id === id;
-    });
-
-    setStoredLkp((list) => {
-      const newList = { ...list };
-      newList[invLocal || "Local"] = newList[invLocal || "Local"] || [];
-      newList[invLocal || "Local"].splice(index, 1);
-      return newList;
-    });
-  };
-
-  const deleteList = async () => {
-    setStoredLkp({ [invLocal || "Local"]: [] });
-    storedList.forEach((itm) => itm.id && del(itm.id, true));
-    setInvRemote(null);
-  };
-  const upd = async (id?: number, item?: Item) => {
-    if (!item) return;
-    const {
-      title,
-      size = "4ml",
-      onStock,
-      quantity = 1,
-      price = "0$",
-      dilution = "100%",
-      list,
-      attributes = [],
-      source,
-    } = item;
-
-    const existing =
-      storedList.find((itm) => {
-        return itm.id === id && itm.size === size && itm.title === title;
-      }) || {};
-
-    const toAdd = normalize({
-      title: title!,
-      size,
-      quantity,
-      onStock,
-      price,
-      dilution,
-      remote: false,
-      source,
-      list,
-      attributes,
-    });
-    if (id) {
-      await db.update({
-        ...existing,
-        ...toAdd,
-        id,
-      });
-    } else {
-      await db.add({
-        ...toAdd,
-        list: invLocal,
-        onStock: true,
-      });
-    }
-
-    setTimeout(() => {
-      load();
-    }, 0);
-  };
 
   // useEffect(() => {
   //   if (!invLocal || !localLists?.includes(invLocal))
@@ -935,7 +822,7 @@ export const InventoryList = ({
                         key={entry.title}
                         {...(entry as any)}
                         selected={selected}
-                        upd={upd}
+                        toggleOnStock={toggleOnStock}
                         setSelected={setSelected}
                         invLocal={invLocal as any}
                         setNotification={setNotification}
@@ -1140,72 +1027,18 @@ export const IngredientDetail = ({
   const bp = useCurrentBreakpoint({ current: document.body });
   const isMobile = isSmaller(bp, "md");
 
-  const db = useIndexedDB("inventory");
+  const features = useFeatures();
 
-  const [storedLkp, setStoredLkp] = useState<Record<string, NormalizedItem[]>>(
-    {}
+  const [storedLkp, { del, add, refetch,  localListNames: localLists }] = useLocalInventories(
+    inventories?.local,
+    invLocal
   );
-  const [localLists, setLocalLists] = useLocalStorage(
-    Object.keys(inventories?.local || {}),
-    "localLists"
-  );
-  const loadLocalLists = useCallback(async () => {
-    const res = (await db.getAll()) || [];
-    setLocalLists(
-      [
-        ...new Set([
-          ...Object.keys(inventories?.local),
-          ...localLists,
-          ...res.map((itm) => {
-            return itm.list;
-          }),
-        ]),
-      ].filter(Boolean)
-    );
-    setStoredLkp({
-      ...storedLkp,
-      ...res.reduce((acc, itm) => {
-        return { ...acc, [itm.list]: [...(acc[itm.list] || []), itm] };
-      }, {}),
-    });
-  }, []);
 
   const inventory =
     (invRemote
       ? inventories?.remote[invRemote]
       : storedLkp?.[invLocal.trim()]) || [];
   const inventoryLocal = storedLkp?.[invLocal.trim()] || [];
-  useEffect(() => {
-    loadLocalLists();
-  }, [loadLocalLists, selected]);
-  const add = async ({ id, ...props }: Partial<Item>) => {
-    await db.add({ ...props, list: invLocal });
-
-    // setStoredLkp((list) => ({
-    //   ...list,
-    //   [invLocal || "Local"]: [...list[invLocal || "Local"], toAdd],
-    // }));
-
-    if (inventories.local[invLocal]) await loadLocalLists();
-    else {
-      setLocalLists([...new Set([...localLists, invLocal])]);
-    }
-  };
-
-  const del = async (id: number, noUpdate?: boolean) => {
-    await db.deleteRecord(id);
-    if (noUpdate) return;
-    const index = list.findIndex((itm) => {
-      return Number(itm.id) === id;
-    });
-
-    setStoredLkp((list) => {
-      const newList = { ...list };
-      newList[invLocal || "Local"] = newList[invLocal || "Local"] || [];
-      newList[invLocal || "Local"].splice(index, 1);
-      return newList;
-    });
-  };
 
   const navigate = useNavigate();
   const params = useParams();
@@ -1393,11 +1226,9 @@ export const IngredientDetail = ({
                       icon="FaCheck"
                       className={clsx("w-fit", {
                         "bg-green-600":
-                          invLocal === selectedItem?.local?.list ||
-                          invLocal === selectedItem?.list,
-                        "bg-yellow-500":
-                          invLocal !== selectedItem?.local?.list &&
-                          invLocal !== selectedItem?.list,
+                          selectedItem?.local?.list?.includes(invLocal),
+                        "bg-orange-500":
+                          !selectedItem?.local?.list?.includes(invLocal),
                       })}
                       label={
                         listAliases?.[
@@ -1447,46 +1278,53 @@ export const IngredientDetail = ({
                 })}
               </div>
 
-              <LocalListChips
-                showButtons={false}
-                toInventory={!window.location.pathname.includes("/inventory/")}
-                listNames={localLists}
-                // onAdd={ing => ing && add(ing)}
-                // onDelete={(id) => del(id)}
-                value={invLocal}
-                items={inventory as Item[]}
-                onChange={(library) => {
-                  const search = new URLSearchParams(window.location.search);
-                  search.set("library", library || "Local");
-                  search.set("source", "local");
-                  if (window.location.pathname.includes("/inventory/")) {
-                    navigate(
-                      lngLnk`/inventory/${
-                        params.list || "*"
-                      }/${encodeURIComponent(params.title!)}${
-                        params.amount ? "/" + params.amount! : ""
-                      }?` +
-                        search.toString() +
-                        window.location.hash
-                    );
-                  } else {
-                    navigate(
-                      lngLnk`/formula/${params.author!}/${params.title!}/?` +
-                        search.toString() +
-                        window.location.hash
-                    );
+              {features.IngredientDetailLocalChips && (
+                <LocalListChips
+                  showButtons={false}
+                  toInventory={
+                    !window.location.pathname.includes("/inventory/")
                   }
-                }}
-              ></LocalListChips>
+                  listNames={localLists}
+                  // onAdd={ing => ing && add(ing)}
+                  // onDelete={(id) => del(id)}
+                  value={invLocal}
+                  items={inventory as Item[]}
+                  onChange={(library) => {
+                    const search = new URLSearchParams(window.location.search);
+                    search.set("library", library || "Local");
+                    search.set("source", "local");
+                    if (window.location.pathname.includes("/inventory/")) {
+                      navigate(
+                        lngLnk`/inventory/${
+                          params.list || "*"
+                        }/${encodeURIComponent(params.title!)}${
+                          params.amount ? "/" + params.amount! : ""
+                        }?` +
+                          search.toString() +
+                          window.location.hash
+                      );
+                    } else {
+                      navigate(
+                        lngLnk`/formula/${params.author!}/${params.title!}/?` +
+                          search.toString() +
+                          window.location.hash
+                      );
+                    }
+                  }}
+                ></LocalListChips>
+              )}
 
               <div className="flex gap-1 flex-wrap">
                 {inventories?.remote[invRemote]
                   .filter((i) => i.title === selected.title)
                   .map((selected) => {
-                    const local = inventoryLocal.find(
-                      (i) =>
-                        i.title === selected?.title && i.size == selected?.size
-                    ) as Item;
+                    const local = Object.values(storedLkp)
+                      .flat()
+                      .find(
+                        (i) =>
+                          i.title === selected?.title &&
+                          i.size == selected?.size
+                      ) as Item;
                     const inLib = !!local?.id;
                     return (
                       <Chip
@@ -1500,8 +1338,8 @@ export const IngredientDetail = ({
                         )}
                         tooltip={
                           inLib
-                            ? `This item is in your library.`
-                            : `This item is *not* in your library.`
+                            ? `This item is stored locally.`
+                            : `This item is *not* stored locally.`
                         }
                         onClick={async () => {
                           const local = inventoryLocal?.find(
@@ -1516,7 +1354,7 @@ export const IngredientDetail = ({
                             title: selected?.title,
                             size: selected?.size,
                           } as Item);
-                          await loadLocalLists();
+                          await refetch();
                         }}
                         icon={
                           inventory.some(
@@ -1709,7 +1547,7 @@ export type IngredientItemProps = Component<{
   items?: Item[];
   title: string;
   selected?: Partial<Item> | Partial<GroupedItem> | null;
-  upd: (id?: number, item?: Partial<Item>) => void;
+  toggleOnStock: (item: Partial<Item>, onStock: boolean) => void;
   toggleFilter?: (key: string) => void;
   setSelected: (item: Item | null) => void;
   setNotification: (v: string) => void;
@@ -1723,7 +1561,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
     items,
     size,
     selected,
-    upd,
+    toggleOnStock,
     setSelected,
     list,
     source,
@@ -1788,10 +1626,12 @@ export const IngredientItem = (props: IngredientItemProps) => {
             className={clsx(
               "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
-                "checked:bg-green-700/80": list === props?.local?.list,
-                "checked:bg-yellow-500/80": list !== props?.local?.list,
+                "checked:bg-green-700/80": props?.local?.list?.includes(list!),
+                "checked:bg-yellow-500/80": !props?.local?.list?.includes(
+                  list!
+                ),
                 "disabled:checked:bg-green-700/40": 1,
-                "border-yellow-400": props.onStock,
+                "border-green-400": props?.local?.id,
                 "border-white": !props.onStock,
               }
             )}
@@ -1800,24 +1640,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
               console.log("ON CHANGE ", entry);
               e.stopPropagation();
               e.preventDefault();
-              const list =
-                typeof entry?.local?.list !== "string"
-                  ? []
-                  : (entry.local?.list || "")
-                      ?.split(", ")
-                      .filter(Boolean)
-                      .map((l) => l.trim());
-              if (!e.target.checked) {
-                list.splice(list.indexOf(invLocal), 1);
-              } else if (!list.includes(invLocal)) {
-                list.push(invLocal);
-              }
-
-              upd(entry?.local?.id, {
-                ...(entry.local || entry),
-                onStock: e.target.checked,
-                list: list.sort().join(", "),
-              });
+              toggleOnStock(entry, e.target.checked);
               return false;
             }}
             checked={entry?.local?.list?.includes(invLocal)}
@@ -1971,7 +1794,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
                   title={title}
                   setNotification={setNotification}
                   id={itm.id}
-                  upd={upd}
+                  toggleOnStock={toggleOnStock}
                   selected={selected}
                   setSelected={setSelected}
                   source={itm.source}
