@@ -960,7 +960,8 @@ const inventory: NormalizedItem[] = [
     title: "Orange Flower Absolute",
     dilution: "10%",
     price: "33€",
-    onStock: true,
+    onStock: false,
+    source: "PW",
   },
   {
     amount: "10ml",
@@ -1093,7 +1094,7 @@ const inventory: NormalizedItem[] = [
         ...itm,
         size: itm.amount,
         attributes: [],
-        source: "?",
+        source: itm.source || "N/A",
       });
     return norm;
   })

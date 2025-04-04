@@ -265,7 +265,14 @@ export const InventoryList = ({
 
   const [
     storedListLkp,
-    { add, deleteList, upd, toggle: toggleOnStock, localListNames: localLists, setLocalLists },
+    {
+      add,
+      deleteList,
+      upd,
+      toggle: toggleOnStock,
+      localListNames: localLists,
+      setLocalLists,
+    },
   ] = useLocalInventories(inventories?.local, invLocal);
   const [sort, setSort] = useState<string>("+AZ");
   const [notification, setNotification] = useState<string>("");
@@ -1029,10 +1036,8 @@ export const IngredientDetail = ({
 
   const features = useFeatures();
 
-  const [storedLkp, { del, add, refetch,  localListNames: localLists }] = useLocalInventories(
-    inventories?.local,
-    invLocal
-  );
+  const [storedLkp, { del, add, refetch, localListNames: localLists }] =
+    useLocalInventories(inventories?.local, invLocal);
 
   const inventory =
     (invRemote
@@ -1203,7 +1208,11 @@ export const IngredientDetail = ({
                     ).toString()}
                   </Tag>
                 )}
-
+                {selectedItem?.dilution && (
+                  <Tag label="Dilution" id="sizetag">
+                    {selectedItem?.dilution}
+                  </Tag>
+                )}
                 <Tag label="CAS" id="castag">
                   {getDisplayCAS(selected?.cas)}
                 </Tag>
@@ -1652,9 +1661,6 @@ export const IngredientItem = (props: IngredientItemProps) => {
             {getAmountUnit(size)}
           </div>
         )}
-        {entry?.dilution !== "100%" && (
-          <Chip className="bg-gray-200/70" label={entry?.dilution}></Chip>
-        )}
 
         {entry?.items && (
           <div className="flex flex-col">
@@ -1740,13 +1746,26 @@ export const IngredientItem = (props: IngredientItemProps) => {
             <Chip className="bg-yellow-500/90 w-fit" label="🤯"></Chip>
           )}
         </div>
+        {entry?.dilution !== "100%" && (
+          <Chip
+          id="dilutionchip"
+
+            className="bg-white/40 text-black"
+            label={entry?.dilution}
+            tooltip="Dilution"
+          ></Chip>
+        )}
+
         {entry?.size && entry?.source && (
           <Chip
+            tooltip="Source"
+            id="sourcechip"
             label={entry.source}
             className={clsx({
               "bg-[#EFE6EF] text-black": entry.source === "PW",
               "bg-sky-500": entry.source === "PA",
               "bg-yellow-500": entry.source === "Moe",
+              "bg-orange-500": entry.source === "N/A",
             })}
           />
         )}

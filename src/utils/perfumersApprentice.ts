@@ -7,7 +7,7 @@ export const normalize = (itm: RawItem): Item => {
     ...itm,
     price: itm.price,
     size: itm.size,
-    dilution: /\d+%/.exec(itm?.title)?.[0] || "100%",
+    dilution: itm.dilution || /\d+%/.exec(itm?.title)?.[0] || "100%",
     quantity: 1,
     title: itm?.title
       .replace(/\s\*\*/g, "")
