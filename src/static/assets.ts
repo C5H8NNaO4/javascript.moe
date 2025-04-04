@@ -150,6 +150,7 @@ export const ingredients = {
   "Acetic Acid": "/images/ingredients/AceticAcid.jpeg",
   Acetophenone: "/images/ingredients/Acetophenone.jpeg",
   Adoxal: "/images/ingredients/Adoxal.jpeg",
+  Acetanisole: "/images/ingredients/Acetanisole.jpeg",
 } as Record<string, string>;
 
 export const thumbnails = {

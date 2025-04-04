@@ -3,21 +3,20 @@ import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 
 import pa from "libperfumery/dist/static/data/normalized/pa";
 import pw from "libperfumery/dist/static/data/normalized/pw";
-import { ScrapedPAItem } from "libperfumery/dist/types/ScrapedItem";
-import { normalize as normPA } from "libperfumery/dist/utils/perfumersApprentice";
+
 export const getPrice = (entry: Pick<NormalizedItem, "price">) => {
   return Number(entry.price?.replace(/[$€£]/, "") || 0);
 };
 const perfumersApprentice = pa
   .flat(3)
   .filter((itm) => itm?.size && itm?.price)
-  .map((itm) => ({ ...itm, source: "PA" }));
+  .map((itm) => ({ ...itm, source: "PA" })) as unknown as NormalizedItem[];
 
 console.log("PA ", pa, perfumersApprentice);
 const pellwall = pw
   .flat(3)
   .filter((itm) => itm?.size && itm?.price)
-  .map((itm) => ({ ...itm, source: "PW" }));
+  .map((itm) => ({ ...itm, source: "PW" })) as unknown as NormalizedItem[];
 
 const inventory: NormalizedItem[] = [
   {
@@ -1412,11 +1411,10 @@ const inventory: NormalizedItem[] = [
         ...itm,
         size: itm.amount,
         attributes: [],
+        source: "?",
       });
     return norm;
   })
   .filter((ele) => ele?.price) as unknown as NormalizedItem[];
-console.log("INVENTORY MOE", inventory);
-console.log("INVENTORY ALL", [...perfumersApprentice, ...pellwall]);
 
 export { pellwall, perfumersApprentice, inventory };

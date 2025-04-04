@@ -1,11 +1,11 @@
 import { FormulaItem } from "@/components/Inventory";
-import { perfumersApprenticeInventory } from "@/static/data/ingredients/perfumersApprentice";
-import { inventory } from "@/static/inventory";
+
+import { inventory, pellwall, perfumersApprentice } from "@/static/inventory";
 import { NormalizedItem } from "libperfumery/dist/types/NormalizedItem";
 import { useParams } from "react-router";
 
 const invLkp = {
-  All: perfumersApprenticeInventory,
+  All: [...pellwall, ...perfumersApprentice],
   Moe: inventory,
 } as Record<string, NormalizedItem[]>;
 

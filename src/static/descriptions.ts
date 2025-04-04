@@ -1466,6 +1466,16 @@ const AcetophenoneOdor = [
   "powdery",
 ];
 
+const AcetanisoleDesc = `Acetanisole is a warm, sweet-smelling aromatic compound known for its rich vanilla-like and balsamic scent. It carries a powdery smoothness with subtle smoky and gourmand nuances, often reminiscent of tonka bean or aged vanilla. Widely used in perfumery and flavoring, Acetanisole enhances compositions with a comforting, slightly resinous depth. Its ability to add warmth and richness makes it a valuable ingredient in creating creamy, sweet, and slightly woody fragrances.`;
+const AcetanisoleOdor = [
+  "sweet",
+  "vanilla-like",
+  "balsamic",
+  "powdery",
+  "slightly smoky",
+  "gourmand",
+];
+
 const AdoxalDesc = `Adoxal is a fresh, slightly sweet, and clean fragrance compound with a prominent floral undertone. It has a delicate, airy character reminiscent of freshly blooming flowers or clean linens. Its aroma is light, fresh, and slightly fruity, with a soothing quality that evokes feelings of cleanliness and purity. Adoxal is often used in perfumery to create subtle, uplifting floral scents.`;
 const AdoxalOdor = ["floral", "fresh", "clean", "slightly sweet", "fruity"];
 
@@ -1601,6 +1611,7 @@ export const perfumeIngredientsDesc = {
   "Acetic Acid": AceticAcidDesc,
   Acetophenone: AcetophenoneDesc,
   Adoxal: AdoxalDesc,
+  Acetanisole: AcetanisoleDesc,
 } as Record<string, string>;
 
 export const perfumeIngredientsOdours = {
@@ -1735,6 +1746,7 @@ export const perfumeIngredientsOdours = {
   "Acetic Acid": AceticAcidOdor,
   Acetophenone: AcetophenoneOdor,
   Adoxal: AdoxalOdor,
+  Acetanisole: AcetanisoleOdor,
 } as Record<string, string[]>;
 
 export const allOdors = [
