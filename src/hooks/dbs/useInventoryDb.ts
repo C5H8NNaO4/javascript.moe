@@ -27,8 +27,8 @@ export const useLocalInventories = (
         ...new Set([
           ...Object.keys(inventories),
           ...localLists,
-          ...res.map((itm) => {
-            return itm.list;
+          ...res.flatMap((itm) => {
+            return itm?.list?.split(", ");
           }),
         ]),
       ].filter(Boolean)
