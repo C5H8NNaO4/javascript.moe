@@ -31,13 +31,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { groupByTitle, normalize } from "@/utils/perfumersApprentice";
 import { useCurrentBreakpoint, isSmaller } from "@/hooks/useBreakpoint";
 import { Icon } from "./Icon";
-import {
-  convert,
-  findSmallestByTitle,
-  lngLnk,
-  toggle,
-  trim,
-} from "@/lib/util";
+import { convert, findSmallestByTitle, lngLnk, toggle, trim } from "@/lib/util";
 import { importPlainText } from "@/utils/app";
 import { useNavigate, useParams } from "react-router";
 import i18next from "i18next";
@@ -1836,7 +1830,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
           </div>
         )}
         {entry?.dilution !== "100%" && (
-          <div className="">{entry?.dilution}</div>
+          <Chip className="bg-gray-200/70" label={entry?.dilution}></Chip>
         )}
 
         {entry?.items && (

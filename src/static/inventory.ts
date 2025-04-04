@@ -25,31 +25,27 @@ const inventory: NormalizedItem[] = [
     title: "Koavone",
     dilution: "100%",
     price: "34$",
-    id: 835,
-  },
+    },
   {
     amount: "500g",
     quantity: 1,
     title: "Vetiveryl Acetat",
     dilution: "100%",
     price: "247$",
-    id: 837,
-  },
+    },
   {
     amount: "250g",
     quantity: 1,
     title: "Cedryl Acetat",
     dilution: "100%",
     price: "23$",
-    id: 839,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Birch Tar (Rectified)",
     dilution: "100%",
     price: "20$",
-    id: 842,
     onStock: true,
   },
   {
@@ -58,7 +54,6 @@ const inventory: NormalizedItem[] = [
     title: "Vertenex",
     dilution: "100%",
     price: "11$",
-    id: 843,
     onStock: true,
   },
   {
@@ -67,7 +62,6 @@ const inventory: NormalizedItem[] = [
     title: "Vetikone",
     dilution: "100%",
     price: "12$",
-    id: 844,
     onStock: true,
   },
   {
@@ -76,7 +70,6 @@ const inventory: NormalizedItem[] = [
     title: "Isolongifolanone",
     dilution: "100%",
     price: "22$",
-    id: 845,
     onStock: true,
   },
   {
@@ -85,15 +78,13 @@ const inventory: NormalizedItem[] = [
     title: "Octyl Acetate",
     dilution: "100%",
     price: "18$",
-    id: 846,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Fir Balsam",
     dilution: "100%",
     price: "27$",
-    id: 847,
     onStock: true,
   },
   {
@@ -102,15 +93,13 @@ const inventory: NormalizedItem[] = [
     title: "Fir Balsam",
     dilution: "100%",
     price: "92$",
-    id: 848,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Oakwood Absolute ",
     dilution: "50%",
     price: "40$",
-    id: 849,
     onStock: true,
   },
   {
@@ -119,7 +108,6 @@ const inventory: NormalizedItem[] = [
     title: "Eucalyptus Bioabsolute",
     dilution: "100%",
     price: "17$",
-    id: 850,
     onStock: true,
   },
   {
@@ -128,15 +116,13 @@ const inventory: NormalizedItem[] = [
     title: "Z11 10 MIP",
     dilution: "100%",
     price: "28$",
-    id: 851,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Timbrox Base",
     dilution: "100%",
     price: "47$",
-    id: 852,
     onStock: true,
   },
   {
@@ -145,7 +131,6 @@ const inventory: NormalizedItem[] = [
     title: "Olibanum Absolute",
     dilution: "100%",
     price: "13$",
-    id: 853,
     onStock: true,
   },
   {
@@ -154,31 +139,27 @@ const inventory: NormalizedItem[] = [
     title: "Sandalwood Mysore",
     dilution: "100%",
     price: "90$",
-    id: 855,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Tolu Balsam Essence",
     dilution: "100%",
     price: "8$",
-    id: 856,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Pino Acetaldehyde",
     dilution: "100%",
     price: "45$",
-    id: 857,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Beta Pinene",
     dilution: "100%",
     price: "11$",
-    id: 858,
     onStock: true,
   },
   {
@@ -187,7 +168,6 @@ const inventory: NormalizedItem[] = [
     title: "Oakmoss Absolute",
     dilution: "100%",
     price: "24$",
-    id: 860,
     onStock: true,
   },
   {
@@ -196,15 +176,13 @@ const inventory: NormalizedItem[] = [
     title: "Oakmoss Absolute",
     dilution: "10%",
     price: "14$",
-    id: 861,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Dirt Fragrance Oil",
     dilution: "100%",
     price: "13$",
-    id: 862,
     onStock: true,
   },
   {
@@ -213,23 +191,20 @@ const inventory: NormalizedItem[] = [
     title: "Terrasol",
     dilution: "100%",
     price: "142$",
-    id: 863,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Kephalis",
     dilution: "100%",
     price: "20$",
-    id: 864,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Galbanum Oil",
     dilution: "100%",
     price: "22$",
-    id: 865,
     onStock: true,
   },
   {
@@ -238,15 +213,13 @@ const inventory: NormalizedItem[] = [
     title: "Galbanum Resinoid",
     dilution: "100%",
     price: "23$",
-    id: 866,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Costus Oliffac",
     dilution: "100%",
     price: "20$",
-    id: 867,
     onStock: true,
   },
   {
@@ -255,7 +228,6 @@ const inventory: NormalizedItem[] = [
     title: "Dowanol",
     dilution: "100%",
     price: "27$",
-    id: 869,
     onStock: false,
   },
   {
@@ -264,23 +236,20 @@ const inventory: NormalizedItem[] = [
     title: "Iralia",
     dilution: "100%",
     price: "67$",
-    id: 870,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Hedione",
     dilution: "100%",
     price: "16$",
-    id: 871,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Hedione HC",
     dilution: "100%",
     price: "24$",
-    id: 872,
     onStock: true,
   },
   {
@@ -289,31 +258,27 @@ const inventory: NormalizedItem[] = [
     title: "Scentenal",
     dilution: "100%",
     price: "16$",
-    id: 873,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Calone",
     dilution: "10%",
     price: "14$",
-    id: 874,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Maritima",
     dilution: "100%",
     price: "24$",
-    id: 875,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Seaweed Absolute ",
     dilution: "50%",
     price: "24$",
-    id: 876,
     onStock: true,
   },
   {
@@ -322,87 +287,76 @@ const inventory: NormalizedItem[] = [
     title: "Ethylene Brassylate",
     dilution: "100%",
     price: "20$",
-    id: 877,
-  },
+    },
   {
     amount: "250g",
     quantity: 1,
     title: "Galaxolide",
     dilution: "50%",
     price: "35$",
-    id: 878,
-  },
+    },
   {
     amount: "250g",
     quantity: 1,
     title: "Cashmeran",
     dilution: "100%",
     price: "61$",
-    id: 879,
-  },
+    },
   {
     amount: "250g",
     quantity: 1,
     title: "Habanolide",
     dilution: "100%",
     price: "45$",
-    id: 880,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Velvione",
     dilution: "100%",
     price: "57$",
-    id: 881,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Muscenone",
     dilution: "100%",
     price: "65$",
-    id: 882,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Exaltolide",
     dilution: "100%",
     price: "18$",
-    id: 883,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Celestolide",
     dilution: "100%",
     price: "18$",
-    id: 884,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Ambrettolide",
     dilution: "100%",
     price: "62$",
-    id: 885,
-  },
+    },
   {
     amount: "80g",
     quantity: 1,
     title: "Musk Ketone",
     dilution: "100%",
     price: "11$",
-    id: 886,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Fixateur 505E ",
     dilution: "100%",
     price: "24$",
-    id: 887,
     onStock: true,
   },
   {
@@ -411,7 +365,6 @@ const inventory: NormalizedItem[] = [
     title: "Civettone ",
     dilution: "100%",
     price: "77$",
-    id: 888,
     onStock: true,
   },
   {
@@ -420,23 +373,20 @@ const inventory: NormalizedItem[] = [
     title: "Ambroxan",
     dilution: "10%",
     price: "77$",
-    id: 889,
-  },
+    },
   {
     amount: "250g",
     quantity: 1,
     title: "Vertofix Coeur",
     dilution: "100%",
     price: "52$",
-    id: 891,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Ambercore",
     dilution: "100%",
     price: "22$",
-    id: 892,
     onStock: true,
   },
   {
@@ -445,7 +395,6 @@ const inventory: NormalizedItem[] = [
     title: "Sylvamber",
     dilution: "100%",
     price: "14$",
-    id: 893,
     onStock: true,
   },
   {
@@ -454,23 +403,20 @@ const inventory: NormalizedItem[] = [
     title: "Ambergris T Oliffac",
     dilution: "100%",
     price: "31$",
-    id: 894,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Civet Absolute",
     dilution: "100%",
     price: "31$",
-    id: 895,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Amber Xtreme",
     dilution: "100%",
     price: "19$",
-    id: 896,
     onStock: true,
   },
   {
@@ -479,7 +425,6 @@ const inventory: NormalizedItem[] = [
     title: "Castoreum Absolute ",
     dilution: "100%",
     price: "38$",
-    id: 897,
     onStock: true,
   },
   {
@@ -488,7 +433,6 @@ const inventory: NormalizedItem[] = [
     title: "Bergamot - Essential Oil - Calabria, IT",
     dilution: "100%",
     price: "13$",
-    id: 898,
     onStock: true,
   },
   {
@@ -497,23 +441,20 @@ const inventory: NormalizedItem[] = [
     title: "Rose Givco 217",
     dilution: "100%",
     price: "27$",
-    id: 899,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Orange Flower Absolute",
     dilution: "100%",
     price: "152$",
-    id: 902,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Neroli Tunisia P&N",
     dilution: "100%",
     price: "61$",
-    id: 903,
     onStock: true,
   },
   {
@@ -522,31 +463,27 @@ const inventory: NormalizedItem[] = [
     title: "Cistus Oil",
     dilution: "100%",
     price: "63$",
-    id: 904,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Violet Leaf Absolute",
     dilution: "100%",
     price: "20$",
-    id: 906,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Broom Absolute",
     dilution: "100%",
     price: "79$",
-    id: 907,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Jasmine Sambac Absolute ",
     dilution: "100%",
     price: "36$",
-    id: 910,
     onStock: true,
   },
   {
@@ -555,79 +492,69 @@ const inventory: NormalizedItem[] = [
     title: "Jasmine Grandiflorum Absolute",
     dilution: "100%",
     price: "33$",
-    id: 911,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Blackcurrant Absolute",
     dilution: "100%",
     price: "25$",
-    id: 913,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Mimosa Olessence",
     dilution: "100%",
     price: "99$",
-    id: 914,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Labdanum Absolute",
     dilution: "100%",
     price: "29$",
-    id: 916,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Beeswax Absolute",
     dilution: "100%",
     price: "50$",
-    id: 917,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Bran Absolute",
     dilution: "100%",
     price: "13$",
-    id: 918,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Black Hemlock Absolute",
     dilution: "100%",
     price: "26$",
-    id: 919,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Heliotropin Replacer",
     dilution: "100%",
     price: "6$",
-    id: 920,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Methyl Laitone",
     dilution: "10%",
     price: "7$",
-    id: 921,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Linalool",
     dilution: "100%",
     price: "13$",
-    id: 922,
     onStock: true,
   },
   {
@@ -636,14 +563,12 @@ const inventory: NormalizedItem[] = [
     title: "Vernaldehyde",
     dilution: "100%",
     price: "16$",
-    id: 923,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Methyl Ionone Gamma",
     dilution: "100%",
-    id: 924,
     onStock: true,
   },
   {
@@ -652,15 +577,13 @@ const inventory: NormalizedItem[] = [
     title: "Coumarin",
     dilution: "10%",
     price: "15$",
-    id: 925,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Farnesol",
     dilution: "100%",
     price: "9$",
-    id: 927,
     onStock: true,
   },
   {
@@ -669,15 +592,13 @@ const inventory: NormalizedItem[] = [
     title: "Mate Absolute",
     dilution: "100%",
     price: "12$",
-    id: 928,
-  },
+    },
   {
     amount: "50g",
     quantity: 1,
     title: "Aldehyde C-8",
     dilution: "100%",
     price: "10$",
-    id: 929,
     onStock: true,
   },
   {
@@ -686,7 +607,6 @@ const inventory: NormalizedItem[] = [
     title: "Aldehyde C-10",
     dilution: "100%",
     price: "11$",
-    id: 930,
     onStock: true,
   },
   {
@@ -695,7 +615,6 @@ const inventory: NormalizedItem[] = [
     title: "Aldehyde C-12 MNA ",
     dilution: "10%",
     price: "13$",
-    id: 931,
     onStock: true,
   },
   {
@@ -704,7 +623,6 @@ const inventory: NormalizedItem[] = [
     title: "Orange Flower Blend",
     dilution: "100%",
     price: "27€",
-    id: 935,
     onStock: true,
   },
   {
@@ -713,7 +631,6 @@ const inventory: NormalizedItem[] = [
     title: "Cistus Oil ",
     dilution: "100%",
     price: "20$",
-    id: 937,
     onStock: true,
   },
   {
@@ -722,7 +639,6 @@ const inventory: NormalizedItem[] = [
     title: "Clearwood®",
     dilution: "100%",
     price: "5$",
-    id: 938,
     onStock: true,
   },
   {
@@ -731,7 +647,6 @@ const inventory: NormalizedItem[] = [
     title: "Precyclemone B",
     dilution: "100%",
     price: "6$",
-    id: 944,
     onStock: true,
   },
   {
@@ -740,7 +655,6 @@ const inventory: NormalizedItem[] = [
     title: "Sandalwood Mysore ",
     dilution: "100%",
     price: "25$",
-    id: 946,
     onStock: true,
   },
   {
@@ -749,7 +663,6 @@ const inventory: NormalizedItem[] = [
     title: "Methyl Laitone ",
     dilution: "10%",
     price: "4$",
-    id: 947,
     onStock: true,
   },
   {
@@ -758,7 +671,6 @@ const inventory: NormalizedItem[] = [
     title: "Beeswax Absolute ",
     dilution: "100%",
     price: "16$",
-    id: 948,
     onStock: true,
   },
   {
@@ -767,7 +679,6 @@ const inventory: NormalizedItem[] = [
     title: "Ambroxan ",
     dilution: "10%",
     price: "27$",
-    id: 949,
     onStock: true,
   },
   {
@@ -776,7 +687,6 @@ const inventory: NormalizedItem[] = [
     title: "Terrasol",
     dilution: "100%",
     price: "24$",
-    id: 950,
     onStock: true,
   },
   {
@@ -785,7 +695,6 @@ const inventory: NormalizedItem[] = [
     title: "Patchouli EO",
     dilution: "100%",
     price: "6€",
-    id: 951,
     onStock: true,
   },
   {
@@ -794,7 +703,6 @@ const inventory: NormalizedItem[] = [
     title: "Patchouli Light EO",
     dilution: "100%",
     price: "6€",
-    id: 952,
     onStock: true,
   },
   {
@@ -803,7 +711,6 @@ const inventory: NormalizedItem[] = [
     title: "Fir Balsam",
     dilution: "100%",
     price: "8€",
-    id: 953,
     onStock: true,
   },
   {
@@ -812,7 +719,6 @@ const inventory: NormalizedItem[] = [
     title: "Beta Pinene",
     dilution: "100%",
     price: "7€",
-    id: 954,
     onStock: true,
   },
   {
@@ -821,7 +727,6 @@ const inventory: NormalizedItem[] = [
     title: "Pino Acetaldehyde",
     dilution: "100%",
     price: "14€",
-    id: 955,
     onStock: true,
   },
   {
@@ -830,7 +735,6 @@ const inventory: NormalizedItem[] = [
     title: "Cedarwood EO",
     dilution: "100%",
     price: "8€",
-    id: 956,
     onStock: true,
   },
   {
@@ -839,7 +743,6 @@ const inventory: NormalizedItem[] = [
     title: "Sandalwood EO",
     dilution: "100%",
     price: "14€",
-    id: 957,
     onStock: true,
   },
   {
@@ -848,7 +751,6 @@ const inventory: NormalizedItem[] = [
     title: "Cypress EO",
     dilution: "100%",
     price: "10€",
-    id: 958,
     onStock: true,
   },
   {
@@ -857,7 +759,6 @@ const inventory: NormalizedItem[] = [
     title: "Pine Needles EO",
     dilution: "100%",
     price: "10€",
-    id: 959,
     onStock: true,
   },
   {
@@ -866,7 +767,6 @@ const inventory: NormalizedItem[] = [
     title: "Veramoss",
     dilution: "100%",
     price: "7€",
-    id: 960,
     onStock: true,
   },
   {
@@ -875,7 +775,6 @@ const inventory: NormalizedItem[] = [
     title: "Evernyl",
     dilution: "100%",
     price: "9€",
-    id: 961,
     onStock: true,
   },
   {
@@ -884,7 +783,6 @@ const inventory: NormalizedItem[] = [
     title: "Terrasol",
     dilution: "100%",
     price: "18€",
-    id: 962,
     onStock: true,
   },
   {
@@ -893,7 +791,6 @@ const inventory: NormalizedItem[] = [
     title: "Padma",
     dilution: "100%",
     price: "5€",
-    id: 963,
     onStock: true,
   },
   {
@@ -902,7 +799,6 @@ const inventory: NormalizedItem[] = [
     title: "Olibanum EO",
     dilution: "100%",
     price: "18€",
-    id: 964,
     onStock: true,
   },
   {
@@ -911,7 +807,6 @@ const inventory: NormalizedItem[] = [
     title: "Linalool Oxide",
     dilution: "100%",
     price: "6€",
-    id: 965,
     onStock: true,
   },
   {
@@ -920,7 +815,6 @@ const inventory: NormalizedItem[] = [
     title: "Cis-3-hexen-1-ol",
     dilution: "100%",
     price: "13€",
-    id: 966,
     onStock: true,
   },
   {
@@ -929,7 +823,6 @@ const inventory: NormalizedItem[] = [
     title: "Trital",
     dilution: "100%",
     price: "7€",
-    id: 967,
     onStock: true,
   },
   {
@@ -938,7 +831,6 @@ const inventory: NormalizedItem[] = [
     title: "1-Octen-3-ol",
     dilution: "100%",
     price: "13€",
-    id: 968,
     onStock: true,
   },
   {
@@ -947,7 +839,6 @@ const inventory: NormalizedItem[] = [
     title: "Amarocit",
     dilution: "100%",
     price: "6€",
-    id: 969,
     onStock: true,
   },
   {
@@ -956,7 +847,6 @@ const inventory: NormalizedItem[] = [
     title: "Aphermate",
     dilution: "100%",
     price: "7€",
-    id: 970,
     onStock: true,
   },
   {
@@ -965,7 +855,6 @@ const inventory: NormalizedItem[] = [
     title: "Ozofleur",
     dilution: "100%",
     price: "9€",
-    id: 971,
     onStock: true,
   },
   {
@@ -974,7 +863,6 @@ const inventory: NormalizedItem[] = [
     title: "Seaweed Absolute ",
     dilution: "10%",
     price: "14€",
-    id: 972,
     onStock: true,
   },
   {
@@ -983,7 +871,6 @@ const inventory: NormalizedItem[] = [
     title: "Aquaflor",
     dilution: "100%",
     price: "14€",
-    id: 973,
     onStock: true,
   },
   {
@@ -992,7 +879,6 @@ const inventory: NormalizedItem[] = [
     title: "Hivernal",
     dilution: "100%",
     price: "18€",
-    id: 974,
     onStock: true,
   },
   {
@@ -1001,7 +887,6 @@ const inventory: NormalizedItem[] = [
     title: "Beyond Hivernal",
     dilution: "100%",
     price: "7€",
-    id: 975,
     onStock: true,
   },
   {
@@ -1010,7 +895,6 @@ const inventory: NormalizedItem[] = [
     title: "Calone",
     dilution: "100%",
     price: "14€",
-    id: 976,
     onStock: true,
   },
   {
@@ -1019,7 +903,6 @@ const inventory: NormalizedItem[] = [
     title: "Ambroxan ",
     dilution: "10%",
     price: "7€",
-    id: 977,
     onStock: true,
   },
   {
@@ -1028,7 +911,6 @@ const inventory: NormalizedItem[] = [
     title: "Sylvamber",
     dilution: "100%",
     price: "5€",
-    id: 978,
     onStock: true,
   },
   {
@@ -1037,7 +919,6 @@ const inventory: NormalizedItem[] = [
     title: "Musk Blend (Pellwall)",
     dilution: "100%",
     price: "13€",
-    id: 979,
     onStock: true,
   },
   {
@@ -1046,7 +927,6 @@ const inventory: NormalizedItem[] = [
     title: "Galaxolide",
     dilution: "50%",
     price: "4€",
-    id: 980,
     onStock: true,
   },
   {
@@ -1055,7 +935,6 @@ const inventory: NormalizedItem[] = [
     title: "Tonalid",
     dilution: "100%",
     price: "6€",
-    id: 981,
     onStock: true,
   },
   {
@@ -1064,7 +943,6 @@ const inventory: NormalizedItem[] = [
     title: "Timbersilk",
     dilution: "100%",
     price: "4€",
-    id: 982,
     onStock: true,
   },
   {
@@ -1073,7 +951,6 @@ const inventory: NormalizedItem[] = [
     title: "Z11 10 MIP",
     dilution: "100%",
     price: "8€",
-    id: 983,
     onStock: true,
   },
   {
@@ -1082,7 +959,6 @@ const inventory: NormalizedItem[] = [
     title: "Ambrettolide",
     dilution: "100%",
     price: "25€",
-    id: 984,
     onStock: true,
   },
   {
@@ -1091,7 +967,6 @@ const inventory: NormalizedItem[] = [
     title: "Coumarin",
     dilution: "100%",
     price: "8€",
-    id: 985,
     onStock: true,
   },
   {
@@ -1100,7 +975,6 @@ const inventory: NormalizedItem[] = [
     title: "Myrrh Oil",
     dilution: "100%",
     price: "12€",
-    id: 987,
     onStock: true,
   },
   {
@@ -1109,7 +983,6 @@ const inventory: NormalizedItem[] = [
     title: "Lavender EO",
     dilution: "100%",
     price: "11€",
-    id: 988,
     onStock: true,
   },
   {
@@ -1118,7 +991,6 @@ const inventory: NormalizedItem[] = [
     title: "Vertofix Coeur",
     dilution: "100%",
     price: "6€",
-    id: 989,
     onStock: true,
   },
   {
@@ -1127,7 +999,6 @@ const inventory: NormalizedItem[] = [
     title: "Floralozone",
     dilution: "100%",
     price: "5€",
-    id: 990,
     onStock: true,
   },
   {
@@ -1136,7 +1007,6 @@ const inventory: NormalizedItem[] = [
     title: "Helional",
     dilution: "100%",
     price: "8€",
-    id: 991,
     onStock: true,
   },
   {
@@ -1145,7 +1015,6 @@ const inventory: NormalizedItem[] = [
     title: "Hedione",
     dilution: "100%",
     price: "6€",
-    id: 993,
     onStock: true,
   },
   {
@@ -1154,7 +1023,6 @@ const inventory: NormalizedItem[] = [
     title: "Methyl Anthranilate ",
     dilution: "50%",
     price: "10$",
-    id: 994,
     onStock: true,
   },
   {
@@ -1163,7 +1031,6 @@ const inventory: NormalizedItem[] = [
     title: "Labdanum Absolute",
     dilution: "50%",
     price: "7$",
-    id: 995,
     onStock: true,
   },
   {
@@ -1172,7 +1039,6 @@ const inventory: NormalizedItem[] = [
     title: "Ambergris T Oliffac",
     dilution: "100%",
     price: "12$",
-    id: 996,
     onStock: true,
   },
   {
@@ -1181,7 +1047,6 @@ const inventory: NormalizedItem[] = [
     title: "Rose Givco 217",
     dilution: "100%",
     price: "18$",
-    id: 997,
     onStock: true,
   },
   {
@@ -1190,7 +1055,6 @@ const inventory: NormalizedItem[] = [
     title: "Lavender Absolute",
     dilution: "100%",
     price: "28$",
-    id: 998,
     onStock: true,
   },
   {
@@ -1199,15 +1063,13 @@ const inventory: NormalizedItem[] = [
     title: "Lavender Absolute",
     dilution: "100%",
     price: "77$",
-    id: 999,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Iralia",
     dilution: "100%",
     price: "25$",
-    id: 1000,
     onStock: true,
   },
   {
@@ -1216,7 +1078,6 @@ const inventory: NormalizedItem[] = [
     title: "Maritima",
     dilution: "100%",
     price: "9$",
-    id: 1002,
     onStock: true,
   },
   {
@@ -1225,7 +1086,6 @@ const inventory: NormalizedItem[] = [
     title: "Oud Assafi™",
     dilution: "5%",
     price: "147$",
-    id: 1005,
     onStock: true,
   },
   {
@@ -1234,7 +1094,6 @@ const inventory: NormalizedItem[] = [
     title: "Orange Flower Absolute",
     dilution: "100%",
     price: "44$",
-    id: 1010,
     onStock: true,
   },
   {
@@ -1243,7 +1102,6 @@ const inventory: NormalizedItem[] = [
     title: "Orange Flower Absolute",
     dilution: "10%",
     price: "33€",
-    id: 1011,
     onStock: true,
   },
   {
@@ -1252,7 +1110,6 @@ const inventory: NormalizedItem[] = [
     title: "Geosmin",
     dilution: "10%",
     price: "72€",
-    id: 1012,
     onStock: true,
   },
   {
@@ -1261,23 +1118,20 @@ const inventory: NormalizedItem[] = [
     title: "Rose Oil, Bulgarian P&N",
     dilution: "100%",
     price: "99$",
-    id: 1013,
-  },
+    },
   {
     amount: "4ml",
     quantity: 1,
     title: "Tuberose Absolute",
     dilution: "100%",
     price: "97$",
-    id: 1014,
-  },
+    },
   {
     amount: "250g",
     quantity: 1,
     title: "Clearwood®",
     dilution: "100%",
     price: "40$",
-    id: 1015,
     onStock: true,
   },
   {
@@ -1286,15 +1140,13 @@ const inventory: NormalizedItem[] = [
     title: "Clearwood®",
     dilution: "100%",
     price: "64$",
-    id: 1016,
-  },
+    },
   {
     amount: "15ml",
     quantity: 1,
     title: "Orris Butter Tincture",
     dilution: "20%",
     price: "69$",
-    id: 1017,
     onStock: true,
   },
   {
@@ -1303,7 +1155,6 @@ const inventory: NormalizedItem[] = [
     title: "Rose Oil, Bulgarian P&N",
     dilution: "10%",
     price: "34$",
-    id: 1018,
     onStock: true,
   },
   {
@@ -1312,7 +1163,6 @@ const inventory: NormalizedItem[] = [
     title: "Iso E Super",
     dilution: "100%",
     price: "32€",
-    id: 1019,
     onStock: true,
   },
   {
@@ -1321,7 +1171,6 @@ const inventory: NormalizedItem[] = [
     title: "Iso E Super",
     dilution: "100%",
     price: "9€",
-    id: 1020,
     onStock: true,
   },
   {
@@ -1330,7 +1179,6 @@ const inventory: NormalizedItem[] = [
     title: "Woody Base (Pellwall)",
     dilution: "100%",
     price: "188€",
-    id: 1021,
     onStock: true,
   },
   {
@@ -1339,7 +1187,6 @@ const inventory: NormalizedItem[] = [
     title: "Koavone",
     dilution: "100%",
     price: "22$",
-    id: 1022,
     onStock: true,
   },
   {
@@ -1348,7 +1195,6 @@ const inventory: NormalizedItem[] = [
     title: "Vetiveryl Acetat",
     dilution: "100%",
     price: "137$",
-    id: 1023,
     onStock: true,
   },
   {
@@ -1357,7 +1203,6 @@ const inventory: NormalizedItem[] = [
     title: "Bornafix",
     dilution: "100%",
     price: "39$",
-    id: 1024,
     onStock: true,
   },
   {
@@ -1366,7 +1211,6 @@ const inventory: NormalizedItem[] = [
     title: "Ysamber K",
     dilution: "100%",
     price: "57$",
-    id: 1025,
     onStock: true,
   },
   {
@@ -1375,7 +1219,6 @@ const inventory: NormalizedItem[] = [
     title: "Veramoss",
     dilution: "100%",
     price: "43$",
-    id: 1026,
     onStock: true,
   },
   {
@@ -1384,7 +1227,6 @@ const inventory: NormalizedItem[] = [
     title: "Timbersilk",
     dilution: "100%",
     price: "32$",
-    id: 1027,
     onStock: true,
   },
   {
@@ -1393,7 +1235,6 @@ const inventory: NormalizedItem[] = [
     title: "BHT Crystals",
     dilution: "100%",
     price: "33$",
-    id: 1028,
     onStock: true,
   },
 ]
