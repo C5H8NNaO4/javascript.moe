@@ -431,8 +431,8 @@ export const LandingPage = () => {
               {
                 text: "VCF",
                 logo: () => <Icon icon="FaUser" />,
-                href: "/Moritz Roessler.vcf",
-                replace: false,
+                href: "https://javascript.moe/Moritz Roessler.vcf",
+                target: "_blank",
               },
               { text: "CV", logo: PDF, href: "https://justmycv.com/en.pdf" },
               {
