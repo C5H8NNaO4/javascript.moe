@@ -35,7 +35,7 @@ import { Overlay } from "@/components/BurnOverlay";
 import { Icon } from "@/components/Icon";
 import { lngLnk } from "@/lib/util";
 import { IntersectionAnchor } from "@/components/IntersectionAnchor";
-import { ScrollbarTooltip } from "@/components/ScrollbarTooltip";
+import { RisingSun, ScrollbarTooltip } from "@/components/ScrollbarTooltip";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -157,6 +157,7 @@ export const LandingPage = () => {
         </Parallax>
         <MyName />
       <ScrollbarTooltip />
+      <RisingSun />
 
       </StickySection>
 

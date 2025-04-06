@@ -1,9 +1,4 @@
-import {
-  easeOut,
-  motion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { easeOut, motion, useScroll, useTransform } from "framer-motion";
 import { useContext, useRef, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { sectionCtx } from "./AnimatedSection";
@@ -52,6 +47,43 @@ export const ScrollbarTooltip = () => {
         <div>Drag me</div>
       </Tooltip>
       {/* Drag Me */}
+    </motion.div>
+  );
+};
+
+export const RisingSun = () => {
+  const { ref } = useContext(sectionCtx);
+  const { scrollYProgress } = useScroll({
+    layoutEffect: false,
+    target: ref || undefined, //ref || undefined,
+    offset: ["start start", "end end"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0.33, 0.55], [1, 0], {
+    ease: easeOut,
+  });
+  const scale = useTransform(scrollYProgress, [0.33, 0.44], [1, 4], {
+    ease: easeOut,
+  });
+  const rotate = useTransform(scrollYProgress, [0, 0.33], ["0deg", "180deg"], {
+    ease: easeOut,
+  });
+
+  const ref2 = useRef(null);
+
+  return (
+    <motion.div
+      ref={ref2}
+      style={{
+        rotate,
+        opacity,
+      }}
+      className="z-[10000] bg-white/0 absolute  text-[48px]  "
+    >
+      <motion.div className="w-[470px] flex justify-between" style={{}}>
+        <motion.span style={{ rotate, scale }}>🌞</motion.span>
+        <motion.span style={{ rotate, scale }}>🥰</motion.span>
+      </motion.div>
     </motion.div>
   );
 };
