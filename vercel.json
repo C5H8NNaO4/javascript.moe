@@ -18,6 +18,15 @@
           "value": "public, max-age=6000, stale-while-revalidate=59"
         }
       ]
+    },
+    {
+      "source": "/images/wallpaper/20.jpg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=6000, stale-while-revalidate=59"
+        }
+      ]
     }
   ]
 }
