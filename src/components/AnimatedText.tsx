@@ -292,7 +292,7 @@ export const AppearingText = ({
 };
 
 export type BulletsProps = {
-  data: { text: string; logo: any; href?: string }[];
+  data: { text: string; logo: any; href?: string, replace?: boolean}[];
   className?: string;
   offset: number;
   reverse?: boolean;
@@ -394,7 +394,7 @@ export const Bullets = ({
               y: 8,
             }}
           >
-            <Link to={e.href || "#"}>
+            <Link to={e.href || "#"} replace={e.replace}>
               <motion.div className="flex flex-grow-0 items-center">
                 <e.logo width="36px" height="36px" />
                 <motion.h2
