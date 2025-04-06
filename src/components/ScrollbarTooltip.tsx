@@ -62,10 +62,16 @@ export const RisingSun = () => {
   const opacity = useTransform(scrollYProgress, [0.33, 0.55], [1, 0], {
     ease: easeOut,
   });
-  const scale = useTransform(scrollYProgress, [0.33, 0.44], [1, 4], {
-    ease: easeOut,
-  });
-  const rotate = useTransform(scrollYProgress, [0, 0.33], ["0deg", "180deg"], {
+
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.11, 0.33, 0.44],
+    [0, 1, 1, 4],
+    {
+      ease: easeOut,
+    }
+  );
+  const rotate = useTransform(scrollYProgress, [0.11, 0.22], ["0deg", "180deg"], {
     ease: easeOut,
   });
 
@@ -80,7 +86,10 @@ export const RisingSun = () => {
       }}
       className="z-[10000] bg-white/0 absolute  text-[48px]  "
     >
-      <motion.div className="w-[470px] flex justify-between" style={{}}>
+      <motion.div
+        className="w-[470px] flex justify-between"
+        style={{}}
+      >
         <motion.span style={{ rotate, scale }}>🌞</motion.span>
         <motion.span style={{ rotate, scale }}>🥰</motion.span>
       </motion.div>
