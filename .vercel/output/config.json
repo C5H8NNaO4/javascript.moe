@@ -1,7 +1,8 @@
 {
-    "overrides": {
-      "Moritz Roessler.vcf": {
-        "contentType": "text/vcard"
-      }
+  "version": 3,
+  "overrides": {
+    "Moritz Roessler.vcf": {
+      "contentType": "text/vcard"
     }
   }
+}
