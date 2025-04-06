@@ -8,9 +8,9 @@ export const EnsureLanguage = ({ path = "" }) => {
   const { language } = useParams();
   useEffect(() => {
     if (window.location.toString().includes("me.javascript.moe")) {
-      return navigate("https://javascript.moe/Moritz Roessler.vcf", {
-        replace: false,
-      });
+      return window.location.replace(
+        "https://javascript.moe/Moritz Roessler.vcf"
+      );
     }
     if (!supportedLngs.includes(language || "en"))
       navigate("/" + i18n.language + path, {
