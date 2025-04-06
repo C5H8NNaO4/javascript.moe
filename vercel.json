@@ -1,5 +1,11 @@
 {
-  "rewrites": [{ "source": "/Moritz%20Roessler.vcf", "destination": "/static/Moritz%20Roessler.vcf" },{ "source": "/(.*)", "destination": "/" }],
+  "rewrites": [
+    {
+      "source": "/Moritz\\sRoessler.vcf",
+      "destination": "/static/Moritz Roessler.vcf"
+    },
+    { "source": "/(.*)", "destination": "/" }
+  ],
   "headers": [
     {
       "source": "/images/profile.webp",
