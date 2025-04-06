@@ -125,7 +125,6 @@ export const LandingPage = () => {
       )}
       <EnsureLanguage path="" />
       <StickySection height={h(275)}>
-
         {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 
                 */}
@@ -156,9 +155,8 @@ export const LandingPage = () => {
           </FlyOut>
         </Parallax>
         <MyName />
-      <ScrollbarTooltip />
-      <RisingSun />
-
+        <ScrollbarTooltip />
+        <RisingSun />
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
@@ -430,6 +428,11 @@ export const LandingPage = () => {
           <Bullets
             range={[0.5, 0.88]}
             data={[
+              {
+                text: "VCF",
+                logo: () => <Icon icon="FaUser" />,
+                href: "/Moritz Roessler.vcf",
+              },
               { text: "CV", logo: PDF, href: "https://justmycv.com/en.pdf" },
               {
                 text: "LinkedIn",
