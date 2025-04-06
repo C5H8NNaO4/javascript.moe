@@ -35,6 +35,7 @@ import { Overlay } from "@/components/BurnOverlay";
 import { Icon } from "@/components/Icon";
 import { lngLnk } from "@/lib/util";
 import { IntersectionAnchor } from "@/components/IntersectionAnchor";
+import { ScrollbarTooltip } from "@/components/ScrollbarTooltip";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -124,6 +125,7 @@ export const LandingPage = () => {
       )}
       <EnsureLanguage path="" />
       <StickySection height={h(275)}>
+
         {/* <BackgroundImage src="/images/wallpaper/1.webp" desat alt="Moosweiher See in Freiburg" />
                 
                 */}
@@ -154,6 +156,8 @@ export const LandingPage = () => {
           </FlyOut>
         </Parallax>
         <MyName />
+      <ScrollbarTooltip />
+
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
