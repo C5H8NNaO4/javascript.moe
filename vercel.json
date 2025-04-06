@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/Moritz\\sRoessler.vcf",
-      "destination": "/static/Moritz Roessler.vcf"
+      "source": "/Moritz Roessler.vcf",
+      "destination": "/public/Moritz Roessler.vcf"
     },
     { "source": "/(.*)", "destination": "/" }
   ],
