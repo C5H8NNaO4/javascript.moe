@@ -1748,15 +1748,14 @@ export const IngredientItem = (props: IngredientItemProps) => {
         </div>
         {entry?.dilution !== "100%" && (
           <Chip
-          id="dilutionchip"
-
+            id={entry?.title + "dilutionchip"}
             className="bg-white/40 text-black"
             label={entry?.dilution}
             tooltip="Dilution"
           ></Chip>
         )}
 
-        {entry?.size && entry?.source && (
+        { entry?.size && entry?.source && (
           <Chip
             tooltip="Source"
             id="sourcechip"
@@ -1769,6 +1768,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
             })}
           />
         )}
+
         {entry?.cas && !entry.size && (
           <Icon icon="MdOutlineVerified" className="h-6 w-6"></Icon>
         )}
