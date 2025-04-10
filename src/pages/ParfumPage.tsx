@@ -370,6 +370,11 @@ export const InventoryPage = () => {
           <InventoryList
             inventories={{
               remote: {
+                "All": [
+                  ...pellwall,
+                  ...perfumersApprentice,
+                  ...inventory,
+                ] as NormalizedItem[],
                 PA: perfumersApprentice,
                 PW: pellwall,
                 Moe: inventory || [],

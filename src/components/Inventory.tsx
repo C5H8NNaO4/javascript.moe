@@ -23,6 +23,7 @@ import {
   TagIcons,
 } from "../static/descriptions";
 import PALogo from "../assets/logos/PerfumersApprentice.png";
+import PWLogo from "../assets/logos/PellWall.jpg";
 import { Chip, Component, OdorChip } from "./Chip";
 import { between } from "../utils/numbers";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -868,6 +869,11 @@ export const InventoryList = ({
                   ...perfumersApprentice,
                   ...inventory,
                 ] as NormalizedItem[],
+                All: [
+                  ...pellwall,
+                  ...perfumersApprentice,
+                  ...inventory,
+                ] as NormalizedItem[],
                 PA: perfumersApprentice,
                 PW: pellwall,
                 Moe: inventory || [],
@@ -1176,7 +1182,7 @@ export const IngredientDetail = ({
             <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
               {<img src={ingredients[selectedItem?.title?.trim()]} />}
               <div className="flex flex-wrap gap-1 h-fit items-center">
-                {selectedItem?.source &&
+                {selectedItem?.source === 'PA' &&
                   selectedItem?.baseUrl &&
                   selectedItem?.link && (
                     <Link
@@ -1184,7 +1190,7 @@ export const IngredientDetail = ({
                       target="_blank"
                     >
                       <NavButton
-                        tooltip={selectedItem?.source}
+                        tooltip={"Open in Perfumers Apprentice shop."}
                         tooltipPlacement="right"
                         id="shopNavButton"
                         icon="FaShoppingCart"
@@ -1197,7 +1203,22 @@ export const IngredientDetail = ({
                       </NavButton>
                     </Link>
                   )}
-
+                {selectedItem?.source === "PW" && selectedItem?.href && (
+                  <Link to={selectedItem?.href} target="_blank">
+                    <NavButton
+                      tooltip={"Open in PellWall's store."}
+                      tooltipPlacement="right"
+                      id="shopNavButton"
+                      icon="FaShoppingCart"
+                      className="bg-sky-500  !h-7 !w-7 !p-0"
+                    >
+                      <img
+                        src={PWLogo}
+                        className="absolute h-6 w-6 opacity-100 hover:opacity-0"
+                      />
+                    </NavButton>
+                  </Link>
+                )}
                 <Tag label="Price" id={"pricetag"} semibold>
                   {getDisplayPrice(selectedItem?.price)}
                 </Tag>
@@ -1371,6 +1392,7 @@ export const IngredientDetail = ({
                           setSelected({
                             title: selected?.title,
                             size: selected?.size,
+                            dilution: selected?.dilution,
                           } as Item);
                           await refetch();
                         }}
@@ -1609,7 +1631,8 @@ export const IngredientItem = (props: IngredientItemProps) => {
 
   const isSelected =
     selected?.title === props?.title &&
-    (selected as Item)?.size === props?.size;
+    (selected as Item)?.size === props?.size &&
+    (selected as Item)?.dilution === props?.dilution;
   return (
     <>
       <div
@@ -1822,7 +1845,9 @@ export const IngredientItem = (props: IngredientItemProps) => {
           {items
             ?.slice()
             ?.sort((a, b) => {
-              return getGrams(a.size) - getGrams(b.size);
+              const dilution = getDilution(b) - getDilution(a);
+              const weight = getGrams(a.size) - getGrams(b.size);
+              return dilution * 100000 + weight * 0.1;
             })
             .map((itm) => {
               return (
