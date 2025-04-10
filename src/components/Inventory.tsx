@@ -1366,11 +1366,6 @@ export const IngredientDetail = ({
                             : `This item is *not* stored locally.`
                         }
                         onClick={async () => {
-                          const local = inventoryLocal?.find(
-                            (i) =>
-                              i.title === selected?.title &&
-                              i.size == selected?.size
-                          ) as Item;
                           const id = local?.id;
                           if (local) await del(Number(id));
                           if (!local) await add(selected);
@@ -1646,17 +1641,29 @@ export const IngredientItem = (props: IngredientItemProps) => {
         )}
         {!Array.isArray(items) && (
           <input
+            data-title={
+              props?.local?.list?.includes(invLocal!)
+                ? "Available in this list"
+                : entry?.local
+                ? !props?.local?.list
+                  ? "Not in any list"
+                  : "Available in other list"
+                : "Add to this local list."
+            }
             key={props.title + "" + props.size + props.local?.list}
             className={clsx(
-              "p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
+              "z-0 p-2 border-[1.5px] h-4 w-4 ml-9 disabled:border-gray-400 disabled:bg-gray-300",
               {
-                "checked:bg-green-700/80": props?.local?.list?.includes(list!),
-                "checked:bg-yellow-500/80": !props?.local?.list?.includes(
-                  list!
+                "checked:bg-green-700/80": props?.local?.list?.includes(
+                  invLocal!
                 ),
+                "bg-yellow-500/40":
+                  props.local &&
+                  props?.local?.list &&
+                  !props?.local?.list?.includes(invLocal!),
+                " bg-orange-700/30": props.local && !props?.local?.list,
+                "border-white": !props.local,
                 "disabled:checked:bg-green-700/40": 1,
-                "border-green-400": props?.local?.id,
-                "border-white": !props.onStock,
               }
             )}
             type="checkbox"
@@ -1671,14 +1678,14 @@ export const IngredientItem = (props: IngredientItemProps) => {
           />
         )}
         {size && (
-          <div className="">
+          <div className="-z-10">
             {amountToNumber(size)}
             {getAmountUnit(size)}
           </div>
         )}
 
         {entry?.items && (
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
             <span className="font-semibold ">{entry.title}</span>
             <span className="text-xs">
               {!!entry?.aliases?.length && (
@@ -1690,12 +1697,12 @@ export const IngredientItem = (props: IngredientItemProps) => {
 
         {!entry?.items && (
           <>
-            <div className="">{getDisplayPrice(entry?.price)}</div>
-            <div className="">{getPricePerUnit(entry)}</div>
+            <div className="-z-10">{getDisplayPrice(entry?.price)}</div>
+            <div className="-z-10">{getPricePerUnit(entry)}</div>
           </>
         )}
 
-        <div className="min-w-[4ch] ml-auto justify-end flex gap-1 my-auto">
+        <div className="min-w-[4ch] ml-auto justify-end flex gap-1 my-auto -z-10">
           <div className="flex flex-col gap-1">
             <div className="flex gap-1">
               {!entry?.items
