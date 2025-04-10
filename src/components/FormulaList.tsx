@@ -183,9 +183,7 @@ export const FormulaEntry = (props: FormulaEntryProps) => {
     }),
     ...frmItm,
   }));
-  useEffect(() => {
-    console.log("Hydrated Formula Items", hydratedItems);
-  });
+
   const { trackUse, active } = useIdentity();
   useEffect(() => {
     trackUse();

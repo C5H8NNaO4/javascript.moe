@@ -12,7 +12,6 @@ const perfumersApprentice = pa
   .filter((itm) => itm?.size && itm?.price)
   .map((itm) => ({ ...itm, source: "PA" })) as unknown as NormalizedItem[];
 
-console.log("PA ", pa, perfumersApprentice);
 const pellwall = pw
   .flat(3)
   .filter((itm) => itm?.size && itm?.price)

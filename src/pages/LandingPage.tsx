@@ -35,7 +35,7 @@ import { Overlay } from "@/components/BurnOverlay";
 import { Icon } from "@/components/Icon";
 import { lngLnk } from "@/lib/util";
 import { IntersectionAnchor } from "@/components/IntersectionAnchor";
-import { RisingSun, ScrollbarTooltip } from "@/components/ScrollbarTooltip";
+import { AutoPlayButton, RisingSun, ScrollbarTooltip } from "@/components/ScrollbarTooltip";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -157,6 +157,7 @@ export const LandingPage = () => {
         <MyName />
         <ScrollbarTooltip />
         <RisingSun />
+        <AutoPlayButton />
       </StickySection>
 
       <StickySection height={h(500)} fullScreen>
