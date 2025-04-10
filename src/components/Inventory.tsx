@@ -719,12 +719,12 @@ export const InventoryList = ({
         {(isMobile ? true : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
             <div className="flex justify-between flex-wrap mb-1 gap-1 items-center">
-              <div className="flex gap-1 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
+              <div className="flex gap-0 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
                 {Object.keys(inventories.remote).map((key) => {
                   return (
                     <div
                       className={clsx(
-                        "gap-1 flex h-fit p-1 rounded-full items-center",
+                        "gap-0   flex h-fit p-1 rounded-full items-center",
                         {
                           "bg-white/10": invRemote === key,
                         }
@@ -1928,7 +1928,7 @@ export const LocalListChips = (props: LocalListChipsProps) => {
   // const navigate = useNavigate();
 
   return (
-    <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1">
+    <div className="flex  gap-1 items-center flex-1 bg-white/20 p-1 rounded-md mb-1 ">
       {/* <NavButton
           internal
           className="text-blue-500  !mr-2"
@@ -1955,51 +1955,74 @@ export const LocalListChips = (props: LocalListChipsProps) => {
           }}
         ></Input>
       )}
-
-      {!showEdit &&
-        listNames.map((key) => {
-          return (
-            <div className="h-fit">
-              <Chip
-                icon={
-                  key === value
-                    ? !showButtons
-                      ? "IoLibrary"
-                      : "FaDownload"
-                    : undefined
-                }
-                label={listAliases[key] ? listAliases[key] : key}
-                onRemove={
-                  items?.length === 0 && value === key
-                    ? () => {
-                        onRemove?.(key);
-                      }
-                    : undefined
-                }
-                className={clsx(
-                  "line-clamp-1 whitespace-nowrap",
-                  "border-green-500 border-2",
-                  {
-                    "cursor-default": value === key && value === "Local",
-                    "bg-purple-500/70": value === key,
-                    "hover:bg-purple-300/30":
-                      value === key && value !== "Local",
-                    "hover:bg-purple-500/70": value !== key,
-                    "bg-white/30": value !== key,
-                  },
-                  className
-                )}
-                iconClsn={clsx("w-auto h-auto", {
-                  "!text-white ": hasAll,
-                })}
-                onClick={() => {
-                  onChange?.(key === value ? null : key);
-                }}
-              ></Chip>
-            </div>
-          );
-        })}
-
+      <div className="flex gap-1 overflow-x-auto max-w-full flex-wrap">
+        {!showEdit &&
+          listNames?.length < 9 &&
+          listNames.map((key) => {
+            return (
+              <div className="h-fit">
+                <Chip
+                  icon={
+                    key === value
+                      ? !showButtons
+                        ? "IoLibrary"
+                        : "FaDownload"
+                      : undefined
+                  }
+                  label={listAliases[key] ? listAliases[key] : key}
+                  onRemove={
+                    items?.length === 0 && value === key
+                      ? () => {
+                          onRemove?.(key);
+                        }
+                      : undefined
+                  }
+                  className={clsx(
+                    "line-clamp-1 whitespace-nowrap",
+                    "border-green-500 border-2",
+                    {
+                      "cursor-default": value === key && value === "Local",
+                      "bg-purple-500/70": value === key,
+                      "hover:bg-purple-300/30":
+                        value === key && value !== "Local",
+                      "hover:bg-purple-500/70": value !== key,
+                      "bg-white/30": value !== key,
+                    },
+                    className
+                  )}
+                  iconClsn={clsx("w-auto h-auto", {
+                    "!text-white ": hasAll,
+                  })}
+                  onClick={() => {
+                    onChange?.(key === value ? null : key);
+                  }}
+                ></Chip>
+              </div>
+            );
+          })}
+      </div>
+      {value && !showEdit && listNames?.length >= 9 && (
+        <div className="flex bg-black/40 pr-2 rounded-md">
+          <div className="p-[6px]  bg-white/40 text-black/70 font-bold rounded-l-md">
+            Local list
+          </div>
+          <select
+            value={value}
+            className="w-fit bg-black/40 p-[6px] "
+            onChange={(e) => {
+              onChange?.(e.target.value === value ? null : e.target.value);
+            }}
+          >
+            {listNames.map((key) => {
+              return (
+                <option className="h-fit" value={key}>
+                  {key}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      )}
       <div className={clsx("flex gap-1 ml-auto", { hidden: !showButtons })}>
         {!!items?.length && (
           <IconButton
@@ -2020,6 +2043,17 @@ export const LocalListChips = (props: LocalListChipsProps) => {
               setNotification?.("Copied List!");
             }}
           ></IconButton>
+        )}
+        {listNames?.length >= 9 && (
+          <IconButton
+            disabled={items.length > 0}
+            round
+            icon="FaTrash"
+            className="bg-red-500"
+            onClick={() => {
+              onRemove?.(value);
+            }}
+          />
         )}
         <IconButton
           className="h-7 w-7"
