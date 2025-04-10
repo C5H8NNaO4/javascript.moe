@@ -1043,7 +1043,6 @@ export const IngredientDetail = ({
     (invRemote
       ? inventories?.remote[invRemote]
       : storedLkp?.[invLocal.trim()]) || [];
-  const inventoryLocal = storedLkp?.[invLocal.trim()] || [];
 
   const navigate = useNavigate();
   const params = useParams();
@@ -1582,7 +1581,6 @@ export const IngredientItem = (props: IngredientItemProps) => {
     selected,
     toggleOnStock,
     setSelected,
-    list,
     source,
     toggleFilter,
     setNotification,
