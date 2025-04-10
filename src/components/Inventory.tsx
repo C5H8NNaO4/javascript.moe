@@ -1632,7 +1632,8 @@ export const IngredientItem = (props: IngredientItemProps) => {
   const isSelected =
     selected?.title === props?.title &&
     (selected as Item)?.size === props?.size &&
-    (selected as Item)?.dilution === props?.dilution;
+    (selected as Item)?.dilution === props?.dilution &&
+    (selected as Item)?.source === props?.source;
   return (
     <>
       <div
