@@ -422,9 +422,10 @@ export const InventoryList = ({
   }, [selected?.title, selected?.size]);
   const filtered = list
     ?.filter((itm) => {
+      if (!invLocal) return true;
       if (hideOnStock === 0) return true;
-      if (hideOnStock === 1) return !(itm.onStock || itm?.local?.onStock);
-      if (hideOnStock === 2) return !!itm.onStock && !!itm?.local?.onStock;
+      if (hideOnStock === 1) return !itm?.local?.list?.includes(invLocal);
+      if (hideOnStock === 2) return !!itm?.local?.list?.includes(invLocal);
     })
     .filter((itm) => {
       if (!filter?.length) return true;
@@ -604,6 +605,14 @@ export const InventoryList = ({
       {!showAdd && !showTags && (
         <div className="flex gap-1 items-center w-full">
           <IconButton
+            id="hideonstockbtn"
+            tooltip={
+              hideOnStock === 1
+                ? "Hide items on stock"
+                : hideOnStock === 2
+                ? "Show items on stock"
+                : "Don't filter anything"
+            }
             icon="FaEye"
             className={clsx({
               "bg-green-600": hideOnStock === 2,
@@ -614,6 +623,8 @@ export const InventoryList = ({
             }}
           ></IconButton>
           <IconButton
+            id="sortbysizebtn"
+            tooltip="Sort by size"
             className={clsx({
               "bg-green-700/40": sort === "+amount",
               "bg-red-700/40": sort === "-amount",
@@ -622,6 +633,8 @@ export const InventoryList = ({
             onClick={() => setSort(sort == "+amount" ? "-amount" : "+amount")}
           ></IconButton>
           <IconButton
+            id="sortbypricebtn"
+            tooltip="Sort by price"
             className={clsx("py-2", {
               "bg-green-700/40": sort === "+price",
               "bg-red-700/40": sort === "-price",
@@ -637,6 +650,8 @@ export const InventoryList = ({
             </div>
           </IconButton>
           <IconButton
+            tooltip="Sort by name"
+            id="togglesortbynamebtn"
             className={clsx({
               "bg-green-700/40": sort === "+AZ",
               "bg-red-700/40": sort === "-AZ",
@@ -645,6 +660,8 @@ export const InventoryList = ({
             onClick={() => setSort(sort === "+AZ" ? "-AZ" : "+AZ")}
           ></IconButton>
           <IconButton
+            tooltip="Sort by odor"
+            id="togglesortbyodorbtn"
             className={clsx("h-full", {
               "bg-green-700/40": sort === "+odor",
               "bg-red-700/40": sort === "-odor",
@@ -1182,7 +1199,7 @@ export const IngredientDetail = ({
             <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
               {<img src={ingredients[selectedItem?.title?.trim()]} />}
               <div className="flex flex-wrap gap-1 h-fit items-center">
-                {selectedItem?.source === 'PA' &&
+                {selectedItem?.source === "PA" &&
                   selectedItem?.baseUrl &&
                   selectedItem?.link && (
                     <Link
