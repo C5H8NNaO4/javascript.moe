@@ -12,6 +12,12 @@ export const images = [
 ];
 
 export const ingredients = {
+  "Alcohol C-10": "/images/ingredients/AlcoholC10.jpeg",
+  "Alcohol C-9": "/images/ingredients/AlcoholC9.jpeg",
+  "Alcohol C-8": "/images/ingredients/AlcoholC8.jpeg",
+  "Alcohol C-6": "/images/ingredients/AlcoholC6.jpeg",
+  "Ajowan": "/images/ingredients/Ajowan.jpeg",
+  "Agrumen Aldehyde Light": "/images/ingredients/AgrumenAldehydeLight.jpeg",
   "Oud Assafi™": "/images/ingredients/oud-assafi.jpeg",
   "Orange Flower Absolute": "/images/ingredients/orange-flower-absolute.jpeg",
   Geosmin: "/images/ingredients/Geosmin.jpeg",

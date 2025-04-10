@@ -1,3 +1,73 @@
+const AlcoholC6Odor = [
+  "green",
+  "sharp",
+  "fresh",
+  "herbaceous",
+  "grassy",
+  "slightly fruity"
+];
+const AlcoholC6Desc = `Alcohol C-6, also known as Hexanol, has a bright, green aroma that is sharp, grassy, and fresh. Its scent resembles freshly cut grass and green apple skin, bringing a crisp, herbaceous quality to fragrances. This volatile alcohol is often used to impart a sharp, leafy freshness and is especially valued for enhancing the natural character of green or fruity accords. Alcohol C-6 is a powerful yet fleeting top note, perfect for giving fragrances an energetic opening.`;
+
+const AlcoholC8Odor = [
+  "earthy",
+  "mossy",
+  "woody",
+  "green",
+  "damp",
+  "mushroom-like"
+];
+
+const AlcoholC8Desc = `Alcohol C-8, or Octanol, carries a damp, earthy scent profile that blends mossy and woody notes with a subtle green nuance. Its aroma evokes the stillness of a shaded forest, enriched by a mushroom-like undertone. Often used to deepen and round out green and woody accords, this medium-chain alcohol offers balance and a smooth, natural texture. Its presence lends depth and realism to earthy compositions.`;
+
+const AlcoholC9Odor = [
+  "waxy",
+  "fresh",
+  "citrus",
+  "dry",
+  "lightly woody",
+  "fatty"
+];
+
+const AlcoholC9Desc = `Alcohol C-9, or Nonanol, is a medium-chain fatty alcohol known for its soft, waxy scent with subtle citrus and woody undertones. It imparts a clean, smooth texture to fragrances and can act as a fixative, helping to round out sharp top notes. Its scent profile is mild and fresh, contributing a soft, natural feeling that blends well with floral, citrus, or green compositions.`;
+
+
+const AgrumenAldehydeLightOdor = [
+  "citrus",
+  "aldehydic",
+  "fresh",
+  "zesty",
+  "sparkling",
+  "clean"
+];
+
+const AgrumenAldehydeLightDesc = `Agrumen Aldehyde Light is a radiant and zesty aromatic material used to bring brilliance to citrus-forward fragrances. It combines the lively freshness of lemon and grapefruit peel with a crisp, aldehydic top note that adds airy lift and modernity. This ingredient is often used to enhance diffusion and brightness in compositions, lending a sparkling, clean presence. Its effervescent character evokes the sensation of sunlit citrus groves and freshly peeled zest, making it a key choice in luminous and transparent perfume accords.`;
+
+const AjowanOdor = [
+  "spicy",
+  "herbal",
+  "medicinal",
+  "sharp",
+  "warm",
+  "thyme-like"
+];
+
+const AjowanDesc = `Ajowan oil is a bold and aromatic essential oil distilled from the seeds of the Trachyspermum ammi plant. Its scent is intensely spicy, herbal, and sharp, dominated by thymol — the same compound that gives thyme its characteristic aroma. This oil carries strong medicinal and warming nuances, often described as camphoraceous and peppery. Traditionally used in Ayurvedic medicine, Ajowan is prized in perfumery for adding complexity and punch to spicy or aromatic blends. It brings an invigorating, almost therapeutic quality that evokes ancient herbal remedies and spice markets.`;
+
+
+const AlcoholC10Odor = [
+  "waxy",
+  "citrus",
+  "fresh",
+  "soapy",
+  "lightly floral",
+  "green"
+];
+
+const AlcoholC10Desc = `Alcohol C-10, also known as Decyl Alcohol, is a colorless, waxy, fatty alcohol with a subtle, clean fragrance. Its scent profile is fresh and mildly citrusy with a soft floral nuance, often likened to freshly laundered linens or clean skin. Commonly used as a fixative or carrier in perfumery, it imparts a smooth, soapy quality that enhances the natural feel of compositions. With its gentle, non-intrusive aroma, Alcohol C-10 brings an understated elegance and tactile softness, contributing both texture and olfactory refinement to fragrances.`;
+
+
+
+
 const OudAssafiDesc = `
 Oud Assafi™, also known as Oud "Assam" (meaning "extremely pure" in Arabic), is recognized as the most precious and luxurious oud in the world. This exclusive, high-grade oud has been cherished for centuries, renowned for its intensely animalic, woody, and spicy profile. Often described as the most leathery and animalic of all oud profiles, Oud Assafi™™ presents an elegantly balanced blend of rich, woody tones with deeply ambery warmth. Its complexity and depth make it a revered ingredient in perfumery, offering an unmatched, opulent aroma that speaks to the pinnacle of oud craftsmanship and natural purity.
 `;
@@ -1480,6 +1550,12 @@ const AdoxalDesc = `Adoxal is a fresh, slightly sweet, and clean fragrance compo
 const AdoxalOdor = ["floral", "fresh", "clean", "slightly sweet", "fruity"];
 
 export const perfumeIngredientsDesc = {
+  "Alcohol C-6": AlcoholC6Desc,
+  "Alcohol C-8": AlcoholC8Desc,
+  "Alcohol C-9": AlcoholC9Desc,
+  "Alcohol C-10": AlcoholC10Desc,
+  "Ajowan": AjowanDesc,
+  "Agrumen Aldehyde Light":AgrumenAldehydeLightDesc,
   "Oud Assafi™": OudAssafiDesc,
   "Orange Flower Absolute": OrangeFlowerAbsoluteDesc,
   Geosmin: GeosminDesc,
@@ -1747,6 +1823,12 @@ export const perfumeIngredientsOdours = {
   Acetophenone: AcetophenoneOdor,
   Adoxal: AdoxalOdor,
   Acetanisole: AcetanisoleOdor,
+  "Agrumen Aldehyde Light":AgrumenAldehydeLightOdor,
+  "Ajowan": AjowanOdor,
+  "Alcohol C-10": AlcoholC10Odor,
+  "Alcohol C-6": AlcoholC6Odor,
+  "Alcohol C-8": AlcoholC8Odor,
+  "Alcohol C-9": AlcoholC9Odor,
 } as Record<string, string[]>;
 
 export const allOdors = [

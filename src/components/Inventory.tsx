@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import { IconButton } from "./Button";
+import { Button, IconButton } from "./Button";
 import { ActionInput, Input } from "./Input";
 import { List, ListItem } from "./List";
 import {
@@ -1047,7 +1047,7 @@ export const IngredientDetail = ({
 
   const navigate = useNavigate();
   const params = useParams();
-
+  const [not, setNot] = useState("");
   return (
     <div
       className={clsx(
@@ -1059,6 +1059,11 @@ export const IngredientDetail = ({
         }
       )}
     >
+      {not &&
+        ReactDOM.createPortal(
+          <Notification title={not} setNotification={setNot} />,
+          document.body
+        )}
       <div
         className="
       flex gap-1 flex-row 
@@ -1095,7 +1100,17 @@ export const IngredientDetail = ({
         </div>
         <div className="flex flex-col mx-auto items-start justify-start ">
           {selected?.title ? (
-            <h2 className="line-clamp-1">{selected?.title}</h2>
+            <h2 className="line-clamp-1 ">
+              <Button
+                className="!p-2 bg-black/20 rounded-md"
+                onClick={() => {
+                  copy(selected.title!);
+                  setNot("Copied title");
+                }}
+              >
+                {selected?.title}
+              </Button>{" "}
+            </h2>
           ) : (
             <h2 className="line-clamp-1">{invRemote}</h2>
           )}
@@ -1755,7 +1770,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
           ></Chip>
         )}
 
-        { entry?.size && entry?.source && (
+        {entry?.size && entry?.source && (
           <Chip
             tooltip="Source"
             id="sourcechip"
