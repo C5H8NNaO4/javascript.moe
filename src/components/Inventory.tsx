@@ -1496,7 +1496,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
         to = setTimeout(() => {
           ref?.current?.scrollIntoView({
             behavior: "instant",
-            block: "nearest",
+            block: "center",
             inline: "nearest",
           });
         }, 1000);
