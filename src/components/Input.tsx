@@ -99,7 +99,7 @@ export const ActionInput = ({
 }: any) => {
   return (
     <div
-      className={clsx("flex m-1 gap-1 justify-between items-center te", className)}
+      className={clsx("flex  gap-1 justify-between items-center te", className)}
     >
       <Input
       id="searchInput"

@@ -508,216 +508,10 @@ export const InventoryList = ({
           setNotification={setNotification}
         ></Notification>
       )}
-      {showAdd && (
-        <form
-          action="#"
-          onSubmit={(e) => {
-            const data = new FormData(e.target as HTMLFormElement);
-            const obj = Object.fromEntries(data);
 
-            e.preventDefault();
-            add(obj);
-          }}
-        >
-          <div className="flex gap-1 w-full items-center flex-wrap ">
-            <Input
-              name="quantity"
-              type="number"
-              className="flex-shrink w-[4ch] h-[34px]"
-            ></Input>
-            <select name="amount" className="bg-black/80 border-b-2 h-[34px]">
-              <option value="4ml">4ml</option>
-              <option value="15ml">15ml</option>
-              <option value="50g">50g</option>
-              <option value="60g">60g</option>
-              <option value="250g">250g</option>
-              <option value="500g">500g</option>
-            </select>
-            <Input
-              onPaste={(e) => {
-                const text = e.clipboardData?.getData("text");
-                importPlainText(add, text);
-              }}
-              //   type="submit"
-              name="title"
-              placeholder="Paste plain text export or enter a title."
-              className="flex-1 h-[34px]"
-            ></Input>
-            <select name="dilution" className="bg-black/80 border-b-2 h-[34px]">
-              <option value="5%">5%</option>
-              <option value="10%">10%</option>
-              <option value="20%">20%</option>
-              <option value="50%">50%</option>
-            </select>
-            <Input
-              name="price"
-              type="currency"
-              className="w-[7ch] h-[34px] pr-[34px]"
-            ></Input>
-            <Icon
-              icon="FaDollarSign"
-              className="-ml-[34px] h-6 w-6 mr-2"
-            ></Icon>
-            <IconButton icon="FaPlus" type="submit"></IconButton>
-            <IconButton
-              icon="FaSearch"
-              onClick={() => {
-                setShowAdd(false);
-              }}
-            ></IconButton>
-          </div>
-        </form>
-      )}
-      {showTags && (
-        <div className="flex gap-1 flex-wrap">
-          {
-            <Chip
-              label={filterType}
-              onClick={() => setFilterType(filterType === "OR" ? "AND" : "OR")}
-            ></Chip>
-          }
-          {allOdors.map((key: string) => {
-            return (
-              <Chip
-                label={key}
-                className={clsx("border-white/40 border-[1px] text-gray-200", {
-                  "text-gray-400": !filter.includes(key),
-                })}
-                style={{
-                  backgroundColor: filter.includes(key)
-                    ? OdorColors[key] + "DD"
-                    : OdorColors[key] + "33",
-                }}
-                onClick={() => setFilter(toggle(filter, key))}
-              ></Chip>
-            );
-          })}
-          {
-            <IconButton
-              icon="FaX"
-              round
-              className="ml-auto !h-7 !w-7 bg-red-600/40"
-              onClick={() => setShowTags(false)}
-            ></IconButton>
-          }
-        </div>
-      )}
-      {!showAdd && !showTags && (
-        <div className="flex gap-1 items-center w-full">
-          <IconButton
-            id="hideonstockbtn"
-            tooltip={
-              hideOnStock === 1
-                ? "Hide items on stock"
-                : hideOnStock === 2
-                ? "Show items on stock"
-                : "Don't filter anything"
-            }
-            icon="FaEye"
-            className={clsx({
-              "bg-green-600": hideOnStock === 2,
-              "bg-yellow-600": hideOnStock === 1,
-            })}
-            onClick={() => {
-              setHideOnStock(((hideOnStock + 1) % 3) as 0 | 1 | 2);
-            }}
-          ></IconButton>
-          <IconButton
-            id="sortbysizebtn"
-            tooltip="Sort by size"
-            className={clsx({
-              "bg-green-700/40": sort === "+amount",
-              "bg-red-700/40": sort === "-amount",
-            })}
-            icon={sort === "-amount" ? "FaSortAmountDown" : "FaSortAmountUp"}
-            onClick={() => setSort(sort == "+amount" ? "-amount" : "+amount")}
-          ></IconButton>
-          <IconButton
-            id="sortbypricebtn"
-            tooltip="Sort by price"
-            className={clsx("py-2", {
-              "bg-green-700/40": sort === "+price",
-              "bg-red-700/40": sort === "-price",
-            })}
-            onClick={() => setSort(sort == "+price" ? "-price" : "+price")}
-          >
-            <div className="flex">
-              <Icon
-                icon={sort === "-price" ? "FaArrowDownLong" : "FaArrowUpLong"}
-                className="w-4 h-4 -mr-2"
-              ></Icon>
-              <Icon icon="FaDollarSign" className="w-4 h-4"></Icon>
-            </div>
-          </IconButton>
-          <IconButton
-            tooltip="Sort by name"
-            id="togglesortbynamebtn"
-            className={clsx({
-              "bg-green-700/40": sort === "+AZ",
-              "bg-red-700/40": sort === "-AZ",
-            })}
-            icon={sort === "-AZ" ? "FaSortAlphaDown" : "FaSortAlphaUp"}
-            onClick={() => setSort(sort === "+AZ" ? "-AZ" : "+AZ")}
-          ></IconButton>
-          <IconButton
-            tooltip="Sort by odor"
-            id="togglesortbyodorbtn"
-            className={clsx("h-full", {
-              "bg-green-700/40": sort === "+odor",
-              "bg-red-700/40": sort === "-odor",
-            })}
-            onClick={() => setSort(sort === "+odor" ? "-odor" : "+odor")}
-          >
-            <div className="flex mx-[1px] h-6 items-center">
-              <Icon
-                icon={sort === "-odor" ? "FaArrowDownLong" : "FaArrowUpLong"}
-                className="w-4 h-4 -mx-[3px]"
-              ></Icon>
-              <Icon icon="FaTag" className="w-4 h-4"></Icon>
-            </div>
-          </IconButton>
-          <ActionInput
-            className="w-full h-full"
-            placeholder="Filter"
-            icon="FaSearch"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setSearch(e.target.value);
-            }}
-          ></ActionInput>
-
-          {!showAdd && (
-            <IconButton
-              icon="FaPlus"
-              onClick={() => {
-                setShowAdd(true);
-              }}
-            ></IconButton>
-          )}
-          {!showTags && (
-            <div className="relative">
-              <IconButton
-                icon="FaTag"
-                onClick={() => {
-                  setShowTags(true);
-                }}
-              ></IconButton>
-              <span
-                className={clsx(
-                  "absolute -bottom-4 -right-2 bg-red-600/70 px-2 py-1",
-                  { hidden: !filter?.length }
-                )}
-              >
-                {filter?.length}
-              </span>
-            </div>
-          )}
-          <ValueTags list={list} />
-        </div>
-      )}
-
-      <div className="flex gap-4 overflow-hidden flex-1">
+      <div className="flex gap-1 overflow-hidden flex-1">
         {(isMobile ? true : true) && (
-          <div className="flex flex-col w-full basis-1/3 flex-1 h-full">
+          <div className="flex flex-col w-full basis-1/3 flex-1 h-full justify-start">
             <div className="flex justify-between flex-wrap mb-1 gap-1 items-center">
               <div className="flex gap-0 items-center bg-green-300/20 p-1 rounded-md w-full flex-1 mb-1">
                 {Object.keys(inventories.remote).map((key) => {
@@ -826,6 +620,17 @@ export const InventoryList = ({
                 value={invLocal}
               ></LocalListChips>
             </div>
+            <div className="flex flex-col gap-1 items-end">
+              <ActionInput
+                className="w-full h-fit"
+                placeholder="Filter"
+                icon="FaSearch"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setSearch(e.target.value);
+                }}
+              ></ActionInput>
+              <ValueTags list={list} />
+            </div>
 
             <ScrollContainer className="">
               <List key={filtered.length} className="px-2 flex flex-col gap-1">
@@ -875,6 +680,25 @@ export const InventoryList = ({
                 )}
               </div>
             )}
+          </div>
+        )}
+        {!(selected?.size && isMobile) && (
+          <div>
+            <Actions
+              showAdd={showAdd}
+              setShowAdd={setShowAdd}
+              showTags={showTags}
+              setShowTags={setShowTags}
+              hideOnStock={hideOnStock}
+              setHideOnStock={setHideOnStock}
+              filter={filter}
+              setFilter={setFilter}
+              filterType={filterType}
+              setFilterType={setFilterType}
+              add={add}
+              sort={sort}
+              setSort={setSort}
+            />
           </div>
         )}
         {!!selected && (isMobile ? !!selected?.size : true) && (
@@ -996,11 +820,11 @@ const ValueTags = ({ list }: { list: Item[] }) => {
 
   const { list: listName } = useParams();
   return (
-    <div className="flex gap-1 items-center">
+    <div className="flex  md:flex-row gap-1 items-center">
       <Tag
         id="uniqueingredients"
         label={uniqueIngredientsOnStock?.length.toString()}
-        className="ml-auto md:ml-0 !bg-sky-500/70 h-8 items-center text-lg font-semibold border-2 "
+        className="w-full ml-auto md:ml-0 !bg-sky-500/70 h-8 items-center text-lg font-semibold border-2 "
         tooltip={
           "Number of unique ingredients in the list  '" + listName + "'."
         }
@@ -1089,7 +913,7 @@ export const IngredientDetail = ({
       <div
         className="
       flex gap-1 flex-row 
-      lg:flex-wrap justify-between bg-white/20
+      flex-wrap justify-between bg-white/20
       p-2 rounded-t-md items-center h-fit w-full"
       >
         <div className="flex gap-1  items-center ">
@@ -1196,7 +1020,7 @@ export const IngredientDetail = ({
           // }}
         >
           <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 p-1 ">
-            <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%]  h-fit lg:sticky top-2 flex flex-col gap-2">
+            <div className="w-full  sm:w-[40%] md:w-full lg:w-[30%] backdrop-blur-sm h-fit lg:sticky top-2 flex flex-col gap-2">
               {<img src={ingredients[selectedItem?.title?.trim()]} />}
               <div className="flex flex-wrap gap-1 h-fit items-center">
                 {selectedItem?.source === "PA" &&
@@ -1443,7 +1267,7 @@ export const IngredientDetail = ({
                 ></ActionButton>
               )}
             </div>
-            <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%] pt-2">
+            <div className="flex flex-col gap-2 sm:w-[60%] md:w-full lg:w-[70%] pt-2 backdrop-blur-sm ">
               {perfumeIngredientsOdours[selected?.title] && (
                 <div className="flex gap-2 flex-wrap">
                   {perfumeIngredientsOdours[selected?.title].map((odor) => {
@@ -1461,7 +1285,7 @@ export const IngredientDetail = ({
                 </div>
               )}
               {perfumeIngredientsDesc[selected?.title] && (
-                <p className="mb-0 overflow-y-auto h-full w-full p-2 text-base bg-white/20 rounded-md">
+                <p className="mb-0 overflow-y-auto h-full md:h-full w-full p-2 text-base bg-white/20 rounded-md">
                   {perfumeIngredientsDesc[selected?.title]}
                 </p>
               )}
@@ -2124,6 +1948,232 @@ export const Notification = (props: NotificationProps) => {
         icon="FaX"
         onClick={() => setNotification("")}
       ></IconButton>
+    </div>
+  );
+};
+
+export const Actions = ({
+  showAdd,
+  setShowAdd,
+  showTags,
+  hideOnStock,
+  setHideOnStock,
+  sort,
+  setSort,
+  filter,
+  setFilter,
+  filterType,
+  setFilterType,
+  add,
+  setShowTags,
+}: any) => {
+  return (
+    <div>
+      {showAdd && (
+        <form
+          action="#"
+          onSubmit={(e) => {
+            const data = new FormData(e.target as HTMLFormElement);
+            const obj = Object.fromEntries(data);
+
+            e.preventDefault();
+            add(obj);
+          }}
+        >
+          <div className="flex gap-1 w-full items-center flex-wrap ">
+            <Input
+              name="quantity"
+              type="number"
+              className="flex-shrink w-[4ch] h-[34px]"
+            ></Input>
+            <select name="amount" className="bg-black/80 border-b-2 h-[34px]">
+              <option value="4ml">4ml</option>
+              <option value="15ml">15ml</option>
+              <option value="50g">50g</option>
+              <option value="60g">60g</option>
+              <option value="250g">250g</option>
+              <option value="500g">500g</option>
+            </select>
+            <Input
+              onPaste={(e) => {
+                const text = e.clipboardData?.getData("text");
+                importPlainText(add, text);
+              }}
+              //   type="submit"
+              name="title"
+              placeholder="Paste plain text export or enter a title."
+              className="flex-1 h-[34px]"
+            ></Input>
+            <select name="dilution" className="bg-black/80 border-b-2 h-[34px]">
+              <option value="5%">5%</option>
+              <option value="10%">10%</option>
+              <option value="20%">20%</option>
+              <option value="50%">50%</option>
+            </select>
+            <Input
+              name="price"
+              type="currency"
+              className="w-[7ch] h-[34px] pr-[34px]"
+            ></Input>
+            <Icon
+              icon="FaDollarSign"
+              className="-ml-[34px] h-6 w-6 mr-2"
+            ></Icon>
+            <IconButton icon="FaPlus" type="submit"></IconButton>
+            <IconButton
+              icon="FaSearch"
+              onClick={() => {
+                setShowAdd(false);
+              }}
+            ></IconButton>
+          </div>
+        </form>
+      )}
+      {showTags && (
+        <div className="flex-col gap-1 flex-wrap">
+          {
+            <Chip
+              label={filterType}
+              onClick={() => setFilterType(filterType === "OR" ? "AND" : "OR")}
+            ></Chip>
+          }
+          {allOdors.map((key: string) => {
+            return (
+              <Chip
+                label={key}
+                className={clsx("border-white/40 border-[1px] text-gray-200", {
+                  "text-gray-400": !filter.includes(key),
+                })}
+                style={{
+                  backgroundColor: filter.includes(key)
+                    ? OdorColors[key] + "DD"
+                    : OdorColors[key] + "33",
+                }}
+                onClick={() => setFilter(toggle(filter, key))}
+              ></Chip>
+            );
+          })}
+          {
+            <IconButton
+              icon="FaX"
+              round
+              className="ml-auto !h-7 !w-7 bg-red-600/40"
+              onClick={() => setShowTags(false)}
+            ></IconButton>
+          }
+        </div>
+      )}
+      {!showAdd && !showTags && (
+        <div className="flex gap-1 items-center w-full justify-between flex-col">
+          <div className="flex gap-1 items-center justify-start w-full flex-col order-2">
+            <IconButton
+              id="hideonstockbtn"
+              tooltip={
+                hideOnStock === 1
+                  ? "Hide items on stock"
+                  : hideOnStock === 2
+                  ? "Show items on stock"
+                  : "Don't filter anything"
+              }
+              icon="FaEye"
+              className={clsx({
+                "bg-green-600": hideOnStock === 2,
+                "bg-yellow-600": hideOnStock === 1,
+              })}
+              onClick={() => {
+                setHideOnStock?.(((hideOnStock + 1) % 3) as 0 | 1 | 2);
+              }}
+            ></IconButton>
+            <IconButton
+              id="sortbysizebtn"
+              tooltip="Sort by size"
+              className={clsx({
+                "bg-green-700/40": sort === "+amount",
+                "bg-red-700/40": sort === "-amount",
+              })}
+              icon={sort === "-amount" ? "FaSortAmountDown" : "FaSortAmountUp"}
+              onClick={() => setSort(sort == "+amount" ? "-amount" : "+amount")}
+            ></IconButton>
+            <IconButton
+              id="sortbypricebtn"
+              tooltip="Sort by price"
+              className={clsx("py-2", {
+                "bg-green-700/40": sort === "+price",
+                "bg-red-700/40": sort === "-price",
+              })}
+              onClick={() => setSort(sort == "+price" ? "-price" : "+price")}
+            >
+              <div className="flex">
+                <Icon
+                  icon={sort === "-price" ? "FaArrowDownLong" : "FaArrowUpLong"}
+                  className="w-4 h-4 -mr-2"
+                ></Icon>
+                <Icon icon="FaDollarSign" className="w-4 h-4"></Icon>
+              </div>
+            </IconButton>
+            <IconButton
+              tooltip="Sort by name"
+              id="togglesortbynamebtn"
+              className={clsx({
+                "bg-green-700/40": sort === "+AZ",
+                "bg-red-700/40": sort === "-AZ",
+              })}
+              icon={sort === "-AZ" ? "FaSortAlphaDown" : "FaSortAlphaUp"}
+              onClick={() => setSort(sort === "+AZ" ? "-AZ" : "+AZ")}
+            ></IconButton>
+            <IconButton
+              tooltip="Sort by odor"
+              id="togglesortbyodorbtn"
+              className={clsx("h-full", {
+                "bg-green-700/40": sort === "+odor",
+                "bg-red-700/40": sort === "-odor",
+              })}
+              onClick={() => setSort(sort === "+odor" ? "-odor" : "+odor")}
+            >
+              <div className="flex mx-[1px] h-6 items-center">
+                <Icon
+                  icon={sort === "-odor" ? "FaArrowDownLong" : "FaArrowUpLong"}
+                  className="w-4 h-4 -mx-[3px]"
+                ></Icon>
+                <Icon icon="FaTag" className="w-4 h-4"></Icon>
+              </div>
+            </IconButton>
+          </div>
+          <div className="flex gap-1 items-center w-full flex-col order-3 md:order-2"></div>
+          <div className="flex justify-between md:justify-end gap-1 items-center w-full  flex-col order-1 md:order-3">
+            <div className="">
+              {!showAdd && (
+                <IconButton
+                  icon="FaPlus"
+                  onClick={() => {
+                    setShowAdd(true);
+                  }}
+                ></IconButton>
+              )}
+              {!showTags && (
+                <div className="relative">
+                  <IconButton
+                    icon="FaTag"
+                    onClick={() => {
+                      setShowTags(true);
+                    }}
+                  ></IconButton>
+                  <span
+                    className={clsx(
+                      "absolute -bottom-4 -right-2 bg-red-600/70 px-2 py-1",
+                      { hidden: !filter?.length }
+                    )}
+                  >
+                    {filter?.length}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* <ValueTags list={list} /> */}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
