@@ -148,7 +148,7 @@ img.csr {
 .aic {
   opacity: 0;
 
-  animation: fadein 400ms 1000ms forwards ease-in;
+  animation: fadein 400ms 800ms forwards ease-in;
 
 }
 
