@@ -4,7 +4,7 @@ import { sectionCtx } from "./AnimatedSection";
 import { Icon } from "./Icon";
 import { getRandomInt } from "@/lib/util";
 
-export const Sprout = ({ range = [0, 1], x, y, offset }) => {
+export const Sprout = ({ range = [0, 1], x, y, offset }: any) => {
   const { ref } = useContext(sectionCtx);
 
   const { scrollYProgress } = useScroll({
@@ -39,7 +39,7 @@ export const SproutingHearts = ({ n = 4 }) => {
     ];
   });
   console.log("ARR", arr);
-  return arr.map(([offset, x, y], i) => {
+  return arr.map(([offset, x, y]) => {
     return <Sprout range={[offset, 1]} offset={offset} x={x} y={y} />;
   });
 };
