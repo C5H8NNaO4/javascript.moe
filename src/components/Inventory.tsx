@@ -1489,22 +1489,22 @@ export const IngredientItem = (props: IngredientItemProps) => {
   const entry = props;
   const ref = useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
-      let to: NodeJS.Timeout;
+    // useEffect(() => {
+    //   let to: NodeJS.Timeout;
 
-      if (selected?.title === title && (selected as any)?.size === entry.size) {
-        to = setTimeout(() => {
-          ref?.current?.scrollIntoView({
-            behavior: "instant",
-            block: "center",
-            inline: "nearest",
-          });
-        }, 1000);
-      }
-      return () => {
-        clearTimeout(to);
-      };
-    }, []);
+    //   if (selected?.title === title && (selected as any)?.size === entry.size) {
+    //     to = setTimeout(() => {
+    //       ref?.current?.scrollIntoView({
+    //         behavior: "instant",
+    //         block: "center",
+    //         inline: "nearest",
+    //       });
+    //     }, 1000);
+    //   }
+    //   return () => {
+    //     clearTimeout(to);
+    //   };
+    // }, []);
 
   const isSelected =
     selected?.title === props?.title &&
