@@ -134,6 +134,7 @@ export const LandingPage = () => {
                 
                 */}
         <DualImages
+          saturate
           images={["/images/wallpaper/20.webp", "/images/wallpaper/me-ls.jfif"]}
           moveX={0}
           alts={[

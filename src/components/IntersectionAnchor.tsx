@@ -113,11 +113,13 @@ export const IntersectionAnchor = ({
       return;
     if (loc.hash === "#" + hash) {
       sem.current = true;
-      setTimeout(() => {
-        ref.current?.scrollIntoView({
-          behavior: "smooth",
-          block,
-        });
+      const onload = () => {
+        setTimeout(() => {
+          ref.current?.scrollIntoView({
+            behavior: "smooth",
+            block,
+          });
+        }, 0);
 
         const scrolls = [scrollBy].flat().filter(Boolean);
         if (scrolls?.length) {
@@ -134,12 +136,17 @@ export const IntersectionAnchor = ({
             }, 900 * (i + 1));
           });
         }
-      }, 0);
+      };
+      onload();
+      // window.addEventListener("DOMContentLoaded", onload);
+      return () => {
+        // window.removeEventListener("DOMContentLoaded", onload);
+      };
     }
   }, [block, scroll, hasScrolled, hash, scrollBy, loc.hash]);
 
   return (
-    <a href={hash} ref={ref} className={className} id={hash}>
+    <a ref={ref} className={className}>
       {/* {children} */}
     </a>
   );
