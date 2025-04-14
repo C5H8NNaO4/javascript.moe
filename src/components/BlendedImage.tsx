@@ -104,13 +104,15 @@ export const DualImages = ({
     xMotion = [[0, 1], ["0% 00%", "50% 0%"]],
     x2Motion = [[0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]],
     alts,
-    active
+    active,
+    saturate,
 }: {
     xMotion?: [number[], any[]],
     x2Motion?: [number[], any[]],
     className?: string; range?: number[], images: string[], alts: string[], invert?: boolean, desat?: boolean,
     moveX?: 0 | 1 | 2 | 3
     active?: boolean
+    saturate?: boolean
 }) => {
     const { ref: scrollRef } = useContext(sectionCtx);
     const { scrollYProgress } = useScroll({
@@ -129,15 +131,15 @@ export const DualImages = ({
     const down = useTransform(trans, [0.9, 1], [0, 10]);
     const y2C = useTransform(() => y2.get() + (down.get() * 2))
     const reverse = useTransform(trans, [0, 1], [1, 0]);
-
+    
     return <motion.div className={clsx(className, "absolute w-[100vw] h-[120vh] h-[120lvh] bg-black")} style={{ filter }}>
-        <motion.img src={images[0]} alt={alts[0]} className="absolute w-[100vw] h-[120vh] h-[120lvh]" style={{
+        <motion.img src={images[0]} alt={alts[0]} className="csr absolute w-[100vw] h-[120vh] h-[120lvh]" style={{
             opacity: reverse,
             objectPosition: (moveX & 1) ? x : undefined,
             scale: active ? scale : undefined,
             y: y
         }} />
-        <motion.img src={images[1]} alt={alts[1]} className="absolute w-[100vw] h-[120vh] h-[120lvh]" style={{
+        <motion.img src={images[1]} alt={alts[1]} className="csr absolute w-[100vw] h-[120vh] h-[120lvh]" style={{
             opacity: trans,
             objectPosition: (moveX & 2) ? x2 : undefined,
             scale: active ? scale : undefined,

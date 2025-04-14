@@ -99,7 +99,6 @@ p {
   background: #00000088 !important;
 }
 
-
 dialog:not([open]) {
   display: none !important;
 }
@@ -107,7 +106,6 @@ dialog:not([open]) {
 .sb-main-centered {
   background-color: skyblue;
 }
-
 
 [data-title]:hover:after {
   opacity: 1;
@@ -131,4 +129,35 @@ dialog:not([open]) {
   z-index: 0;
 
   position: relative;
+}
+
+
+img.csr {
+  animation: sat 400ms forwards ease-in;
+}
+
+@keyframes sat {
+  0% {
+    filter: saturate(0);
+  }
+  100% {
+    filter: saturate(1);
+  }
+}
+
+.aic {
+  opacity: 0;
+
+  animation: fadein 400ms 1000ms forwards ease-in;
+
+}
+
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

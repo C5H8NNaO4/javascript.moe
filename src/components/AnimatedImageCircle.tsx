@@ -30,7 +30,7 @@ export const AnimatedImageCircle = ({
   size = AnimatedImageCircleSize.sm,
   alts,
 }: AnimatedImageCircleProps) => {
-  const clsn = clsx("relative rounded-full overflow-hidden my-auto", className);
+  const clsn = clsx("relative rounded-full overflow-hidden my-auto aic", className);
   const imgHeight = heights[size];
 
   const { ref } = useContext(sectionCtx);
@@ -72,7 +72,7 @@ export const AnimatedImageCircle = ({
         height={imgHeight + "px"}
         src={images[0]}
         loading="eager"
-        className="absolute h-full w-full"
+        className="csr absolute h-full w-full"
         style={{
           opacity,
           objectFit: "cover",
