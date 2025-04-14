@@ -105,7 +105,6 @@ export const DualImages = ({
     x2Motion = [[0.5, 0.9, 1], ["8% 0%", "42% 0%", "25% 0%"]],
     alts,
     active,
-    saturate,
 }: {
     xMotion?: [number[], any[]],
     x2Motion?: [number[], any[]],
