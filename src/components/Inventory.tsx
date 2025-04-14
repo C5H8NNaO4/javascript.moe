@@ -509,7 +509,7 @@ export const InventoryList = ({
         ></Notification>
       )}
 
-{showTags && (
+      {showTags && (
         <div className="flex flex-row gap-1 flex-wrap w-full">
           {
             <Chip
@@ -544,8 +544,8 @@ export const InventoryList = ({
         </div>
       )}
 
-      <div className="flex gap-1 overflow-hidden flex-1">
-      {!(selected?.size && isMobile) && (
+      <div className="flex flex-col md:flex-row gap-1 overflow-hidden ">
+        {!(selected?.size && isMobile) && (
           <div>
             <Actions
               showAdd={showAdd}
@@ -2001,7 +2001,7 @@ export const Actions = ({
   setShowTags,
 }: any) => {
   return (
-    <div>
+    <div className="w-full">
       {showAdd && (
         <form
           action="#"
@@ -2064,8 +2064,8 @@ export const Actions = ({
       )}
 
       {!showAdd && !showTags && (
-        <div className="flex gap-1 items-center w-full justify-between flex-col">
-          <div className="flex gap-1 items-center justify-start w-full flex-col order-2">
+        <div className="flex gap-1 items-center w-full justify-between flex-row md:flex-col">
+          <div className="flex gap-1 items-center justify-start w-full flex-row md:flex-col">
             <IconButton
               id="hideonstockbtn"
               tooltip={
@@ -2139,36 +2139,33 @@ export const Actions = ({
               </div>
             </IconButton>
           </div>
-          <div className="flex gap-1 items-center w-full flex-col order-3 md:order-2"></div>
-          <div className="flex justify-between md:justify-end gap-1 items-center w-full  flex-col order-1 md:order-3">
-            <div className="">
-              {!showAdd && (
+          <div className="flex  gap-1 items-center w-full  flex-row md:flex-col justify-end">
+            {!showAdd && (
+              <IconButton
+                icon="FaPlus"
+                onClick={() => {
+                  setShowAdd(true);
+                }}
+              ></IconButton>
+            )}
+            {!showTags && (
+              <div className="relative">
                 <IconButton
-                  icon="FaPlus"
+                  icon="FaTag"
                   onClick={() => {
-                    setShowAdd(true);
+                    setShowTags(true);
                   }}
                 ></IconButton>
-              )}
-              {!showTags && (
-                <div className="relative">
-                  <IconButton
-                    icon="FaTag"
-                    onClick={() => {
-                      setShowTags(true);
-                    }}
-                  ></IconButton>
-                  <span
-                    className={clsx(
-                      "absolute -bottom-4 -right-2 bg-red-600/70 px-2 py-1",
-                      { hidden: !filter?.length }
-                    )}
-                  >
-                    {filter?.length}
-                  </span>
-                </div>
-              )}
-            </div>
+                <span
+                  className={clsx(
+                    "absolute -bottom-4 -right-2 bg-red-600/70 px-2 py-1",
+                    { hidden: !filter?.length }
+                  )}
+                >
+                  {filter?.length}
+                </span>
+              </div>
+            )}
 
             {/* <ValueTags list={list} /> */}
           </div>
