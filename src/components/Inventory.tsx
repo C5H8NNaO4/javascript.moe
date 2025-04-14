@@ -1997,9 +1997,6 @@ export const Actions = ({
   sort,
   setSort,
   filter,
-  setFilter,
-  filterType,
-  setFilterType,
   add,
   setShowTags,
 }: any) => {
