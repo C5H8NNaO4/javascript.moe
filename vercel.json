@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/:file*.vcf",
+      "source": "/Moritz Roessler.vcf",
       "destination": "/public/Moritz Roessler.vcf"
     },
     { "source": "/(.*)", "destination": "/" }
