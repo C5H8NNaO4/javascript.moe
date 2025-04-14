@@ -36,6 +36,7 @@ import { Icon } from "@/components/Icon";
 import { lngLnk } from "@/lib/util";
 import { IntersectionAnchor } from "@/components/IntersectionAnchor";
 import { AutoPlayButton, RisingSun, ScrollbarTooltip } from "@/components/ScrollbarTooltip";
+import { Sprout, SproutingHearts } from "@/components/Sprout";
 
 export const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -216,6 +217,7 @@ export const LandingPage = () => {
               slices={[0, 6, 6]}
               texts={["I love Music", "I love Languages", "I love Life"]}
             />
+            <SproutingHearts  n={24}/>
             {/* <Parallax trans={[1, 0.75]} className='absolute w-full flex flex-col items-center gap-2 mt-[50lvh]' distance={window.innerHeight * -0.25} offset={0}>
                             <PerfumeLink range={[0.75, 1]} />
                         </Parallax> */}
