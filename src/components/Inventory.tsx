@@ -509,7 +509,61 @@ export const InventoryList = ({
         ></Notification>
       )}
 
+{showTags && (
+        <div className="flex flex-row gap-1 flex-wrap w-full">
+          {
+            <Chip
+              label={filterType}
+              onClick={() => setFilterType(filterType === "OR" ? "AND" : "OR")}
+            ></Chip>
+          }
+          {allOdors.map((key: string) => {
+            return (
+              <Chip
+                label={key}
+                className={clsx("border-white/40 border-[1px] text-gray-200", {
+                  "text-gray-400": !filter.includes(key),
+                })}
+                style={{
+                  backgroundColor: filter.includes(key)
+                    ? OdorColors[key] + "DD"
+                    : OdorColors[key] + "33",
+                }}
+                onClick={() => setFilter(toggle(filter, key))}
+              ></Chip>
+            );
+          })}
+          {
+            <IconButton
+              icon="FaX"
+              round
+              className="ml-auto !h-7 !w-7 bg-red-600/40"
+              onClick={() => setShowTags(false)}
+            ></IconButton>
+          }
+        </div>
+      )}
+
       <div className="flex gap-1 overflow-hidden flex-1">
+      {!(selected?.size && isMobile) && (
+          <div>
+            <Actions
+              showAdd={showAdd}
+              setShowAdd={setShowAdd}
+              showTags={showTags}
+              setShowTags={setShowTags}
+              hideOnStock={hideOnStock}
+              setHideOnStock={setHideOnStock}
+              filter={filter}
+              setFilter={setFilter}
+              filterType={filterType}
+              setFilterType={setFilterType}
+              add={add}
+              sort={sort}
+              setSort={setSort}
+            />
+          </div>
+        )}
         {(isMobile ? true : true) && (
           <div className="flex flex-col w-full basis-1/3 flex-1 h-full justify-start">
             <div className="flex justify-between flex-wrap mb-1 gap-1 items-center">
@@ -620,7 +674,7 @@ export const InventoryList = ({
                 value={invLocal}
               ></LocalListChips>
             </div>
-            <div className="flex flex-col gap-1 items-end">
+            <div className="flex flex-col gap-1 items-end mb-1">
               <ActionInput
                 className="w-full h-fit"
                 placeholder="Filter"
@@ -682,25 +736,7 @@ export const InventoryList = ({
             )}
           </div>
         )}
-        {!(selected?.size && isMobile) && (
-          <div>
-            <Actions
-              showAdd={showAdd}
-              setShowAdd={setShowAdd}
-              showTags={showTags}
-              setShowTags={setShowTags}
-              hideOnStock={hideOnStock}
-              setHideOnStock={setHideOnStock}
-              filter={filter}
-              setFilter={setFilter}
-              filterType={filterType}
-              setFilterType={setFilterType}
-              add={add}
-              sort={sort}
-              setSort={setSort}
-            />
-          </div>
-        )}
+
         {!!selected && (isMobile ? !!selected?.size : true) && (
           <IngredientDetail
             inventories={{
@@ -2029,40 +2065,7 @@ export const Actions = ({
           </div>
         </form>
       )}
-      {showTags && (
-        <div className="flex-col gap-1 flex-wrap">
-          {
-            <Chip
-              label={filterType}
-              onClick={() => setFilterType(filterType === "OR" ? "AND" : "OR")}
-            ></Chip>
-          }
-          {allOdors.map((key: string) => {
-            return (
-              <Chip
-                label={key}
-                className={clsx("border-white/40 border-[1px] text-gray-200", {
-                  "text-gray-400": !filter.includes(key),
-                })}
-                style={{
-                  backgroundColor: filter.includes(key)
-                    ? OdorColors[key] + "DD"
-                    : OdorColors[key] + "33",
-                }}
-                onClick={() => setFilter(toggle(filter, key))}
-              ></Chip>
-            );
-          })}
-          {
-            <IconButton
-              icon="FaX"
-              round
-              className="ml-auto !h-7 !w-7 bg-red-600/40"
-              onClick={() => setShowTags(false)}
-            ></IconButton>
-          }
-        </div>
-      )}
+
       {!showAdd && !showTags && (
         <div className="flex gap-1 items-center w-full justify-between flex-col">
           <div className="flex gap-1 items-center justify-start w-full flex-col order-2">
