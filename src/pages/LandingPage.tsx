@@ -154,7 +154,7 @@ export const LandingPage = () => {
                 ]}
               />
               <IntersectionAnchor
-                hash={"hello"}
+                hash={""}
                 rootMargin={"40%"}
               ></IntersectionAnchor>
             </Container>

@@ -67,7 +67,9 @@ export const IntersectionAnchor = ({
         ) {
           (window as any).noReset = true;
           // setTimeout(() => {
-          nav("#" + entry.target.id.replace("#", ""), { replace: true });
+          nav("#" + entry.target.getAttribute("data-id")?.replace("#", ""), {
+            replace: true,
+          });
           // }, 0);
         }
       },
@@ -113,40 +115,34 @@ export const IntersectionAnchor = ({
       return;
     if (loc.hash === "#" + hash) {
       sem.current = true;
-      const onload = () => {
-        setTimeout(() => {
-          ref.current?.scrollIntoView({
-            behavior: "smooth",
-            block,
-          });
-        }, 0);
 
-        const scrolls = [scrollBy].flat().filter(Boolean);
-        if (scrolls?.length) {
-          scrolls.forEach((s, i) => {
-            setTimeout(() => {
-              document.querySelector("html")?.scrollBy({
-                top: s,
-                behavior: "smooth",
-              });
-              if (i === scrolls.length - 1) {
-                sem.current = false;
-                // setHasScrolled(false);
-              }
-            }, 900 * (i + 1));
-          });
-        }
-      };
-      onload();
-      // window.addEventListener("DOMContentLoaded", onload);
-      return () => {
-        // window.removeEventListener("DOMContentLoaded", onload);
-      };
+      setTimeout(() => {
+        ref.current?.scrollIntoView({
+          behavior: "smooth",
+          block,
+        });
+      }, 0);
+
+      const scrolls = [scrollBy].flat().filter(Boolean);
+      if (scrolls?.length) {
+        scrolls.forEach((s, i) => {
+          setTimeout(() => {
+            document.querySelector("html")?.scrollBy({
+              top: s,
+              behavior: "smooth",
+            });
+            if (i === scrolls.length - 1) {
+              sem.current = false;
+              // setHasScrolled(false);
+            }
+          }, 900 * (i + 1));
+        });
+      }
     }
   }, [block, scroll, hasScrolled, hash, scrollBy, loc.hash]);
 
   return (
-    <a ref={ref} className={className}>
+    <a ref={ref} className={className} data-id={hash}>
       {/* {children} */}
     </a>
   );
