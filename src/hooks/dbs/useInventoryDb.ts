@@ -45,10 +45,6 @@ export const useLocalInventories = (
     loadLocalLists();
   }, [loadLocalLists]);
 
-
-  useEffect(() => {
-    console.log ("USE LOCAL INV")
-  })
   const add = async ({ id, ...props }: Partial<Item>) => {
     if (!invLocal) return;
     await db.add({ ...props, list: invLocal });

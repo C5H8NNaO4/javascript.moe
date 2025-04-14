@@ -38,7 +38,6 @@ export const SproutingHearts = ({ n = 4 }) => {
       ),
     ];
   });
-  console.log("ARR", arr);
   return arr.map(([offset, x, y]) => {
     return <Sprout range={[offset, 1]} offset={offset} x={x} y={y} />;
   });

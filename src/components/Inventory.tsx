@@ -1707,7 +1707,6 @@ export const IngredientItem = (props: IngredientItemProps) => {
             )}
             type="checkbox"
             onChange={(e) => {
-              console.log("ON CHANGE ", entry);
               e.stopPropagation();
               e.preventDefault();
               toggleOnStock(entry, e.target.checked);
