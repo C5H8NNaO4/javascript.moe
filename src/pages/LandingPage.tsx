@@ -134,7 +134,7 @@ export const LandingPage = () => {
                 
                 */}
         <DualImages
-          images={["/images/wallpaper/20.jpg", "/images/wallpaper/me-ls.jfif"]}
+          images={["/images/wallpaper/20.webp", "/images/wallpaper/me-ls.jfif"]}
           moveX={0}
           alts={[
             "A small pond surrounded by trees and wildflowers with sunlight filtering through.",
