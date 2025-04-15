@@ -683,7 +683,7 @@ export const InventoryList = ({
                   setSearch(e.target.value);
                 }}
               ></ActionInput>
-              <ValueTags list={list} />
+              {/* <ValueTags list={list} /> */}
             </div>
 
             <ScrollContainer className="">
